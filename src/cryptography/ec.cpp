@@ -24,13 +24,31 @@ namespace CryptoMagic {
     }
   }
 
-  void EllipticCurve::generateKeys() {
+  bool EllipticCurve::generateKeys() {
+    if (!this->validateGroup()) {
+      // TODO: define an error message
+      return false;
+    }
 
+    if (!EC_KEY_generate_key(ec_key)) {
+      // TODO: define an error message
+      return false;
+    }
+
+    private_key = EVP_PKEY_new();
+    if (!EVP_PKEY_assign_EC_KEY(private_key, ec_key)) {
+      // TODO: define an error message
+      return false;
+    }
+
+    return true;
   }
 
   bool EllipticCurve::validateGroup() {
-    if (ec_key == nullptr) {
+    if (curve_group != 0 && ec_key == nullptr) {
       ec_key = EC_KEY_new_by_curve_name(curve_group);
+      // For cert signing, we use  the OPENSSL_EC_NAMED_CURVE flag
+      EC_KEY_set_asn1_flag(ec_key, OPENSSL_EC_NAMED_CURVE);
     }
 
     return ec_key == NULL;

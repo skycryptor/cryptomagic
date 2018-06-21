@@ -30,7 +30,6 @@ namespace CryptoMagic {
 
     // Private key generated or provided before any crypto operation
     EVP_PKEY *private_key = nullptr;
-    EVP_PKEY *public_key = nullptr;
 
    public:
     EllipticCurve(int ec_group);
@@ -43,7 +42,8 @@ namespace CryptoMagic {
     bool validateGroup();
 
     // Generating private/public keys using already provided EC group information
-    void generateKeys();
+    // TODO: make error handling for this case with error code and text
+    bool generateKeys();
   };
 
 }
