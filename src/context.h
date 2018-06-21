@@ -8,11 +8,11 @@
 namespace CryptoMagic {
 
   /**
-   * CMContext is defining main context for cryptographic operations and configurations
+   * Context is defining main context for cryptographic operations and configurations
    * Each CryptoMagic entry point object should contain context for having
    * consistent crypto operations configurations and algorithm definitions
    */
-  class CMContext {
+  class Context {
    private:
 
   };

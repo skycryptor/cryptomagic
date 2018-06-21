@@ -2,15 +2,15 @@
 
 namespace CryptoMagic {
 
-  CryptoMagic::CryptoMagic(CMContext ctx) {
+  CryptoMagic::CryptoMagic(Context ctx) {
     context = ctx;
   }
 
-  CMContext *CryptoMagic::CryptoMagic::getContext() {
+Context *CryptoMagic::CryptoMagic::getContext() {
     return &context;
   }
 
-  void CryptoMagic::setContext(CMContext ctx) {
+  void CryptoMagic::setContext(Context ctx) {
     context = ctx;
   }
 }
