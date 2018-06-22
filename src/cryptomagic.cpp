@@ -6,7 +6,7 @@ namespace CryptoMagic {
     context = ctx;
   }
 
-Context *CryptoMagic::CryptoMagic::getContext() {
+  Context *CryptoMagic::CryptoMagic::getContext() {
     return &context;
   }
 
