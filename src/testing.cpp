@@ -9,7 +9,10 @@ using namespace CryptoMagic;
 using namespace std;
 
 int main() {
-  auto ctx = Context::getDefault();
-  auto bn = BigNumber::generate_random(&ctx);
-  cout<< bn->toHex() << endl;
+  while (true) {
+    auto ctx = Context::getDefault();
+    auto bn = BigNumber::generate_random(&ctx);
+    cout<< bn->toHex() << endl;
+    delete bn;
+  }
 }

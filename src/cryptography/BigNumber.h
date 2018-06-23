@@ -43,7 +43,7 @@ namespace CryptoMagic {
     static BigNumber from_integer(int num, Context *ctx);
 
     // Getting BigNumber as a string/byte array
-    char * toHex();
+    string toHex();
   };
 }
 

@@ -71,7 +71,10 @@ namespace CryptoMagic {
     return bn;
   }
 
-  char *BigNumber::toHex() {
-    return BN_bn2hex(bignum);
+  string BigNumber::toHex() {
+    char *hexStr = BN_bn2hex(bignum);
+    string hex = string(hexStr);
+    delete hexStr;
+    return hex;
   }
 }
