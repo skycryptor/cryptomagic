@@ -38,16 +38,31 @@ namespace CryptoMagic {
     ~BigNumber();
 
     // Generate random BigNumber
-    static BigNumber *generate_random(Context *ctx);
+    static BigNumber generate_random(Context *ctx);
     // Get BigNumber from integer
-    static BigNumber *from_integer(int num, Context *ctx);
+    static BigNumber from_integer(int num, Context *ctx);
     // Get BigNumber from big endian ordered bytes
-    static BigNumber *from_bytes(unsigned char *buffer, Context *ctx);
+    static BigNumber from_bytes(unsigned char *buffer, Context *ctx);
 
     // Getting BigNumber as a string/byte array
     string toHex();
     // Getting BIGNUM bytes from existing OpenSSL BIGNUM
     string toBytes();
+
+    // Checking if BigNumbers are equal
+    bool operator==(const BigNumber& rhs);
+    // MUL operator for BigNumbers, it returns another BigNumber as a result
+    BigNumber operator*(const BigNumber& rhs);
+    // Inverting current BigNumber and returning inverted one
+    BigNumber operator~();
+    // DIV operator for BigNumbers, it returns another BigNumber as a result
+    BigNumber operator/(BigNumber& rhs);
+    // ADD operator implementation, it returns another BigNumber as a result
+    BigNumber operator+(const BigNumber& rhs);
+    // SUB operator implementation, it returns another BigNumber as a result
+    BigNumber operator-(const BigNumber& rhs);
+    // MOD operator implementation, it returns another BigNumber as a result
+    BigNumber operator%(const BigNumber& rhs);
   };
 }
 

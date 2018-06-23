@@ -49,32 +49,30 @@ namespace CryptoMagic {
     }
   }
 
-  BigNumber *BigNumber::generate_random(Context *ctx) {
-    auto bn = new BigNumber(nullptr, ctx);
-    bn->bignum = BN_new();
-    int res = BN_rand_range(bn->bignum, bn->ec_order);
+  BigNumber BigNumber::generate_random(Context *ctx) {
+    BigNumber bn(nullptr, ctx);
+    bn.bignum = BN_new();
+    int res = BN_rand_range(bn.bignum, bn.ec_order);
     if (res != 1) {
-      return nullptr;
+      // TODO: make error handling!!
     }
 
     // if we got big number not inside EC group range let's try again
-    if (!bn->isFromECGroup()) {
-      // clearing created big number and trying again
-      delete bn;
+    if (!bn.isFromECGroup()) {
       return BigNumber::generate_random(ctx);
     }
 
     return bn;
   }
 
-  BigNumber *BigNumber::from_bytes(unsigned char *buffer, Context *ctx) {
-    auto bn = new BigNumber(nullptr, ctx);
-    bn->bignum = BN_new();
-    BN_bin2bn((const unsigned char*)&buffer, 4, bn->bignum);
-    return nullptr;
+  BigNumber BigNumber::from_bytes(unsigned char *buffer, Context *ctx) {
+    BigNumber bn(nullptr, ctx);
+    bn.bignum = BN_new();
+    BN_bin2bn((const unsigned char*)&buffer, 4, bn.bignum);
+    return bn;
   }
 
-  BigNumber *BigNumber::from_integer(int num, Context *ctx) {
+  BigNumber BigNumber::from_integer(int num, Context *ctx) {
     unsigned int beConverted = htonl((unsigned int)num);
     return BigNumber::from_bytes((unsigned char *)&beConverted, ctx);
   }
@@ -93,7 +91,63 @@ namespace CryptoMagic {
     auto binData = new char[BN_num_bytes(bignum)];
     BN_bn2bin(bignum, (unsigned char*) binData);
     auto buffer = string(binData);
-    delete binData;
+    delete[] binData;
     return buffer;
+  }
+
+  bool BigNumber::operator==(const BigNumber &rhs) {
+    return BN_cmp(bignum, rhs.bignum) == 0;
+  }
+
+  BigNumber BigNumber::operator*(const BigNumber &rhs) {
+    BigNumber bn(nullptr, ctx);
+    bn.bignum = BN_new();
+    int res = BN_mod_mul(bn.bignum, bignum, rhs.bignum, ec_order, bnCtx);
+    if (res != 1) {
+      // TODO: make error handling!!
+    }
+    return bn;
+  }
+
+  BigNumber BigNumber::operator~() {
+    BigNumber bn(nullptr, ctx);
+    bn.bignum = BN_new();
+    BN_mod_inverse(bn.bignum, bignum, ec_order, bnCtx);
+    return bn;
+  }
+
+  BigNumber BigNumber::operator/(BigNumber &rhs) {
+    // inverting and multiplying to get div
+    return (*this) * (~rhs);
+  }
+
+  BigNumber BigNumber::operator+(const BigNumber &rhs) {
+    BigNumber bn(nullptr, ctx);
+    bn.bignum = BN_new();
+    int res = BN_mod_add(bn.bignum, bignum, rhs.bignum, ec_order, bnCtx);
+    if (res != 1) {
+      // TODO: make error handling!!
+    }
+    return bn;
+  }
+
+  BigNumber BigNumber::operator-(const BigNumber &rhs) {
+    BigNumber bn(nullptr, ctx);
+    bn.bignum = BN_new();
+    int res = BN_mod_sub(bn.bignum, bignum, rhs.bignum, ec_order, bnCtx);
+    if (res != 1) {
+      // TODO: make error handling!!
+    }
+    return bn;
+  }
+
+  BigNumber BigNumber::operator%(const BigNumber &rhs) {
+    BigNumber bn(nullptr, ctx);
+    bn.bignum = BN_new();
+    int res = BN_nnmod(bn.bignum, bignum, rhs.bignum, bnCtx);
+    if (res != 1) {
+      // TODO: make error handling!!
+    }
+    return BigNumber(nullptr, nullptr);
   }
 }

@@ -12,7 +12,6 @@ int main() {
   while (true) {
     auto ctx = Context::getDefault();
     auto bn = BigNumber::generate_random(&ctx);
-    cout<< bn->toHex() << endl;
-    delete bn;
+    cout<< bn.toHex() << endl;
   }
 }
