@@ -8,7 +8,7 @@
 
 namespace CryptoMagic {
 
-  Context::Context(const char * ec_name = "secp256k1") {
+  Context::Context(const char * ec_name) {
     elliptic_curve_name = ec_name;
     ec_nid = OBJ_txt2nid(elliptic_curve_name.c_str());
     if (ec_nid != 0) {

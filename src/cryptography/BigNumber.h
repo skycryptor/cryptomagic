@@ -28,7 +28,7 @@ namespace CryptoMagic {
     // keeping zero bignum initiated and allocated for later usage
     // this will be created on first BigNumber constructor work at any time
     // then just we will be checking if it's created or not
-    static BIGNUM *BNZero = nullptr;
+    static BIGNUM *BNZero;
 
     // checking if number is in current EC group
     bool isFromECGroup();
@@ -38,9 +38,12 @@ namespace CryptoMagic {
     ~BigNumber();
 
     // Generate random BigNumber
-    BigNumber *generate_random(Context *ctx);
+    static BigNumber *generate_random(Context *ctx);
     // Get BigNumber from integer
-    BigNumber from_integer(int num, Context *ctx);
+    static BigNumber from_integer(int num, Context *ctx);
+
+    // Getting BigNumber as a string/byte array
+    char * toHex();
   };
 }
 

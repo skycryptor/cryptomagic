@@ -8,7 +8,7 @@
 
 namespace CryptoMagic {
 
-  BIGNUM BigNumber::BNZero = nullptr;
+  BIGNUM * BigNumber::BNZero = nullptr;
 
   BigNumber::BigNumber(BIGNUM *bn, Context *ctx) {
     this->bignum = bn;
@@ -69,5 +69,9 @@ namespace CryptoMagic {
     }
 
     return bn;
+  }
+
+  char *BigNumber::toHex() {
+    return BN_bn2hex(bignum);
   }
 }

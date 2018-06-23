@@ -13,10 +13,11 @@ namespace CryptoMagic {
   class CryptoMagic {
    private:
     // defining main context for all cryptographic operations inside current CryptoMagic object
-    Context context;
+    Context context = Context::getDefault();
 
    public:
-    CryptoMagic(Context ctx);
+    CryptoMagic() = default;
+    explicit CryptoMagic(Context ctx);
     ~CryptoMagic() = default;
 
     // Getting current defined context as a reference
