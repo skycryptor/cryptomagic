@@ -1,7 +1,7 @@
 #ifndef CRYPTOMAGIC_CRYPTOMAGIC_H
 #define CRYPTOMAGIC_CRYPTOMAGIC_H
 
-#include "context.h"
+#include "Context.h"
 
 namespace CryptoMagic {
 

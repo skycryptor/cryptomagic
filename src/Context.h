@@ -6,6 +6,7 @@
 #define CRYPTOMAIC_CONTEXT_H
 
 #include "string"
+#include "openssl/ec.h"
 
 using namespace std;
 
@@ -19,21 +20,21 @@ namespace CryptoMagic {
   class Context {
    private:
     // Keeping current elliptic curve name as a context
-    string elliptic_curve_name = "secp256k1";
-
-    // keeping RSA key size inside context
-    int rsa_key_size = 2048;
+    string elliptic_curve_name;
+    // EC NID from OpenSSL definitions
+    int ec_nid = 0;
+    // Making EC group from OpenSSL
+    EC_GROUP *ec_group = nullptr;
 
    public:
-    Context() = default;
-    ~Context() = default;
+    explicit Context(const char * ec_name);
+    ~Context();
 
     string get_elliptic_curve_name();
-    void set_elliptic_curve_name(string &ec_name);
-    void set_elliptic_curve_name(char *ec_name);
+    int get_ec_nid();
+    EC_GROUP *get_ec_group();
 
-    int get_rsa_key_size();
-    void set_rsa_key_size(int size);
+    static Context getDefault();
   };
 
 }

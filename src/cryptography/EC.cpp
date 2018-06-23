@@ -2,7 +2,7 @@
 // Created by Tigran on 6/21/18.
 //
 
-#include "ec.h"
+#include "EC.h"
 
 namespace CryptoMagic {
 
@@ -41,6 +41,13 @@ namespace CryptoMagic {
       return false;
     }
 
+    auto sA = EVP_PKEY_new();
+    auto sB = EVP_PKEY_new();
+
+    auto pA = EC_KEY_get0_public_key((EC_KEY*)sA);
+    auto pB = EC_KEY_get0_public_key((EC_KEY*)sB);
+
+
     return true;
   }
 
@@ -51,7 +58,7 @@ namespace CryptoMagic {
       EC_KEY_set_asn1_flag(ec_key, OPENSSL_EC_NAMED_CURVE);
     }
 
-    return ec_key == NULL;
+    return ec_key == nullptr;
   }
 
 }

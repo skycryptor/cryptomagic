@@ -1,4 +1,4 @@
-#include "cryptomagic.h"
+#include "CryptoMagic.h"
 
 namespace CryptoMagic {
 
