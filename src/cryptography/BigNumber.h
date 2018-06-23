@@ -41,6 +41,8 @@ namespace CryptoMagic {
     static BigNumber *generate_random(Context *ctx);
     // Get BigNumber from integer
     static BigNumber *from_integer(int num, Context *ctx);
+    // Get BigNumber from big endian ordered bytes
+    static BigNumber *from_bytes(unsigned char *buffer, Context *ctx);
 
     // Getting BigNumber as a string/byte array
     string toHex();

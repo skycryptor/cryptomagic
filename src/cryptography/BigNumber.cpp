@@ -67,12 +67,16 @@ namespace CryptoMagic {
     return bn;
   }
 
-  BigNumber *BigNumber::from_integer(int num, Context *ctx) {
+  BigNumber *BigNumber::from_bytes(unsigned char *buffer, Context *ctx) {
     auto bn = new BigNumber(nullptr, ctx);
     bn->bignum = BN_new();
-    num = htonl((unsigned int)num);
-    BN_bin2bn((const unsigned char*)&num, 4, bn->bignum);
-    return bn;
+    BN_bin2bn((const unsigned char*)&buffer, 4, bn->bignum);
+    return nullptr;
+  }
+
+  BigNumber *BigNumber::from_integer(int num, Context *ctx) {
+    unsigned int beConverted = htonl((unsigned int)num);
+    return BigNumber::from_bytes((unsigned char *)&beConverted, ctx);
   }
 
   bool BigNumber::isFromECGroup() {
