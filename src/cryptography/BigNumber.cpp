@@ -49,10 +49,6 @@ namespace CryptoMagic {
     }
   }
 
-  bool BigNumber::isFromECGroup() {
-    return BN_cmp(bignum, BigNumber::BNZero) ==1 && BN_cmp(bignum, ec_order) == -1;
-  }
-
   BigNumber *BigNumber::generate_random(Context *ctx) {
     auto bn = new BigNumber(nullptr, ctx);
     bn->bignum = BN_new();
@@ -69,6 +65,18 @@ namespace CryptoMagic {
     }
 
     return bn;
+  }
+
+  BigNumber *BigNumber::from_integer(int num, Context *ctx) {
+    auto bn = new BigNumber(nullptr, ctx);
+    bn->bignum = BN_new();
+    num = htonl((unsigned int)num);
+    BN_bin2bn((const unsigned char*)&num, 4, bn->bignum);
+    return bn;
+  }
+
+  bool BigNumber::isFromECGroup() {
+    return BN_cmp(bignum, BigNumber::BNZero) ==1 && BN_cmp(bignum, ec_order) == -1;
   }
 
   string BigNumber::toHex() {

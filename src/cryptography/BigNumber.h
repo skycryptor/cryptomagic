@@ -40,7 +40,7 @@ namespace CryptoMagic {
     // Generate random BigNumber
     static BigNumber *generate_random(Context *ctx);
     // Get BigNumber from integer
-    static BigNumber from_integer(int num, Context *ctx);
+    static BigNumber *from_integer(int num, Context *ctx);
 
     // Getting BigNumber as a string/byte array
     string toHex();
