@@ -46,6 +46,8 @@ namespace CryptoMagic {
 
     // Getting BigNumber as a string/byte array
     string toHex();
+    // Getting BIGNUM bytes from existing OpenSSL BIGNUM
+    string toBytes();
   };
 }
 

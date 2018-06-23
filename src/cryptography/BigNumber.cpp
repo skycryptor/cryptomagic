@@ -89,4 +89,11 @@ namespace CryptoMagic {
     delete hexStr;
     return hex;
   }
+  string BigNumber::toBytes() {
+    auto binData = new char[BN_num_bytes(bignum)];
+    BN_bn2bin(bignum, (unsigned char*) binData);
+    auto buffer = string(binData);
+    delete binData;
+    return buffer;
+  }
 }
