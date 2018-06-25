@@ -87,6 +87,12 @@ namespace CryptoMagic {
     return (*this) + p;
   }
 
+  Point Point::operator*(Point &rhs) {
+    BigNumber bn(BN_new(), context);
+    EC_POINT_point2bn(context->get_ec_group(), ec_point, POINT_CONVERSION_UNCOMPRESSED, bn.getRawBigNum(), bn.getRawBnCtx());
+    return rhs * bn;
+  }
+
 }
 
 

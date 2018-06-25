@@ -34,6 +34,8 @@ namespace CryptoMagic {
     bool operator==(Point& rhs);
     // MUL Operator for Point * BigNumber = Point
     Point operator*(BigNumber& rhs);
+    // MUL Operator for Point * Point = Point
+    Point operator*(Point& rhs);
     // ADD Operator for Point + Point = Point
     Point operator+(Point &rhs);
     // Invert Operator for ~Point = Point
