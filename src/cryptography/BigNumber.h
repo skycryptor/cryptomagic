@@ -8,12 +8,13 @@
 #include "openssl/bn.h"
 #include "openssl/ec.h"
 #include "../Context.h"
+#include "../helpers/ErrorWrapper.h"
 
 namespace CryptoMagic {
   /**
    * Generic implementation for BigNumber actions
    */
-  class BigNumber {
+  class BigNumber : public ErrorWrapper {
    private:
     // OpenSSL bignumber parameter
     BIGNUM *bignum = nullptr;

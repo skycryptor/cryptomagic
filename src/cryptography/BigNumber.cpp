@@ -5,6 +5,7 @@
 #include "BigNumber.h"
 #include "iostream"
 #include <arpa/inet.h>
+#include "../defines.h"
 
 namespace CryptoMagic {
 
@@ -54,7 +55,8 @@ namespace CryptoMagic {
     bn.bignum = BN_new();
     int res = BN_rand_range(bn.bignum, bn.ec_order);
     if (res != 1) {
-      // TODO: make error handling!!
+      bn.setOpenSSLError(ERROR_BIGNUMBER_RANDOM_GENERATION);
+      return bn;
     }
 
     // if we got big number not inside EC group range let's try again
@@ -104,7 +106,7 @@ namespace CryptoMagic {
     bn.bignum = BN_new();
     int res = BN_mod_mul(bn.bignum, bignum, rhs.bignum, ec_order, bnCtx);
     if (res != 1) {
-      // TODO: make error handling!!
+      bn.setOpenSSLError(ERROR_BIGNUMBER_MUL);
     }
     return bn;
   }
@@ -126,8 +128,9 @@ namespace CryptoMagic {
     bn.bignum = BN_new();
     int res = BN_mod_add(bn.bignum, bignum, rhs.bignum, ec_order, bnCtx);
     if (res != 1) {
-      // TODO: make error handling!!
+      bn.setOpenSSLError(ERROR_BIGNUMBER_ADD);
     }
+
     return bn;
   }
 
@@ -136,8 +139,9 @@ namespace CryptoMagic {
     bn.bignum = BN_new();
     int res = BN_mod_sub(bn.bignum, bignum, rhs.bignum, ec_order, bnCtx);
     if (res != 1) {
-      // TODO: make error handling!!
+      bn.setOpenSSLError(ERROR_BIGNUMBER_SUBTRACK);
     }
+
     return bn;
   }
 
@@ -146,7 +150,7 @@ namespace CryptoMagic {
     bn.bignum = BN_new();
     int res = BN_nnmod(bn.bignum, bignum, rhs.bignum, bnCtx);
     if (res != 1) {
-      // TODO: make error handling!!
+      bn.setOpenSSLError(ERROR_BIGNUMBER_MODULUS);
     }
     return BigNumber(nullptr, nullptr);
   }

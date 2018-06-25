@@ -10,7 +10,7 @@ endif()
 
 include_directories(${OPENSSL_INCLUDE_DIR})
 
-add_library(${PROJECT_NAME} src/CryptoMagic.cpp src/CryptoMagic.h src/Context.cpp src/Context.h src/cryptography/EC.cpp src/cryptography/EC.h src/cryptography/BigNumber.cpp src/cryptography/BigNumber.h src/helpers/helpers.cpp src/helpers/helpers.h)
+add_library(${PROJECT_NAME} src/CryptoMagic.cpp src/CryptoMagic.h src/Context.cpp src/Context.h src/cryptography/EC.cpp src/cryptography/EC.h src/cryptography/BigNumber.cpp src/cryptography/BigNumber.h src/helpers/ErrorWrapper.cpp src/helpers/ErrorWrapper.h src/defines.h)
 target_link_libraries(${PROJECT_NAME} OpenSSL::Crypto)
 
 add_executable(mgic src/testing.cpp)
