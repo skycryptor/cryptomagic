@@ -36,6 +36,7 @@ namespace CryptoMagic {
 
    public:
     BigNumber(BIGNUM *bn, Context *ctx);
+    explicit BigNumber(Context *ctx) : BigNumber(nullptr, ctx) {}
     ~BigNumber();
 
     // Generate random BigNumber
