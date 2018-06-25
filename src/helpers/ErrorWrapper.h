@@ -24,6 +24,9 @@ namespace CryptoMagic {
     // Setting error from given CryptoMagic code and OpenSSL message
     void setOpenSSLError(int code);
 
+    // Setting error parameters from another error extended object
+    void setFromError(ErrorWrapper &err);
+
    public:
     ErrorWrapper() = default;
     virtual ~ErrorWrapper() = default;

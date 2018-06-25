@@ -20,7 +20,7 @@ namespace CryptoMagic {
     BIGNUM *bignum = nullptr;
     // Cryptographic context for big number operations
     // NOTE: this class not taking any ownership for this pointer
-    Context *ctx = nullptr;
+    Context *context = nullptr;
     // EC order
     BIGNUM *ec_order = nullptr;
     // BigNumber context for making OpenSSL BIGNUM operations
@@ -50,6 +50,10 @@ namespace CryptoMagic {
     string toHex();
     // Getting BIGNUM bytes from existing OpenSSL BIGNUM
     string toBytes();
+    // Getting reference to OpenSSL BIGNUM
+    BIGNUM *getRawBigNum();
+    // Getting reference to OpenSSL BN_CTX to make context based operations with it
+    BN_CTX *getRawBnCtx();
 
     // Checking if BigNumbers are equal
     bool operator==(const BigNumber& rhs);

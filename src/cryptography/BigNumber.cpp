@@ -12,8 +12,8 @@ namespace CryptoMagic {
   BIGNUM * BigNumber::BNZero = nullptr;
 
   BigNumber::BigNumber(BIGNUM *bn, Context *ctx) {
-    this->bignum = bn;
-    this->ctx = ctx;
+    bignum = bn;
+    context = ctx;
 
     // Making order out of EC
     ec_order = BN_new();
@@ -102,7 +102,7 @@ namespace CryptoMagic {
   }
 
   BigNumber BigNumber::operator*(const BigNumber &rhs) {
-    BigNumber bn(nullptr, ctx);
+    BigNumber bn(nullptr, context);
     bn.bignum = BN_new();
     int res = BN_mod_mul(bn.bignum, bignum, rhs.bignum, ec_order, bnCtx);
     if (res != 1) {
@@ -112,7 +112,7 @@ namespace CryptoMagic {
   }
 
   BigNumber BigNumber::operator~() {
-    BigNumber bn(nullptr, ctx);
+    BigNumber bn(nullptr, context);
     bn.bignum = BN_new();
     BN_mod_inverse(bn.bignum, bignum, ec_order, bnCtx);
     return bn;
@@ -124,7 +124,7 @@ namespace CryptoMagic {
   }
 
   BigNumber BigNumber::operator+(const BigNumber &rhs) {
-    BigNumber bn(nullptr, ctx);
+    BigNumber bn(nullptr, context);
     bn.bignum = BN_new();
     int res = BN_mod_add(bn.bignum, bignum, rhs.bignum, ec_order, bnCtx);
     if (res != 1) {
@@ -135,7 +135,7 @@ namespace CryptoMagic {
   }
 
   BigNumber BigNumber::operator-(const BigNumber &rhs) {
-    BigNumber bn(nullptr, ctx);
+    BigNumber bn(nullptr, context);
     bn.bignum = BN_new();
     int res = BN_mod_sub(bn.bignum, bignum, rhs.bignum, ec_order, bnCtx);
     if (res != 1) {
@@ -146,12 +146,20 @@ namespace CryptoMagic {
   }
 
   BigNumber BigNumber::operator%(const BigNumber &rhs) {
-    BigNumber bn(nullptr, ctx);
+    BigNumber bn(nullptr, context);
     bn.bignum = BN_new();
     int res = BN_nnmod(bn.bignum, bignum, rhs.bignum, bnCtx);
     if (res != 1) {
       bn.setOpenSSLError(ERROR_BIGNUMBER_MODULUS);
     }
     return BigNumber(nullptr, nullptr);
+  }
+
+  BIGNUM *BigNumber::getRawBigNum() {
+    return this->bignum;
+  }
+
+  BN_CTX *BigNumber::getRawBnCtx() {
+    return this->bnCtx;
   }
 }

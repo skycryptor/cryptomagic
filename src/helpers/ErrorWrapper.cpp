@@ -27,8 +27,15 @@ namespace CryptoMagic {
   void ErrorWrapper::setOpenSSLError(int code) {
     // setting message
     setOpenSSLErrorMessage();
-    this->has_error = true;
-    this->error_code = code;
+    has_error = true;
+    error_code = code;
+  }
+
+  void ErrorWrapper::setFromError(ErrorWrapper &err) {
+    error_code = err.error_code;
+    has_error = err.has_error;
+    openssl_error_code = err.openssl_error_code;
+    error_message = err.error_message;
   }
 
 }
