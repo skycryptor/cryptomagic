@@ -3,7 +3,7 @@
 //
 
 #include "Point.h"
-#include "../defines.h"
+#include "defines.h"
 
 namespace CryptoMagic {
 

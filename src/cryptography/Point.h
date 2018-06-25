@@ -6,9 +6,9 @@
 #define CRYPTOMAIC_POINT_H
 
 #include "BigNumber.h"
-#include "../Context.h"
+#include "Context.h"
 #include "openssl/ec.h"
-#include "../helpers/ErrorWrapper.h"
+#include "helpers/ErrorWrapper.h"
 
 namespace CryptoMagic {
 

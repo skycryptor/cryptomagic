@@ -5,7 +5,7 @@
 #include "BigNumber.h"
 #include "iostream"
 #include <arpa/inet.h>
-#include "../defines.h"
+#include "defines.h"
 
 namespace CryptoMagic {
 

@@ -7,8 +7,8 @@
 
 #include "openssl/bn.h"
 #include "openssl/ec.h"
-#include "../Context.h"
-#include "../helpers/ErrorWrapper.h"
+#include "Context.h"
+#include "helpers/ErrorWrapper.h"
 
 namespace CryptoMagic {
   /**
