@@ -42,9 +42,9 @@ namespace CryptoMagic {
     // Generate random BigNumber
     static BigNumber generate_random(Context *ctx);
     // Get BigNumber from integer
-    static BigNumber from_integer(int num, Context *ctx);
+    static BigNumber from_integer(unsigned long num, Context *ctx);
     // Get BigNumber from big endian ordered bytes
-    static BigNumber from_bytes(unsigned char *buffer, Context *ctx);
+    static BigNumber from_bytes(unsigned char *buffer, int len, Context *ctx);
 
     // Getting BigNumber as a string/byte array
     string toHex();
