@@ -13,6 +13,9 @@ namespace CryptoMagic {
     ec_nid = OBJ_txt2nid(elliptic_curve_name.c_str());
     if (ec_nid != 0) {
       ec_group = EC_GROUP_new_by_curve_name(ec_nid);
+      if (ec_group == NULL) {
+        ec_group = nullptr;
+      }
     }
   }
 

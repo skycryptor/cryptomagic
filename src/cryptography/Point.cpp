@@ -20,14 +20,19 @@ namespace CryptoMagic {
 
   Point Point::get_generator(Context *ctx) {
     Point p(ctx);
-    p.ec_point = (EC_POINT*)EC_GROUP_get0_generator(ctx->get_ec_group());
+    p.ec_point = EC_POINT_new(ctx->get_ec_group());
+    int res = EC_POINT_copy(p.ec_point, EC_GROUP_get0_generator(ctx->get_ec_group()));
+    if (res != 1) {
+      p.setOpenSSLError(ERROR_POINT_COPY);
+    }
+
     return p;
   }
 
   Point Point::generate_random(Context *ctx) {
     Point randP(ctx);
     Point g = Point::get_generator(ctx);
-    BigNumber randBN = BigNumber::generate_random(ctx);
+    BigNumber randBN = BigNumber::from_integer(10, ctx);
     if (randBN.hasError()) {
       randP.setFromError(randBN);
       return randP;

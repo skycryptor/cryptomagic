@@ -38,15 +38,18 @@ namespace CryptoMagic {
 
   BigNumber::~BigNumber() {
     if (bignum != nullptr) {
-      BN_free(bignum);
+      BN_clear_free(bignum);
+      bignum = nullptr;
     }
 
     if (ec_order != nullptr) {
-      BN_free(ec_order);
+      BN_clear_free(ec_order);
+      ec_order = nullptr;
     }
 
     if (bnCtx != nullptr) {
       BN_CTX_free(bnCtx);
+      bnCtx = nullptr;
     }
   }
 
