@@ -43,11 +43,11 @@ namespace CryptoMagic {
     virtual ~BigNumber();
 
     // Generate random BigNumber
-    static unique_ptr<BigNumber> generate_random(Context *ctx);
+    static BigNumber *generate_random(Context *ctx);
     // Get BigNumber from integer
-    static unique_ptr<BigNumber> from_integer(unsigned long num, Context *ctx);
+    static BigNumber *from_integer(unsigned long num, Context *ctx);
     // Get BigNumber from big endian ordered bytes
-    static unique_ptr<BigNumber> from_bytes(unsigned char *buffer, int len, Context *ctx);
+    static BigNumber *from_bytes(unsigned char *buffer, int len, Context *ctx);
 
     // Getting BigNumber as a string/byte array
     string toHex();
@@ -59,19 +59,32 @@ namespace CryptoMagic {
     BN_CTX *getRawBnCtx();
 
     // Checking if BigNumbers are equal
-    bool operator==(const BigNumber& rhs);
+    bool eq(BigNumber *bn2);
+    static bool eq(BigNumber *bn1, BigNumber *bn2);
+
     // MUL operator for BigNumbers, it returns another BigNumber as a result
-    BigNumber operator*(const BigNumber& rhs);
+    BigNumber *mul(BigNumber *bn2);
+    static BigNumber *mul(BigNumber *bn1, BigNumber *bn2);
+
     // Inverting current BigNumber and returning inverted one
-    BigNumber operator~();
+    BigNumber *inv();
+    static BigNumber *inv(BigNumber *bn);
+
     // DIV operator for BigNumbers, it returns another BigNumber as a result
-    BigNumber operator/(BigNumber& rhs);
+    BigNumber *div(BigNumber *bn2);
+    static BigNumber *div(BigNumber *bn1, BigNumber *bn2);
+
     // ADD operator implementation, it returns another BigNumber as a result
-    BigNumber operator+(const BigNumber& rhs);
+    BigNumber *add(BigNumber *bn2);
+    static BigNumber *add(BigNumber *bn1, BigNumber *bn2);
+
     // SUB operator implementation, it returns another BigNumber as a result
-    BigNumber operator-(const BigNumber& rhs);
+    BigNumber *sub(BigNumber *bn2);
+    static BigNumber *sub(BigNumber *bn1, BigNumber *bn2);
+
     // MOD operator implementation, it returns another BigNumber as a result
-    BigNumber operator%(const BigNumber& rhs);
+    BigNumber *mod(BigNumber *bn2);
+    static BigNumber *mod(BigNumber *bn1, BigNumber *bn2);
   };
 }
 

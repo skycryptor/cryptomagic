@@ -53,8 +53,8 @@ namespace CryptoMagic {
     }
   }
 
-  unique_ptr<BigNumber> BigNumber::generate_random(Context *ctx) {
-    unique_ptr<BigNumber> bn(new BigNumber(BN_new(), ctx));
+  BigNumber *BigNumber::generate_random(Context *ctx) {
+    auto bn = new BigNumber(BN_new(), ctx);
     int res = BN_rand_range(bn->bignum, bn->ec_order);
     if (res != 1) {
       bn->setOpenSSLError(ERROR_BIGNUMBER_RANDOM_GENERATION);
@@ -69,12 +69,12 @@ namespace CryptoMagic {
     return bn;
   }
 
-  unique_ptr<BigNumber> BigNumber::from_bytes(unsigned char *buffer, int len, Context *ctx) {
-    return unique_ptr<BigNumber>(new BigNumber(BN_bin2bn((const unsigned char*)&buffer, len, NULL), ctx));
+  BigNumber *BigNumber::from_bytes(unsigned char *buffer, int len, Context *ctx) {
+    return new BigNumber(BN_bin2bn((const unsigned char*)&buffer, len, NULL), ctx);
   }
 
-  unique_ptr<BigNumber> BigNumber::from_integer(unsigned long num, Context *ctx) {
-    unique_ptr<BigNumber> bn(new BigNumber(BN_new(), ctx));
+  BigNumber *BigNumber::from_integer(unsigned long num, Context *ctx) {
+    auto bn = new BigNumber(BN_new(), ctx);
     BN_set_word(bn->bignum, num);
     return bn;
   }
@@ -97,62 +97,122 @@ namespace CryptoMagic {
     return buffer;
   }
 
-  bool BigNumber::operator==(const BigNumber &rhs) {
-    return BN_cmp(bignum, rhs.bignum) == 0;
+  bool BigNumber::eq(BigNumber *bn2) {
+    return BN_cmp(bignum, bn2->bignum) == 0;
   }
 
-  BigNumber BigNumber::operator*(const BigNumber &rhs) {
-    BigNumber bn(nullptr, context);
-    bn.bignum = BN_new();
-    int res = BN_mod_mul(bn.bignum, bignum, rhs.bignum, ec_order, bnCtx);
+  bool BigNumber::eq(BigNumber *bn1, BigNumber *bn2) {
+    return BN_cmp(bn1->bignum, bn2->bignum) == 0;
+  }
+
+  BigNumber *BigNumber::mul(BigNumber *bn2) {
+    auto tmpBn = bignum;
+    bignum = BN_new();
+    int res = BN_mod_mul(bignum, tmpBn, bn2->bignum, ec_order, bnCtx);
     if (res != 1) {
-      bn.setOpenSSLError(ERROR_BIGNUMBER_MUL);
+      this->setOpenSSLError(ERROR_BIGNUMBER_MUL);
     }
+    BN_free(tmpBn);
+    return this;
+  }
+
+  BigNumber *BigNumber::mul(BigNumber *bn1, BigNumber *bn2) {
+    auto bn = new BigNumber(BN_new(), bn1->context);
+    int res = BN_mod_mul(bn->bignum, bn1->bignum, bn2->bignum, bn1->ec_order, bn1->bnCtx);
+    if (res != 1) {
+      bn->setOpenSSLError(ERROR_BIGNUMBER_MUL);
+    }
+
     return bn;
   }
 
-  BigNumber BigNumber::operator~() {
-    BigNumber bn(nullptr, context);
-    bn.bignum = BN_new();
-    BN_mod_inverse(bn.bignum, bignum, ec_order, bnCtx);
-    return bn;
+  BigNumber * BigNumber::inv() {
+    auto tmpBn = bignum;
+    bignum = BN_new();
+    BN_mod_inverse(bignum, tmpBn, ec_order, bnCtx);
+    BN_free(tmpBn);
+    return this;
   }
 
-  BigNumber BigNumber::operator/(BigNumber &rhs) {
+  BigNumber *BigNumber::inv(BigNumber *bn) {
+    auto bn2 = new BigNumber(BN_new(), bn->context);
+    BN_mod_inverse(bn2->bignum, bn->bignum, bn->ec_order, bn->bnCtx);
+    return bn2;
+  }
+
+  BigNumber * BigNumber::div(BigNumber* bn2) {
+    auto tmpInv = BigNumber::inv(bn2);
     // inverting and multiplying to get div
-    return (*this) * (~rhs);
+    this->mul(tmpInv);
+    delete tmpInv;
+    return this;
   }
 
-  BigNumber BigNumber::operator+(const BigNumber &rhs) {
-    BigNumber bn(nullptr, context);
-    bn.bignum = BN_new();
-    int res = BN_mod_add(bn.bignum, bignum, rhs.bignum, ec_order, bnCtx);
-    if (res != 1) {
-      bn.setOpenSSLError(ERROR_BIGNUMBER_ADD);
-    }
-
+  BigNumber *BigNumber::div(BigNumber* bn1, BigNumber* bn2) {
+    auto tmpInv = BigNumber::inv(bn2);
+    auto bn = BigNumber::mul(bn1, tmpInv);
+    delete tmpInv;
     return bn;
   }
 
-  BigNumber BigNumber::operator-(const BigNumber &rhs) {
-    BigNumber bn(nullptr, context);
-    bn.bignum = BN_new();
-    int res = BN_mod_sub(bn.bignum, bignum, rhs.bignum, ec_order, bnCtx);
+  BigNumber * BigNumber::add(BigNumber *bn2) {
+    auto tmpBn = bignum;
+    bignum = BN_new();
+    int res = BN_mod_add(bignum, tmpBn, bn2->bignum, ec_order, bnCtx);
     if (res != 1) {
-      bn.setOpenSSLError(ERROR_BIGNUMBER_SUBTRACK);
+      this->setOpenSSLError(ERROR_BIGNUMBER_ADD);
     }
+    BN_free(tmpBn);
+    return this;
+  }
 
+  BigNumber *BigNumber::add(BigNumber *bn1, BigNumber *bn2) {
+    auto bn = new BigNumber(BN_new(), bn1->context);
+    int res = BN_mod_add(bn->bignum, bn1->bignum, bn2->bignum, bn1->ec_order, bn1->bnCtx);
+    if (res != 1) {
+      bn->setOpenSSLError(ERROR_BIGNUMBER_ADD);
+    }
     return bn;
   }
 
-  BigNumber BigNumber::operator%(const BigNumber &rhs) {
-    BigNumber bn(nullptr, context);
-    bn.bignum = BN_new();
-    int res = BN_nnmod(bn.bignum, bignum, rhs.bignum, bnCtx);
+  BigNumber * BigNumber::sub(BigNumber *bn2) {
+    auto tmpBn = bignum;
+    bignum = BN_new();
+    int res = BN_mod_sub(bignum, tmpBn, bn2->bignum, ec_order, bnCtx);
     if (res != 1) {
-      bn.setOpenSSLError(ERROR_BIGNUMBER_MODULUS);
+      this->setOpenSSLError(ERROR_BIGNUMBER_SUBTRACK);
     }
-    return BigNumber(nullptr, nullptr);
+    BN_free(tmpBn);
+    return this;
+  }
+
+  BigNumber *BigNumber::sub(BigNumber *bn1, BigNumber *bn2) {
+    auto bn = new BigNumber(BN_new(), bn1->context);
+    int res = BN_mod_sub(bn->bignum, bn1->bignum, bn2->bignum, bn1->ec_order, bn1->bnCtx);
+    if (res != 1) {
+      bn->setOpenSSLError(ERROR_BIGNUMBER_SUBTRACK);
+    }
+    return bn;
+  }
+
+  BigNumber * BigNumber::mod(BigNumber *bn2) {
+    auto tmpBn = bignum;
+    bignum = BN_new();
+    int res = BN_nnmod(bignum, tmpBn, bn2->bignum, bnCtx);
+    if (res != 1) {
+      this->setOpenSSLError(ERROR_BIGNUMBER_MODULUS);
+    }
+    BN_free(tmpBn);
+    return this;
+  }
+
+  BigNumber *BigNumber::mod(BigNumber *bn1, BigNumber *bn2) {
+    auto bn = new BigNumber(BN_new(), bn1->context);
+    int res = BN_nnmod(bn->bignum, bn1->bignum, bn2->bignum, bn1->bnCtx);
+    if (res != 1) {
+      bn->setOpenSSLError(ERROR_BIGNUMBER_MODULUS);
+    }
+    return bn;
   }
 
   BIGNUM *BigNumber::getRawBigNum() {
@@ -166,4 +226,5 @@ namespace CryptoMagic {
     this->bnCtx = BN_CTX_new();
     return this->bnCtx;
   }
+
 }
