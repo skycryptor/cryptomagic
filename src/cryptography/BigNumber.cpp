@@ -38,12 +38,12 @@ namespace CryptoMagic {
 
   BigNumber::~BigNumber() {
     if (bignum != nullptr) {
-      BN_clear_free(bignum);
+      BN_free(bignum);
       bignum = nullptr;
     }
 
     if (ec_order != nullptr) {
-      BN_clear_free(ec_order);
+      BN_free(ec_order);
       ec_order = nullptr;
     }
 
@@ -53,30 +53,29 @@ namespace CryptoMagic {
     }
   }
 
-  BigNumber BigNumber::generate_random(Context *ctx) {
-    BigNumber bn(nullptr, ctx);
-    bn.bignum = BN_new();
-    int res = BN_rand_range(bn.bignum, bn.ec_order);
+  unique_ptr<BigNumber> BigNumber::generate_random(Context *ctx) {
+    unique_ptr<BigNumber> bn(new BigNumber(BN_new(), ctx));
+    int res = BN_rand_range(bn->bignum, bn->ec_order);
     if (res != 1) {
-      bn.setOpenSSLError(ERROR_BIGNUMBER_RANDOM_GENERATION);
+      bn->setOpenSSLError(ERROR_BIGNUMBER_RANDOM_GENERATION);
       return bn;
     }
 
     // if we got big number not inside EC group range let's try again
-    if (!bn.isFromECGroup()) {
+    if (!bn->isFromECGroup()) {
       return BigNumber::generate_random(ctx);
     }
 
     return bn;
   }
 
-  BigNumber BigNumber::from_bytes(unsigned char *buffer, int len, Context *ctx) {
-    return BigNumber(BN_bin2bn((const unsigned char*)&buffer, len, NULL), ctx);
+  unique_ptr<BigNumber> BigNumber::from_bytes(unsigned char *buffer, int len, Context *ctx) {
+    return unique_ptr<BigNumber>(new BigNumber(BN_bin2bn((const unsigned char*)&buffer, len, NULL), ctx));
   }
 
-  BigNumber BigNumber::from_integer(unsigned long num, Context *ctx) {
-    BigNumber bn(BN_new(), ctx);
-    BN_set_word(bn.bignum, num);
+  unique_ptr<BigNumber> BigNumber::from_integer(unsigned long num, Context *ctx) {
+    unique_ptr<BigNumber> bn(new BigNumber(BN_new(), ctx));
+    BN_set_word(bn->bignum, num);
     return bn;
   }
 
@@ -161,6 +160,10 @@ namespace CryptoMagic {
   }
 
   BN_CTX *BigNumber::getRawBnCtx() {
+    if (this->bnCtx != nullptr) {
+      BN_CTX_free(this->bnCtx);
+    }
+    this->bnCtx = BN_CTX_new();
     return this->bnCtx;
   }
 }

@@ -5,10 +5,13 @@
 #ifndef CRYPTOMAIC_BIGNUMBER_H
 #define CRYPTOMAIC_BIGNUMBER_H
 
+#include "memory"
 #include "openssl/bn.h"
 #include "openssl/ec.h"
 #include "Context.h"
 #include "helpers/ErrorWrapper.h"
+
+using std::unique_ptr;
 
 namespace CryptoMagic {
   /**
@@ -37,14 +40,14 @@ namespace CryptoMagic {
    public:
     BigNumber(BIGNUM *bn, Context *ctx);
     explicit BigNumber(Context *ctx) : BigNumber(nullptr, ctx) {}
-    ~BigNumber();
+    virtual ~BigNumber();
 
     // Generate random BigNumber
-    static BigNumber generate_random(Context *ctx);
+    static unique_ptr<BigNumber> generate_random(Context *ctx);
     // Get BigNumber from integer
-    static BigNumber from_integer(unsigned long num, Context *ctx);
+    static unique_ptr<BigNumber> from_integer(unsigned long num, Context *ctx);
     // Get BigNumber from big endian ordered bytes
-    static BigNumber from_bytes(unsigned char *buffer, int len, Context *ctx);
+    static unique_ptr<BigNumber> from_bytes(unsigned char *buffer, int len, Context *ctx);
 
     // Getting BigNumber as a string/byte array
     string toHex();

@@ -30,10 +30,13 @@ namespace CryptoMagic {
     // Generating random point for context based Elliptic curve
     static Point generate_random(Context *ctx);
 
+    // Getting BigNumber as a string/byte array
+    string toHex();
+
     // Equality operator for Point == Point
     bool operator==(Point& rhs);
     // MUL Operator for Point * BigNumber = Point
-    Point operator*(BigNumber& rhs);
+    Point mul(BigNumber *rhs);
     // MUL Operator for Point * Point = Point
     Point operator*(Point& rhs);
     // ADD Operator for Point + Point = Point

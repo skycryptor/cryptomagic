@@ -8,7 +8,10 @@
 namespace CryptoMagic {
 
   Point::Point(EC_POINT *point, Context *ctx) {
-    ec_point = point;
+    if (point == nullptr) {
+      ec_point = EC_POINT_new(ctx->get_ec_group());
+    }
+
     context = ctx;
   }
 
@@ -32,13 +35,21 @@ namespace CryptoMagic {
   Point Point::generate_random(Context *ctx) {
     Point randP(ctx);
     Point g = Point::get_generator(ctx);
-    BigNumber randBN = BigNumber::from_integer(10, ctx);
-    if (randBN.hasError()) {
-      randP.setFromError(randBN);
+    auto randBN = BigNumber::generate_random(ctx);
+    if (randBN->hasError()) {
+      randP.setFromError(*randBN);
       return randP;
     }
 
-    return g * randBN;
+    return g;
+  }
+
+  string Point::toHex() {
+    BigNumber bn(context);
+    char *hexStr = EC_POINT_point2hex(context->get_ec_group(), ec_point, POINT_CONVERSION_UNCOMPRESSED, bn.getRawBnCtx());
+    string hex = string(hexStr);
+    delete hexStr;
+    return hex;
   }
 
   bool Point::operator==(Point &rhs) {
@@ -47,13 +58,13 @@ namespace CryptoMagic {
     return res == 0;
   }
 
-  Point Point::operator*(BigNumber &rhs) {
+  Point Point::mul(BigNumber *rhs) {
     Point p(context);
-    p.ec_point = EC_POINT_new(context->get_ec_group());
-    int res = EC_POINT_mul(context->get_ec_group(), p.ec_point, NULL, ec_point, rhs.getRawBigNum(), rhs.getRawBnCtx());
-    if (res != 1) {
-      p.setOpenSSLError(ERROR_POINT_MUL);
-    }
+//    p.ec_point = EC_POINT_new(context->get_ec_group());
+//    int res = EC_POINT_mul(context->get_ec_group(), p.ec_point, NULL, ec_point, rhs->getRawBigNum(), rhs->getRawBnCtx());
+//    if (res != 1) {
+//      p.setOpenSSLError(ERROR_POINT_MUL);
+//    }
 
     return p;
   }
@@ -92,11 +103,11 @@ namespace CryptoMagic {
     return (*this) + p;
   }
 
-  Point Point::operator*(Point &rhs) {
-    BigNumber bn(BN_new(), context);
-    EC_POINT_point2bn(context->get_ec_group(), ec_point, POINT_CONVERSION_UNCOMPRESSED, bn.getRawBigNum(), bn.getRawBnCtx());
-    return rhs * bn;
-  }
+//  Point Point::operator*(Point &rhs) {
+//    BigNumber bn(BN_new(), context);
+//    EC_POINT_point2bn(context->get_ec_group(), ec_point, POINT_CONVERSION_UNCOMPRESSED, bn.getRawBigNum(), bn.getRawBnCtx());
+//    return rhs * bn;
+//  }
 
 }
 
