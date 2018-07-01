@@ -12,41 +12,38 @@ using namespace CryptoMagic;
 
 TEST_CASE( "BigNumber from_integer" ) {
   int i = 0;
-  while (i < 20000000) {
-    Context ctx = Context::getDefault();
-    auto bn1 = BigNumber::from_integer(5, &ctx);
-    auto bn2 = BigNumber::from_integer(5, &ctx);
-    auto bn3 = BigNumber::from_integer(10, &ctx);
-    auto bn4 = BigNumber::from_integer(25, &ctx);
-    auto bn5 = BigNumber::from_integer(50, &ctx);
+  Context ctx = Context::getDefault();
+  auto bn1 = BigNumber::from_integer(5, &ctx);
+  auto bn2 = BigNumber::from_integer(5, &ctx);
+  auto bn3 = BigNumber::from_integer(10, &ctx);
+  auto bn4 = BigNumber::from_integer(25, &ctx);
+  auto bn5 = BigNumber::from_integer(50, &ctx);
 
-    REQUIRE( bn1->eq(bn2) );
-    REQUIRE( bn1->add(bn2)->eq(bn3) );
-    REQUIRE( bn2->mul(bn3)->eq(bn5) );
-    REQUIRE( bn2->div(bn3)->eq(bn1->sub(bn2)) );
+  REQUIRE( bn1->eq(bn2) );
+  REQUIRE( bn1->add(bn2)->eq(bn3) );
+  REQUIRE( bn2->mul(bn3)->eq(bn5) );
+  REQUIRE( bn2->div(bn3)->eq(bn1->sub(bn2)) );
 
-    delete bn1;
-    delete bn2;
-    delete bn3;
-    delete bn4;
-    delete bn5;
-
-    i++;
-  }
+  delete bn1;
+  delete bn2;
+  delete bn3;
+  delete bn4;
+  delete bn5;
 }
 
-//TEST_CASE( "BigNumber and Point actions" ) {
-//  while (1) {
-//    Context ctx = Context::getDefault();
-//    auto bn1 = BigNumber::from_integer(1, &ctx);
-//    Point p1 = Point::generate_random(&ctx);
-//    if (p1.hasError()) {
-//      cout << p1.getErrorMessage() << endl;
-//    }
-//
-//    REQUIRE( (p1.mul(bn1.get()) == p1) );
-//  }
-//}
+TEST_CASE( "BigNumber and Point actions" ) {
+  Context ctx = Context::getDefault();
+  auto bn1 = BigNumber::from_integer(1, &ctx);
+  auto p1 = Point::generate_random(&ctx);
+  if (p1->hasError()) {
+    cout << p1->getErrorMessage() << endl;
+  }
+
+  REQUIRE( p1->mul(bn1)->eq(p1) );
+
+  delete p1;
+  delete bn1;
+}
 
 //TEST_CASE( "Testing invert function for BigNumber class" ) {
 //  Context ctx = Context::getDefault();

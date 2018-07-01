@@ -26,25 +26,36 @@ namespace CryptoMagic {
     ~Point();
 
     // Getting Generator Point from provided context based Elliptic curve
-    static Point get_generator(Context *ctx);
+    static Point *get_generator(Context *ctx);
     // Generating random point for context based Elliptic curve
-    static Point generate_random(Context *ctx);
+    static Point *generate_random(Context *ctx);
 
     // Getting BigNumber as a string/byte array
     string toHex();
 
     // Equality operator for Point == Point
-    bool operator==(Point& rhs);
+    bool eq(Point *p2);
+    static bool eq(Point *p1, Point *p2);
+
     // MUL Operator for Point * BigNumber = Point
-    Point mul(BigNumber *rhs);
+    Point *mul(BigNumber *bn);
+    static Point *mul(Point *p, BigNumber *bn);
+
     // MUL Operator for Point * Point = Point
-    Point operator*(Point& rhs);
+    Point *mul(Point *p2);
+    static Point *mul(Point *p, Point *p2);
+
     // ADD Operator for Point + Point = Point
-    Point operator+(Point &rhs);
+    Point *add(Point *p2);
+    static Point *add(Point *p1, Point *p2);
+
     // Invert Operator for ~Point = Point
-    Point operator~();
+    Point *inv();
+    static Point *inv(Point *p2);
+
     // SUB operator for Point - Point = Point
-    Point operator-(Point& rhs);
+    Point *sub(Point *p2);
+    static Point *sub(Point *p1, Point *p2);
   };
 
 }

@@ -63,6 +63,7 @@ namespace CryptoMagic {
 
     // if we got big number not inside EC group range let's try again
     if (!bn->isFromECGroup()) {
+      delete bn;
       return BigNumber::generate_random(ctx);
     }
 
@@ -102,7 +103,7 @@ namespace CryptoMagic {
   }
 
   bool BigNumber::eq(BigNumber *bn1, BigNumber *bn2) {
-    return BN_cmp(bn1->bignum, bn2->bignum) == 0;
+    return bn1->eq(bn2);
   }
 
   BigNumber *BigNumber::mul(BigNumber *bn2) {
