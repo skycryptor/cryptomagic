@@ -45,32 +45,39 @@ TEST_CASE( "BigNumber and Point actions" ) {
   delete bn1;
 }
 
-//TEST_CASE( "Testing invert function for BigNumber class" ) {
-//  Context ctx = Context::getDefault();
-//  BigNumber *bn1 = BigNumber::from_integer(1, &ctx);
-//  BigNumber *bn2 = BigNumber::generate_random(&ctx);
-//  auto bn3 = ~(*bn2);
-//  auto bn4 = (*bn2) * bn3;
-//
-//  REQUIRE( (bn4 == (*bn1)) );
-//  delete bn1;
-//  delete bn2;
-//}
-//
-//TEST_CASE( "Testing DH Key exchange" ) {
-//  Context ctx = Context::getDefault();
-//  auto g = Point::get_generator(&ctx);
-//  auto *aSK = BigNumber::generate_random(&ctx);
-//  auto *bSK = BigNumber::generate_random(&ctx);
-//  auto aPK = g * *aSK;
-//  auto bPK = g * *bSK;
-//  auto SK1 = bPK * *aSK;
-//  auto SK2 = aPK * *bSK;
-//
-//  cout << "SK1: " << SK1.toHex() << "\nSK2: " << SK2.toHex() << endl;
-//
-//  REQUIRE( (SK1 == SK2) );
-//}
+TEST_CASE( "Testing invert function for BigNumber class" ) {
+  Context ctx = Context::getDefault();
+  auto bn1 = BigNumber::from_integer(1, &ctx);
+  auto bn2 = BigNumber::generate_random(&ctx);
+  auto bn3 = BigNumber::inv(bn2);
+  auto bn4 = BigNumber::mul(bn2, bn3);
+
+  REQUIRE( bn4->eq(bn1) );
+  delete bn1;
+  delete bn2;
+  delete bn3;
+  delete bn4;
+}
+
+TEST_CASE( "Testing DH Key exchange" ) {
+  Context ctx = Context::getDefault();
+  auto g = Point::get_generator(&ctx);
+  auto *aSK = BigNumber::generate_random(&ctx);
+  auto *bSK = BigNumber::generate_random(&ctx);
+  auto aPK = Point::mul(g, aSK);
+  auto bPK = Point::mul(g, bSK);
+  auto SK1 = bPK->mul(aSK);
+  auto SK2 = aPK->mul(bSK);
+
+  cout << "SK1: " << bPK->toHex() << "\nSK2: " << aPK->toHex() << endl;
+
+  REQUIRE( aPK->eq(bPK) );
+  delete g;
+  delete aSK;
+  delete bSK;
+  delete SK1;
+  delete SK2;
+}
 
 // Hash function for BN and Point
 // BigNumber -> Point, Point -> BigNumber convert functions
