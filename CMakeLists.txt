@@ -10,9 +10,9 @@ if(OPENSSL_FOUND)
     set(OPENSSL_USE_STATIC_LIBS TRUE)
 endif()
 
-include_directories(${OPENSSL_INCLUDE_DIR} src include)
+include_directories(${OPENSSL_INCLUDE_DIR} src src/include include)
 
-set(CRYPTOMAGIC_SOURCES src/CryptoMagic.cpp src/CryptoMagic.h src/Context.cpp src/Context.h src/cryptography/EC.cpp src/cryptography/EC.h src/cryptography/BigNumber.cpp src/cryptography/BigNumber.h src/helpers/ErrorWrapper.cpp src/helpers/ErrorWrapper.h src/defines.h src/cryptography/Point.cpp src/cryptography/Point.h)
+set(CRYPTOMAGIC_SOURCES src/CryptoMagic.cpp src/include/CryptoMagic.h src/Context.cpp src/include/Context.h src/EC.cpp src/include/EC.h src/BigNumber.cpp src/include/BigNumber.h src/ErrorWrapper.cpp src/include/ErrorWrapper.h src/include/defines.h src/Point.cpp src/include/Point.h src/include/BigNumberRaw.h src/BigNumberRaw.cpp)
 
 add_library(${PROJECT_NAME} ${CRYPTOMAGIC_SOURCES})
 target_link_libraries(${PROJECT_NAME} OpenSSL::Crypto)

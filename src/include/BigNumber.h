@@ -9,25 +9,26 @@
 #include "openssl/bn.h"
 #include "openssl/ec.h"
 #include "Context.h"
-#include "helpers/ErrorWrapper.h"
+#include "ErrorWrapper.h"
+#include "BigNumberRaw.h"
 
 using std::unique_ptr;
 
 namespace CryptoMagic {
+
   /**
    * Generic implementation for BigNumber actions
    */
   class BigNumber : public ErrorWrapper {
    private:
-    // OpenSSL bignumber parameter
-    BIGNUM *bignum = nullptr;
+
     // Cryptographic context for big number operations
     // NOTE: this class not taking any ownership for this pointer
     Context *context = nullptr;
-    // EC order
-    BIGNUM *ec_order = nullptr;
-    // BigNumber context for making OpenSSL BIGNUM operations
-    BN_CTX *bnCtx = nullptr;
+
+    // Shared pointer for raw big number implementation
+    // This is based on specific Crypto backend choosed compile time
+    shared_ptr<BigNumberRaw> bn_raw = std::make_shared(new BigNumberRaw());
 
     // keeping zero bignum initiated and allocated for later usage
     // this will be created on first BigNumber constructor work at any time
@@ -35,12 +36,12 @@ namespace CryptoMagic {
     static BIGNUM *BNZero;
 
     // checking if number is in current EC group
-    bool isFromECGroup();
+    bool isFromECGroup() const;
 
    public:
     BigNumber(BIGNUM *bn, Context *ctx);
     explicit BigNumber(Context *ctx) : BigNumber(nullptr, ctx) {}
-    virtual ~BigNumber();
+    virtual ~BigNumber() = default;
 
     // Generate random BigNumber
     static BigNumber *generate_random(Context *ctx);
@@ -51,40 +52,39 @@ namespace CryptoMagic {
 
     // Getting BigNumber as a string/byte array
     string toHex();
-    // Getting BIGNUM bytes from existing OpenSSL BIGNUM
-    string toBytes();
+
+    // Doxygen.
+    /** \brief Getting BIGNUM bytes from existing OpenSSL BIGNUM
+     * @param[out] result_out Serialized string to fill up.
+     * @return nothing.
+     */
+    void toBytes(string& result_out);
+
     // Getting reference to OpenSSL BIGNUM
     BIGNUM *getRawBigNum();
     // Getting reference to OpenSSL BN_CTX to make context based operations with it
     BN_CTX *getRawBnCtx();
 
     // Checking if BigNumbers are equal
-    bool eq(BigNumber *bn2);
-    static bool eq(BigNumber *bn1, BigNumber *bn2);
+    bool operator==(const BigNumber& other) const;
 
     // MUL operator for BigNumbers, it returns another BigNumber as a result
-    BigNumber *mul(BigNumber *bn2);
-    static BigNumber *mul(BigNumber *bn1, BigNumber *bn2);
+    BigNumber operator*(const BigNumber& other);
 
     // Inverting current BigNumber and returning inverted one
-    BigNumber *inv();
-    static BigNumber *inv(BigNumber *bn);
+    BigNumber operator~() const;
 
     // DIV operator for BigNumbers, it returns another BigNumber as a result
-    BigNumber *div(BigNumber *bn2);
-    static BigNumber *div(BigNumber *bn1, BigNumber *bn2);
+    BigNumber operator/(const BigNumber& other);
 
     // ADD operator implementation, it returns another BigNumber as a result
-    BigNumber *add(BigNumber *bn2);
-    static BigNumber *add(BigNumber *bn1, BigNumber *bn2);
+    BigNumber operator+(const BigNumber& other);
 
     // SUB operator implementation, it returns another BigNumber as a result
-    BigNumber *sub(BigNumber *bn2);
-    static BigNumber *sub(BigNumber *bn1, BigNumber *bn2);
+    BigNumber operator-(const BigNumber& other);
 
     // MOD operator implementation, it returns another BigNumber as a result
-    BigNumber *mod(BigNumber *bn2);
-    static BigNumber *mod(BigNumber *bn1, BigNumber *bn2);
+    BigNumber operator%(const BigNumber& other);
   };
 }
 
