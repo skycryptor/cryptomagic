@@ -2,11 +2,13 @@
 #define CRYPTOMAGIC_CRYPTOMAGIC_H
 
 #include "Context.h"
+#include "Point.h"
+#include <openssl/evp.h>
 
 namespace CryptoMagic {
 
   /**
-   * CryptoMagic base class for handling library crypto operations and main functionality
+   * \brief CryptoMagic base class for handling library crypto operations and main functionality
    * Each initialized CryptoMagic object should contain Context which will define
    * base parameters for crypto operations and configurations
    */
@@ -18,7 +20,7 @@ namespace CryptoMagic {
    public:
     CryptoMagic() = default;
     /**
-     * Making CryptoMagic object with defined context
+     * \brief Making CryptoMagic object with defined context
      * @param ctx
      */
     explicit CryptoMagic(Context ctx);
@@ -28,7 +30,7 @@ namespace CryptoMagic {
     Context *getContext();
 
     /**
-     *  Setting context for this CryptoMagic object
+     * \brief Setting context for this CryptoMagic object
      *  NOTE: crypto operations will start receiving this context parameters after calling this setter function
      * @param ctx
      */

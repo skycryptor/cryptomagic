@@ -41,4 +41,19 @@ namespace CryptoMagic {
     return Context("secp256k1");
   }
 
+  unsigned int Context::get_key_length() {
+    return key_length;
+  }
+
+  void Context::set_key_length(unsigned int len) {
+    key_length = len;
+  }
+
+  unsigned int Context::get_iteration_count() {
+    return iteration_count;
+  }
+
+  void Context::get_iteration_count(unsigned int iter) {
+    iteration_count = iter;
+  }
 }

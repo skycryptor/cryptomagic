@@ -4,6 +4,7 @@
 
 #include "Point.h"
 #include "defines.h"
+#include "helpers.h"
 
 namespace CryptoMagic {
 
@@ -41,12 +42,29 @@ namespace CryptoMagic {
     return g * randBN;
   }
 
-  string Point::toHex() const {
+  string Point::toBytes() const {
     BigNumber bn(context);
     char *hexStr = EC_POINT_point2hex(context->get_ec_group(), point_raw->get_ec_point(), POINT_CONVERSION_UNCOMPRESSED, bn.getRawBnCtx());
     string s(hexStr);
     delete hexStr;
     return s;
+  }
+
+  Point Point::from_bytes(const string &bytes, Context *ctx) {
+    BigNumber bn(ctx);
+    Point p(EC_POINT_new(ctx->get_ec_group()), ctx);
+    EC_POINT_hex2point(ctx->get_ec_group(), bytes.c_str(), p.point_raw->get_ec_point(), bn.getRawBnCtx());
+    return p;
+  }
+
+  string Point::hash(Context *ctx, vector<Point>& points) {
+    vector<string> point_hashes;
+    point_hashes.reserve(points.size());
+    for(auto &p : points) {
+      point_hashes.push_back(p.toBytes());
+    }
+
+    return HASH(ctx, point_hashes);
   }
 
   BigNumber Point::toBigNumber() {

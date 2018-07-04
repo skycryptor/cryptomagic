@@ -149,14 +149,14 @@ namespace CryptoMagic {
     BigNumber operator/(const BigNumber& other);
 
     /**
-     * ADD operator implementation: BigNumber + BigNumber = BigNumber
+     * \brief ADD operator implementation: BigNumber + BigNumber = BigNumber
      * @param other
      * @return
      */
     BigNumber operator+(const BigNumber& other);
 
     /**
-     * SUB operator implementation: BigNumber - BigNumber = BigNumber
+     * \brief SUB operator implementation: BigNumber - BigNumber = BigNumber
      * @param other
      * @return
      */

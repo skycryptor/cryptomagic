@@ -6,6 +6,7 @@
 #define CRYPTOMAIC_POINT_H
 
 #include "memory"
+#include "vector"
 #include "BigNumber.h"
 #include "PointRaw.h"
 #include "Context.h"
@@ -13,11 +14,14 @@
 
 using std::shared_ptr;
 using std::make_shared;
+using std::vector;
 
 namespace CryptoMagic {
   class BigNumber;
 
-  // Elliptic curve Point class implementation based on OpenSSL EC_POINT interface
+  /**
+   * \brief Elliptic curve Point class implementation based on OpenSSL EC_POINT interface
+   */
   class Point: public ErrorWrapper {
    private:
     shared_ptr<PointRaw> point_raw = make_shared<PointRaw>();
@@ -27,7 +31,7 @@ namespace CryptoMagic {
 
    public:
     /**
-     * Making Point object out of given raw point and Context
+     * \brief Making Point object out of given raw point and Context
      * NOTE: raw could be NULL, and then defined later on
      * @param point
      * @param ctx
@@ -35,79 +39,96 @@ namespace CryptoMagic {
     Point(EC_POINT *point, Context *ctx);
     explicit Point(Context *ctx) : Point(nullptr, ctx) {};
     /**
-     * Copying existing point
+     * \brief Copying existing point
      * @param p
      */
     Point(const Point& p);
     virtual ~Point() = default;
 
     /**
-     * Getting raw point for using raw values defined in encryption backend
+     * \brief Getting raw point for using raw values defined in encryption backend
      * @return
      */
     shared_ptr<PointRaw> get_point_raw() const;
 
     /**
-     * Getting Generator Point from provided context based Elliptic curve
+     * \brief Getting Generator Point from provided context based Elliptic curve
      * @param ctx
      * @return
      */
     static Point get_generator(Context *ctx);
 
     /**
-     * Generating random point for context based Elliptic curve
+     * \brief Converting serialized bytes to Point object
+     * NOTE: Serialization is done using Point -> Hex conversation
+     * @param bytes
+     * @return
+     */
+    static Point from_bytes(const string& bytes, Context *ctx);
+
+    /**
+     * \brief Generating random point for context based Elliptic curve
      * @param ctx
      * @return
      */
     static Point generate_random(Context *ctx);
 
     /**
-     * Getting BigNumber as a string/byte array
+     * \brief Hashing our Point object as a BigNumber
+     * @param ctx crypto context for hashing
+     * @param points vector of points to be hashed
+     * @param ...
      * @return
      */
-    string toHex() const;
+    static string hash(Context *ctx, vector<Point>& points);
 
     /**
-     * Converting Point to BigNumber
+     * \brief Getting bytes from our Point object
+     * @return
+     */
+    string toBytes() const;
+
+    /**
+     * \brief Converting Point to BigNumber
      * @return
      */
     BigNumber toBigNumber();
 
     /**
-     * Equality operator for Point == Point
+     * \brief Equality operator for Point == Point
      * @param other
      * @return
      */
     bool operator==(const Point& other) const;
 
     /**
-     * MUL Operator for Point * BigNumber = Point
+     * \brief MUL Operator for Point * BigNumber = Point
      * @param other
      * @return
      */
     Point operator*(const BigNumber& other) const;
     /**
-     * MUL Operator for Point * Point = Point
+     * \brief MUL Operator for Point * Point = Point
      * @param other
      * @return
      */
     Point operator*(const Point& other) const;
 
     /**
-     * ADD Operator for Point + Point = Point
+     * \brief ADD Operator for Point + Point = Point
      * @param other
      * @return
      */
     Point operator+(const Point& other) const;
 
     /**
-     * Invert Operator for ~Point = Point
+     * \brief Invert Operator for ~Point = Point
      * @return
      */
     Point operator~() const;
 
     /**
-     * SUB operator for Point - Point = Point
+     * \brief SUB operator for Point - Point = Point
      * @param other
      * @return
      */
