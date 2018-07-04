@@ -44,11 +44,11 @@ namespace CryptoMagic {
     virtual ~BigNumber() = default;
 
     // Generate random BigNumber
-    static BigNumber *generate_random(Context *ctx);
+    static BigNumber generate_random(Context *ctx) const;
     // Get BigNumber from integer
-    static BigNumber *from_integer(unsigned long num, Context *ctx);
+    static BigNumber from_integer(unsigned long num, Context *ctx) const;
     // Get BigNumber from big endian ordered bytes
-    static BigNumber *from_bytes(unsigned char *buffer, int len, Context *ctx);
+    static BigNumber from_bytes(unsigned char *buffer, int len, Context *ctx) const;
 
     // Getting BigNumber as a string/byte array
     string toHex();
@@ -61,9 +61,9 @@ namespace CryptoMagic {
     void toBytes(string& result_out);
 
     // Getting reference to OpenSSL BIGNUM
-    BIGNUM *getRawBigNum();
+    BIGNUM *getRawBigNum() const;
     // Getting reference to OpenSSL BN_CTX to make context based operations with it
-    BN_CTX *getRawBnCtx();
+    BN_CTX *getRawBnCtx() const;
 
     // Checking if BigNumbers are equal
     bool operator==(const BigNumber& other) const;

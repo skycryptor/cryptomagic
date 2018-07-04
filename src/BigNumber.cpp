@@ -35,16 +35,16 @@ namespace CryptoMagic {
     }
   }
 
-  BigNumber *BigNumber::generate_random(Context *ctx) {
-    auto bn = new BigNumber(BN_new(), ctx);
-    int res = BN_rand_range(bn->bn_raw->get_bignum(), bn->bn_raw->get_ec_order());
+  BigNumber BigNumber::generate_random(Context *ctx) const {
+    BigNumber bn(BN_new(), ctx);
+    int res = BN_rand_range(bn.bn_raw->get_bignum(), bn.bn_raw->get_ec_order());
     if (res != 1) {
-      bn->setOpenSSLError(ERROR_BIGNUMBER_RANDOM_GENERATION);
+      bn.setOpenSSLError(ERROR_BIGNUMBER_RANDOM_GENERATION);
       return bn;
     }
 
     // if we got big number not inside EC group range let's try again
-    if (!bn->isFromECGroup()) {
+    if (!bn.isFromECGroup()) {
       delete bn;
       return BigNumber::generate_random(ctx);
     }
@@ -52,13 +52,13 @@ namespace CryptoMagic {
     return bn;
   }
 
-  BigNumber *BigNumber::from_bytes(unsigned char *buffer, int len, Context *ctx) {
-    return new BigNumber(BN_bin2bn((const unsigned char*)&buffer, len, NULL), ctx);
+  BigNumber BigNumber::from_bytes(unsigned char *buffer, int len, Context *ctx) const {
+    return BigNumber(BN_bin2bn((const unsigned char*)&buffer, len, NULL), ctx);
   }
 
-  BigNumber *BigNumber::from_integer(unsigned long num, Context *ctx) {
-    auto bn = new BigNumber(BN_new(), ctx);
-    BN_set_word(bn->bn_raw->get_bignum(), num);
+  BigNumber BigNumber::from_integer(unsigned long num, Context *ctx) const {
+    BigNumber bn(BN_new(), ctx);
+    BN_set_word(bn.bn_raw->get_bignum(), num);
     return bn;
   }
 
@@ -80,11 +80,11 @@ namespace CryptoMagic {
     delete[] binData;
   }
 
-  BIGNUM *BigNumber::getRawBigNum() {
+  BIGNUM *BigNumber::getRawBigNum() const {
     return this->bn_raw->get_bignum();
   }
 
-  BN_CTX *BigNumber::getRawBnCtx() {
+  BN_CTX *BigNumber::getRawBnCtx() const {
     if (bn_raw->get_bnCtx() == nullptr) {
       bn_raw->set_bnCtx(BN_CTX_new());
     }
