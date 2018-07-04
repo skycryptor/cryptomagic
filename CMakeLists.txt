@@ -12,7 +12,7 @@ endif()
 
 include_directories(${OPENSSL_INCLUDE_DIR} src src/include include)
 
-set(CRYPTOMAGIC_SOURCES src/CryptoMagic.cpp src/include/CryptoMagic.h src/Context.cpp src/include/Context.h src/EC.cpp src/include/EC.h src/BigNumber.cpp src/include/BigNumber.h src/ErrorWrapper.cpp src/include/ErrorWrapper.h src/include/defines.h src/Point.cpp src/include/Point.h src/include/BigNumberRaw.h src/BigNumberRaw.cpp src/include/PointRaw.h src/PointRaw.cpp)
+set(CRYPTOMAGIC_SOURCES src/CryptoMagic.cpp src/include/CryptoMagic.h src/Context.cpp src/include/Context.h src/BigNumber.cpp src/include/BigNumber.h src/ErrorWrapper.cpp src/include/ErrorWrapper.h src/include/defines.h src/Point.cpp src/include/Point.h src/include/BigNumberRaw.h src/BigNumberRaw.cpp src/include/PointRaw.h src/PointRaw.cpp)
 
 add_library(${PROJECT_NAME} ${CRYPTOMAGIC_SOURCES})
 target_link_libraries(${PROJECT_NAME} OpenSSL::Crypto)
