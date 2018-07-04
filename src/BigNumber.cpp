@@ -35,6 +35,10 @@ namespace CryptoMagic {
     }
   }
 
+  BigNumber::BigNumber(const BigNumber &bn) {
+    *this = bn;
+  }
+
   BigNumber BigNumber::generate_random(Context *ctx) {
     BigNumber bn(BN_new(), ctx);
     int res = BN_rand_range(bn.bn_raw->get_bignum(), bn.bn_raw->get_ec_order());

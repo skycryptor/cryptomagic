@@ -6,8 +6,7 @@
 
 namespace CryptoMagic {
 
-  PublicKey::PublicKey(Point &ec_point, Context *ctx) : point(ctx) {
-    point = ec_point;
+  PublicKey::PublicKey(Point &ec_point, Context *ctx) : point(ec_point) {
     context = ctx;
   }
 

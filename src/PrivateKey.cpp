@@ -6,8 +6,7 @@
 
 namespace CryptoMagic {
 
-  PrivateKey::PrivateKey(BigNumber &bn, Context *ctx) : bigNumber(ctx), publicKey(ctx) {
-    bigNumber = bn;
+  PrivateKey::PrivateKey(BigNumber &bn, Context *ctx) : bigNumber(bn), publicKey(ctx) {
     context = ctx;
 
     // Making public key out of given/initialized bigNumber and context

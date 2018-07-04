@@ -20,77 +20,153 @@ namespace CryptoMagic {
   class Point;
 
   /**
-   * Generic implementation for BigNumber actions
+   * \brief Generic implementation for BigNumber
    */
   class BigNumber : public ErrorWrapper {
    private:
 
-    // Cryptographic context for big number operations
-    // NOTE: this class not taking any ownership for this pointer
+    /// Cryptographic context for big number operations
+    /// NOTE: this class not taking any ownership for this pointer
     Context *context = nullptr;
 
-    // Shared pointer for raw big number implementation
-    // This is based on specific Crypto backend choosed compile time
+    /// Shared pointer for raw big number implementation
+    /// This is based on specific Crypto backend choosed compile time
     shared_ptr<BigNumberRaw> bn_raw = make_shared<BigNumberRaw>();
 
-    // keeping zero bignum initiated and allocated for later usage
-    // this will be created on first BigNumber constructor work at any time
-    // then just we will be checking if it's created or not
+    /// keeping zero bignum initiated and allocated for later usage
+    /// this will be created on first BigNumber constructor work at any time
+    /// then just we will be checking if it's created or not
     static BIGNUM *BNZero;
 
-    // checking if number is in current EC group
+    /**
+     * \brief Checking if number is in current EC group
+     * @return
+     */
     bool isFromECGroup() const;
 
    public:
+    /**
+     * \brief Making BigNumber object from given raw big number and context
+     * @param bn
+     * @param ctx
+     */
     BigNumber(BIGNUM *bn, Context *ctx);
     explicit BigNumber(Context *ctx) : BigNumber(nullptr, ctx) {}
+
+    /**
+     * \brief Copying BigNumber object from existing one
+     * @param bn
+     */
+    BigNumber(const BigNumber& bn);
     virtual ~BigNumber() = default;
 
-    // Generate random BigNumber
+    /**
+     * \brief Generate random BigNumber from given crypto context
+     * @param ctx
+     * @return
+     */
     static BigNumber generate_random(Context *ctx);
-    // Get BigNumber from integer
+
+    /**
+     * \brief Get BigNumber from integer
+     * @param num
+     * @param ctx
+     * @return
+     */
     static BigNumber from_integer(unsigned long num, Context *ctx);
-    // Get BigNumber from big endian ordered bytes
+
+    /**
+     * \brief Get BigNumber from big endian ordered bytes
+     * @param buffer
+     * @param len
+     * @param ctx
+     * @return
+     */
     static BigNumber from_bytes(unsigned char *buffer, int len, Context *ctx);
 
-    // Getting BigNumber as a string/byte array
+    /**
+     * \brief Getting BigNumber as a HEX string/byte array
+     * @return
+     */
     string toHex() const;
 
-    // Convert BigNumber to Point
+    /**
+     * \brief Convert BigNumber to Point
+     * @return
+     */
     Point toPoint() const;
 
-    // Doxygen.
-    /** \brief Getting BIGNUM bytes from existing OpenSSL BIGNUM
+    /**
+     * \brief Getting BIGNUM bytes from existing OpenSSL BIGNUM
      * @param[out] result_out Serialized string to fill up.
      * @return nothing.
      */
     void toBytes(string& result_out);
 
-    // Getting reference to OpenSSL BIGNUM
+    /**
+     * \brief Getting reference to OpenSSL BIGNUM
+     * @return
+     */
     BIGNUM *getRawBigNum() const;
-    // Getting reference to OpenSSL BN_CTX to make context based operations with it
+    /**
+     * \brief Getting reference to OpenSSL BN_CTX to make context based operations with it
+     * @return
+     */
     BN_CTX *getRawBnCtx() const;
 
-    // Checking if BigNumbers are equal
+    /**
+     * \brief Checking if BigNumbers are equal
+     * @param other
+     * @return
+     */
     bool operator==(const BigNumber& other) const;
 
-    // MUL operator for BigNumbers, it returns another BigNumber as a result
+    /**
+     * \brief MUL operator for BigNumber * BigNumber = BigNumber
+     * @param other
+     * @return
+     */
     BigNumber operator*(const BigNumber& other);
+
+    /**
+     * \brief MUL operator for BigNumber * Point = Point
+     * @param other
+     * @return
+     */
     Point operator*(const Point& other);
 
-    // Inverting current BigNumber and returning inverted one
+    /**
+     * \brief Inverting current BigNumber: ~BigNumber = BigNumber
+     * @return
+     */
     BigNumber operator~() const;
 
-    // DIV operator for BigNumbers, it returns another BigNumber as a result
+    /**
+     * \brief DIV operator for BigNumbers: BigNumber / BigNumber = BigNumber
+     * @param other
+     * @return
+     */
     BigNumber operator/(const BigNumber& other);
 
-    // ADD operator implementation, it returns another BigNumber as a result
+    /**
+     * ADD operator implementation: BigNumber + BigNumber = BigNumber
+     * @param other
+     * @return
+     */
     BigNumber operator+(const BigNumber& other);
 
-    // SUB operator implementation, it returns another BigNumber as a result
+    /**
+     * SUB operator implementation: BigNumber - BigNumber = BigNumber
+     * @param other
+     * @return
+     */
     BigNumber operator-(const BigNumber& other);
 
-    // MOD operator implementation, it returns another BigNumber as a result
+    /**
+     * \brief MOD operator implementation: BigNumber % BigNumber = BigNumber
+     * @param other
+     * @return
+     */
     BigNumber operator%(const BigNumber& other);
   };
 }

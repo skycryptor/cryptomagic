@@ -10,7 +10,7 @@ namespace CryptoMagic {
     return &context;
   }
 
-  void CryptoMagic::setContext(Context ctx) {
+  void CryptoMagic::setContext(const Context &ctx) {
     context = ctx;
   }
 }

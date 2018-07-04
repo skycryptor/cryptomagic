@@ -17,14 +17,22 @@ namespace CryptoMagic {
 
    public:
     CryptoMagic() = default;
+    /**
+     * Making CryptoMagic object with defined context
+     * @param ctx
+     */
     explicit CryptoMagic(Context ctx);
     ~CryptoMagic() = default;
 
     // Getting current defined context as a reference
     Context *getContext();
-    // Setting context for this CryptoMagic object
-    // NOTE: crypto operations will start receiving this context parameters after calling this setter function
-    void setContext(Context ctx);
+
+    /**
+     *  Setting context for this CryptoMagic object
+     *  NOTE: crypto operations will start receiving this context parameters after calling this setter function
+     * @param ctx
+     */
+    void setContext(const Context& ctx);
   };
 
 }

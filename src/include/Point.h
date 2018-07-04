@@ -26,36 +26,91 @@ namespace CryptoMagic {
     Context *context = nullptr;
 
    public:
+    /**
+     * Making Point object out of given raw point and Context
+     * NOTE: raw could be NULL, and then defined later on
+     * @param point
+     * @param ctx
+     */
     Point(EC_POINT *point, Context *ctx);
     explicit Point(Context *ctx) : Point(nullptr, ctx) {};
+    /**
+     * Copying existing point
+     * @param p
+     */
+    Point(const Point& p);
     virtual ~Point() = default;
 
-    // Getting Generator Point from provided context based Elliptic curve
+    /**
+     * Getting raw point for using raw values defined in encryption backend
+     * @return
+     */
+    shared_ptr<PointRaw> get_point_raw() const;
+
+    /**
+     * Getting Generator Point from provided context based Elliptic curve
+     * @param ctx
+     * @return
+     */
     static Point get_generator(Context *ctx);
-    // Generating random point for context based Elliptic curve
+
+    /**
+     * Generating random point for context based Elliptic curve
+     * @param ctx
+     * @return
+     */
     static Point generate_random(Context *ctx);
 
-    // Getting BigNumber as a string/byte array
+    /**
+     * Getting BigNumber as a string/byte array
+     * @return
+     */
     string toHex() const;
 
-    // Converting Point to BigNumber
+    /**
+     * Converting Point to BigNumber
+     * @return
+     */
     BigNumber toBigNumber();
 
-    // Equality operator for Point == Point
+    /**
+     * Equality operator for Point == Point
+     * @param other
+     * @return
+     */
     bool operator==(const Point& other) const;
 
-    // MUL Operator for Point * BigNumber = Point
+    /**
+     * MUL Operator for Point * BigNumber = Point
+     * @param other
+     * @return
+     */
     Point operator*(const BigNumber& other) const;
-    // MUL Operator for Point * Point = Point
+    /**
+     * MUL Operator for Point * Point = Point
+     * @param other
+     * @return
+     */
     Point operator*(const Point& other) const;
 
-    // ADD Operator for Point + Point = Point
+    /**
+     * ADD Operator for Point + Point = Point
+     * @param other
+     * @return
+     */
     Point operator+(const Point& other) const;
 
-    // Invert Operator for ~Point = Point
+    /**
+     * Invert Operator for ~Point = Point
+     * @return
+     */
     Point operator~() const;
 
-    // SUB operator for Point - Point = Point
+    /**
+     * SUB operator for Point - Point = Point
+     * @param other
+     * @return
+     */
     Point operator-(const Point& other) const;
   };
 

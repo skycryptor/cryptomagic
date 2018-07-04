@@ -12,6 +12,10 @@ namespace CryptoMagic {
     context = ctx;
   }
 
+  Point::Point(const Point &p) {
+    *this = p;
+  }
+
   Point Point::get_generator(Context *ctx) {
     Point p(EC_POINT_new(ctx->get_ec_group()), ctx);
     int res = EC_POINT_copy(p.point_raw->get_ec_point(), EC_GROUP_get0_generator(ctx->get_ec_group()));
@@ -20,6 +24,10 @@ namespace CryptoMagic {
     }
 
     return p;
+  }
+
+  shared_ptr<PointRaw> Point::get_point_raw() const {
+    return this->point_raw;
   }
 
   Point Point::generate_random(Context *ctx) {
