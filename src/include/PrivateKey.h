@@ -30,13 +30,7 @@ namespace CryptoMagic {
      */
     PrivateKey(BigNumber& bn, Context *ctx);
     PrivateKey(Context *ctx);
-    ~PublicKey() = default;
-
-    /**
-     * Generating EC Group point using this private key,
-     * This way we will have Public/Private key pair inside
-     */
-    void generate_publicKey();
+    ~PrivateKey() = default;
 
     /**
      * Getting generated PublicKey
