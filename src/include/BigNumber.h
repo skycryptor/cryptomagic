@@ -11,10 +11,13 @@
 #include "Context.h"
 #include "ErrorWrapper.h"
 #include "BigNumberRaw.h"
+#include "Point.h"
 
-using std::unique_ptr;
+using std::shared_ptr;
+using std::make_shared;
 
 namespace CryptoMagic {
+  class Point;
 
   /**
    * Generic implementation for BigNumber actions
@@ -28,7 +31,7 @@ namespace CryptoMagic {
 
     // Shared pointer for raw big number implementation
     // This is based on specific Crypto backend choosed compile time
-    shared_ptr<BigNumberRaw> bn_raw = std::make_shared(new BigNumberRaw());
+    shared_ptr<BigNumberRaw> bn_raw = make_shared<BigNumberRaw>();
 
     // keeping zero bignum initiated and allocated for later usage
     // this will be created on first BigNumber constructor work at any time
@@ -44,14 +47,17 @@ namespace CryptoMagic {
     virtual ~BigNumber() = default;
 
     // Generate random BigNumber
-    static BigNumber generate_random(Context *ctx) const;
+    static BigNumber generate_random(Context *ctx);
     // Get BigNumber from integer
-    static BigNumber from_integer(unsigned long num, Context *ctx) const;
+    static BigNumber from_integer(unsigned long num, Context *ctx);
     // Get BigNumber from big endian ordered bytes
-    static BigNumber from_bytes(unsigned char *buffer, int len, Context *ctx) const;
+    static BigNumber from_bytes(unsigned char *buffer, int len, Context *ctx);
 
     // Getting BigNumber as a string/byte array
-    string toHex();
+    string toHex() const;
+
+    // Convert BigNumber to Point
+    Point toPoint() const;
 
     // Doxygen.
     /** \brief Getting BIGNUM bytes from existing OpenSSL BIGNUM
@@ -70,6 +76,7 @@ namespace CryptoMagic {
 
     // MUL operator for BigNumbers, it returns another BigNumber as a result
     BigNumber operator*(const BigNumber& other);
+    Point operator*(const Point& other);
 
     // Inverting current BigNumber and returning inverted one
     BigNumber operator~() const;

@@ -35,7 +35,7 @@ namespace CryptoMagic {
     }
   }
 
-  BigNumber BigNumber::generate_random(Context *ctx) const {
+  BigNumber BigNumber::generate_random(Context *ctx) {
     BigNumber bn(BN_new(), ctx);
     int res = BN_rand_range(bn.bn_raw->get_bignum(), bn.bn_raw->get_ec_order());
     if (res != 1) {
@@ -45,18 +45,17 @@ namespace CryptoMagic {
 
     // if we got big number not inside EC group range let's try again
     if (!bn.isFromECGroup()) {
-      delete bn;
       return BigNumber::generate_random(ctx);
     }
 
     return bn;
   }
 
-  BigNumber BigNumber::from_bytes(unsigned char *buffer, int len, Context *ctx) const {
+  BigNumber BigNumber::from_bytes(unsigned char *buffer, int len, Context *ctx) {
     return BigNumber(BN_bin2bn((const unsigned char*)&buffer, len, NULL), ctx);
   }
 
-  BigNumber BigNumber::from_integer(unsigned long num, Context *ctx) const {
+  BigNumber BigNumber::from_integer(unsigned long num, Context *ctx) {
     BigNumber bn(BN_new(), ctx);
     BN_set_word(bn.bn_raw->get_bignum(), num);
     return bn;
@@ -66,11 +65,17 @@ namespace CryptoMagic {
     return BN_cmp(bn_raw->get_bignum(), BigNumber::BNZero) ==1 && BN_cmp(bn_raw->get_bignum(), bn_raw->get_ec_order()) == -1;
   }
 
-  string BigNumber::toHex() {
+  string BigNumber::toHex() const {
     char *hexStr = BN_bn2hex(bn_raw->get_bignum());
     string hex = string(hexStr);
     delete hexStr;
     return hex;
+  }
+
+  Point BigNumber::toPoint() const {
+    EC_POINT *raw_p = EC_POINT_new(context->get_ec_group());
+    EC_POINT_bn2point(context->get_ec_group(), bn_raw->get_bignum(), raw_p, bn_raw->get_bnCtx());
+    return Point(raw_p, context);
   }
 
   void BigNumber::toBytes(string& result_out) {
@@ -104,10 +109,14 @@ namespace CryptoMagic {
     return bn;
   }
 
+  Point BigNumber::operator*(const Point &other) {
+    return other * (*this);
+  }
+
   BigNumber BigNumber::operator~() const {
     BigNumber bn(BN_new(), context);
     BN_mod_inverse(bn.bn_raw->get_bignum(), bn_raw->get_bignum(), bn_raw->get_ec_order(), bn_raw->get_bnCtx());
-    return BigNumber(nullptr, nullptr);
+    return bn;
   }
 
   BigNumber BigNumber::operator/(const BigNumber &other) {

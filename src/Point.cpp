@@ -12,7 +12,7 @@ namespace CryptoMagic {
     context = ctx;
   }
 
-  Point Point::get_generator(Context *ctx) const {
+  Point Point::get_generator(Context *ctx) {
     Point p(EC_POINT_new(ctx->get_ec_group()), ctx);
     int res = EC_POINT_copy(p.point_raw->get_ec_point(), EC_GROUP_get0_generator(ctx->get_ec_group()));
     if (res != 1) {
@@ -22,7 +22,7 @@ namespace CryptoMagic {
     return p;
   }
 
-  Point Point::generate_random(Context *ctx) const {
+  Point Point::generate_random(Context *ctx) {
     auto g = Point::get_generator(ctx);
     auto randBN = BigNumber::generate_random(ctx);
     if (randBN.hasError()) {
@@ -33,10 +33,18 @@ namespace CryptoMagic {
     return g * randBN;
   }
 
-  void Point::toHex(string& result_out) {
+  string Point::toHex() const {
     BigNumber bn(context);
     char *hexStr = EC_POINT_point2hex(context->get_ec_group(), point_raw->get_ec_point(), POINT_CONVERSION_UNCOMPRESSED, bn.getRawBnCtx());
-    result_out.assign(hexStr);
+    string s(hexStr);
+    delete hexStr;
+    return s;
+  }
+
+  BigNumber Point::toBigNumber() {
+    BigNumber bn(BN_new(), context);
+    EC_POINT_point2bn(context->get_ec_group(), point_raw->get_ec_point(), POINT_CONVERSION_UNCOMPRESSED, bn.getRawBigNum(), bn.getRawBnCtx());
+    return bn;
   }
 
   bool Point::operator==(const Point& other) const {

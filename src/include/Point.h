@@ -5,17 +5,22 @@
 #ifndef CRYPTOMAIC_POINT_H
 #define CRYPTOMAIC_POINT_H
 
+#include "memory"
 #include "BigNumber.h"
 #include "PointRaw.h"
 #include "Context.h"
 #include "ErrorWrapper.h"
 
+using std::shared_ptr;
+using std::make_shared;
+
 namespace CryptoMagic {
+  class BigNumber;
 
   // Elliptic curve Point class implementation based on OpenSSL EC_POINT interface
   class Point: public ErrorWrapper {
    private:
-    shared_ptr<PointRaw> point_raw = make_shared(new PointRaw());
+    shared_ptr<PointRaw> point_raw = make_shared<PointRaw>();
     // Cryptographic context for big number operations
     // NOTE: this class not taking any ownership for this pointer
     Context *context = nullptr;
@@ -26,12 +31,15 @@ namespace CryptoMagic {
     virtual ~Point() = default;
 
     // Getting Generator Point from provided context based Elliptic curve
-    static Point get_generator(Context *ctx) const;
+    static Point get_generator(Context *ctx);
     // Generating random point for context based Elliptic curve
-    static Point generate_random(Context *ctx) const;
+    static Point generate_random(Context *ctx);
 
     // Getting BigNumber as a string/byte array
-    void toHex(string& result_out);
+    string toHex() const;
+
+    // Converting Point to BigNumber
+    BigNumber toBigNumber();
 
     // Equality operator for Point == Point
     bool operator==(const Point& other) const;
