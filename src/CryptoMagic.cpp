@@ -34,7 +34,7 @@ namespace SkyCryptor {
     auto part_S = rand_u + (rand_r * hash_bn);
 
     // Making symmetric key
-    auto point_symmetric = (rand_u + rand_u) * pk;
+    auto point_symmetric = (rand_u + rand_r) * pk;
     vector<char> symmetric_key = KDF(point_symmetric, ctx);
 
     // setting output byte buffer
