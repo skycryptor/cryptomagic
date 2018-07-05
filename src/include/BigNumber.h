@@ -35,11 +35,6 @@ namespace SkyCryptor {
     /// This is based on specific Crypto backend choosed compile time
     shared_ptr<BigNumberRaw> bn_raw = make_shared<BigNumberRaw>();
 
-    /// keeping zero bignum initiated and allocated for later usage
-    /// this will be created on first BigNumber constructor work at any time
-    /// then just we will be checking if it's created or not
-    static BIGNUM *BNZero;
-
     /**
      * \brief Checking if number is in current EC group
      * @return
@@ -47,6 +42,11 @@ namespace SkyCryptor {
     bool isFromECGroup() const;
 
    public:
+    /// keeping zero bignum initiated and allocated for later usage
+    /// this will be created on first BigNumber constructor work at any time
+    /// then just we will be checking if it's created or not
+    static BIGNUM *BNZero;
+
     /**
      * \brief Making BigNumber object from given raw big number and context
      * @param bn
@@ -128,7 +128,7 @@ namespace SkyCryptor {
      * @param other
      * @return
      */
-    BigNumber operator*(const BigNumber& other);
+    BigNumber operator*(const BigNumber& other) const;
 
     /**
      * \brief MUL operator for BigNumber * Point = Point

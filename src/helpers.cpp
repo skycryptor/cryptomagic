@@ -16,8 +16,7 @@ namespace SkyCryptor {
   }
 
   vector<char> HASH(Context *ctx, vector<vector<char>>& parts) {
-    vector<char> digest;
-    digest.reserve(SHA256_DIGEST_LENGTH);
+    vector<char> digest(SHA256_DIGEST_LENGTH);
     SHA256_CTX shaCtx;
     SHA256_Init(&shaCtx);
     for(auto &p : parts) {

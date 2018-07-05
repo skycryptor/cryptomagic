@@ -53,6 +53,13 @@ namespace SkyCryptor {
      * @return
      */
     Point operator*(const Point& other) const;
+
+    /**
+     * MUL operator with BigNumber: PrivateKey * BigNumber = BigNumber
+     * @param other
+     * @return
+     */
+    BigNumber operator*(const BigNumber& other) const;
   };
 
 }

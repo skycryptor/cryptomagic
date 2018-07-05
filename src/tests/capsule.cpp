@@ -22,4 +22,8 @@ TEST_CASE( "Encapsulating Public Key from random PrivateKey" ) {
 
   REQUIRE( symmetric_key.size() == cm.getContext()->get_key_length() );
   REQUIRE( symmetric_key_decapsulate.size() == cm.getContext()->get_key_length() );
+
+  REQUIRE( symmetric_key == symmetric_key_decapsulate );
+  cout<< string(symmetric_key.begin(), symmetric_key.end()) << endl;
+  cout<< string(symmetric_key_decapsulate.begin(), symmetric_key_decapsulate.end()) << endl;
 }

@@ -7,6 +7,7 @@
 #include "Capsule.h"
 #include "PublicKey.h"
 #include "PrivateKey.h"
+#include "ReEncryptionKey.h"
 
 namespace SkyCryptor {
 
@@ -57,6 +58,14 @@ namespace SkyCryptor {
      * @return
      */
     vector<char> decapsulate_original(Capsule& capsule, PrivateKey& privateKey);
+
+    /**
+     * \brief Getting re-encryption key out of Private key (Alice) and public key (Bob) using random private key generation
+     * @param privateKeyA
+     * @param publicKeyB
+     * @return
+     */
+    ReEncryptionKey get_re_encryption_key(PrivateKey& privateKeyA, PublicKey& publicKeyB);
   };
 
 }

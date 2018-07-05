@@ -32,4 +32,8 @@ namespace SkyCryptor {
   Point PrivateKey::operator*(const Point &other) const {
     return other * bigNumber;
   }
+
+  BigNumber PrivateKey::operator*(const BigNumber &other) const {
+    return bigNumber * other;
+  }
 }

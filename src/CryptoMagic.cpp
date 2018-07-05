@@ -48,4 +48,22 @@ namespace SkyCryptor {
     auto symmetric_key = privateKey * (capsule.get_particleE() * capsule.get_particleV());
     return KDF(symmetric_key, ctx);
   }
+
+  ReEncryptionKey CryptoMagic::get_re_encryption_key(PrivateKey &privateKeyA, PublicKey &publicKeyB) {
+    auto ctx = (Context *)&context;
+    auto tmp_privateKey = PrivateKey::generate(ctx);
+    auto tmp_publicKey = tmp_privateKey.get_publicKey();
+    auto tmp_publicKeyPoint = tmp_publicKey.getPoint();
+    auto publicKeyPointB = publicKeyB.getPoint();
+    vector<Point> points_for_hash = {
+        tmp_publicKeyPoint,
+        publicKeyPointB,
+        tmp_privateKey * publicKeyPointB
+    };
+    auto tmp_hash_bytes = Point::hash(ctx, points_for_hash);
+    auto hash_bn = BigNumber::from_bytes((unsigned char*)&tmp_hash_bytes[0], tmp_hash_bytes.size(), ctx);
+    auto rk = privateKeyA * (~hash_bn);
+
+    return ReEncryptionKey(rk, tmp_publicKeyPoint);
+  }
 }

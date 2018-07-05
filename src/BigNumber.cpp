@@ -104,7 +104,7 @@ namespace SkyCryptor {
     return BN_cmp(bn_raw->get_bignum(), other.bn_raw->get_bignum()) == 0;
   }
 
-  BigNumber BigNumber::operator*(const BigNumber &other) {
+  BigNumber BigNumber::operator*(const BigNumber &other) const {
     BigNumber bn(BN_new(), context);
     int res = BN_mod_mul(bn.bn_raw->get_bignum(), bn_raw->get_bignum(), other.bn_raw->get_bignum(), bn_raw->get_ec_order(), bn_raw->get_bnCtx());
     if (res != 1) {
