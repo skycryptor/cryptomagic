@@ -7,7 +7,7 @@
 
 #include "openssl/ec.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   class PointRaw {
     // Raw pointer for OpenSSL object

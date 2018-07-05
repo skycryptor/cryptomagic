@@ -6,7 +6,7 @@
 #include <openssl/objects.h>
 
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   Context::Context(const char * ec_name) {
     elliptic_curve_name = ec_name;

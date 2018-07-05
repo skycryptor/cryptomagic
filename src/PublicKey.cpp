@@ -4,22 +4,31 @@
 
 #include "PublicKey.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
-  PublicKey::PublicKey(Point &ec_point, Context *ctx) : point(ec_point) {
+  PublicKey::PublicKey(const Point &ec_point, Context *ctx) {
+    point = make_shared<Point>(ec_point);
     context = ctx;
   }
 
-  PublicKey::PublicKey(Context *ctx) : point(ctx) {
+  PublicKey::PublicKey(Context *ctx) {
+    point = make_shared<Point>(ctx);
     context = ctx;
   }
 
   bool PublicKey::operator==(const PublicKey &publicKey) const {
-    return point == publicKey.point;
+    return (*point) == (*publicKey.point);
   }
 
   bool PublicKey::operator==(const Point &point) const {
-    return this->point == point;
+    return (*this->point) == point;
   }
 
+  Point PublicKey::getPoint() const {
+    return (*point);
+  }
+
+  Point PublicKey::operator*(const BigNumber &other) const {
+    return (*point) * other;
+  }
 }

@@ -4,7 +4,7 @@
 
 #include "BigNumberRaw.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   BigNumberRaw::~BigNumberRaw() {
     if (bignum != nullptr) {

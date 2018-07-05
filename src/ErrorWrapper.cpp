@@ -5,7 +5,7 @@
 #include <openssl/err.h>
 #include "ErrorWrapper.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   bool ErrorWrapper::hasError() {
     return has_error;

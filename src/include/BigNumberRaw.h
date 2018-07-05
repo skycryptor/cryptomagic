@@ -8,7 +8,7 @@
 #include "openssl/bn.h"
 #include "openssl/ec.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
   class BigNumberRaw {
    private:
     // OpenSSL bignumber parameter

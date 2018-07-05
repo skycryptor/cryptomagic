@@ -2,13 +2,12 @@
 // Created by Tigran on 6/26/18.
 //
 
-#define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
 #include "BigNumber.h"
 #include "Point.h"
 #include "iostream"
 
-using namespace CryptoMagic;
+using namespace SkyCryptor;
 
 TEST_CASE( "BigNumber from_integer" ) {
   Context ctx = Context::getDefault();

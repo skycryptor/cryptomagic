@@ -4,7 +4,7 @@
 
 #include "Capsule.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   Capsule::Capsule(Point E, Point V, BigNumber S) : particleE(E), particleV(V), particleS(S) {}
 

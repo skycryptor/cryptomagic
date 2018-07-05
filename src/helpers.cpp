@@ -6,7 +6,7 @@
 #include "openssl/evp.h"
 #include "openssl/sha.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   string KDF(Point& shared_key, Context *ctx) {
     string point_bytes = shared_key.toBytes();

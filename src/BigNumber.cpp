@@ -7,7 +7,7 @@
 #include <arpa/inet.h>
 #include "defines.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   BIGNUM * BigNumber::BNZero = nullptr;
 
@@ -114,6 +114,10 @@ namespace CryptoMagic {
   }
 
   Point BigNumber::operator*(const Point &other) {
+    return other * (*this);
+  }
+
+  Point BigNumber::operator*(const PublicKey &other) {
     return other * (*this);
   }
 

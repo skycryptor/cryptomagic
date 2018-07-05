@@ -2,10 +2,12 @@
 #define CRYPTOMAGIC_CRYPTOMAGIC_H
 
 #include "Context.h"
+#include "BigNumber.h"
 #include "Point.h"
-#include <openssl/evp.h>
+#include "Capsule.h"
+#include "PublicKey.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   /**
    * \brief CryptoMagic base class for handling library crypto operations and main functionality
@@ -35,6 +37,16 @@ namespace CryptoMagic {
      * @param ctx
      */
     void setContext(const Context& ctx);
+
+    /**
+     * \brief Making capsule out of given PublicKey and given crypto Context and also returning
+     * symmetric key wrapped as a string object
+     *
+     * @param pk "Alice" Public Key
+     * @param[out] symmetric_key_out
+     * @return Capsule
+     */
+    Capsule encapsulate(PublicKey& pk, string& symmetric_key_out) const;
   };
 
 }

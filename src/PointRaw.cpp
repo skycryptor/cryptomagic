@@ -4,7 +4,7 @@
 
 #include "PointRaw.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   PointRaw::~PointRaw() {
     if (ec_point != nullptr) {

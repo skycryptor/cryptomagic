@@ -16,7 +16,7 @@ using std::shared_ptr;
 using std::make_shared;
 using std::vector;
 
-namespace CryptoMagic {
+namespace SkyCryptor {
   class BigNumber;
 
   /**

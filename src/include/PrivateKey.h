@@ -8,7 +8,7 @@
 #include "BigNumber.h"
 #include "PublicKey.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   /**
    * Base private key containing implementation for EC Private keys

@@ -10,7 +10,7 @@
 
 using namespace std;
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   /**
    * \brief Context is defining main context for cryptographic operations and configurations

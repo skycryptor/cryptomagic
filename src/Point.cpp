@@ -6,7 +6,7 @@
 #include "defines.h"
 #include "helpers.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   Point::Point(EC_POINT *point, Context *ctx) {
     point_raw->set_ec_point(point);

@@ -11,7 +11,7 @@
 
 using std::string;
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
 /**
  * \brief Running KDF cryptographic function with defined Context and given shared_key Point

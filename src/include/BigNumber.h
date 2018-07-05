@@ -12,11 +12,13 @@
 #include "ErrorWrapper.h"
 #include "BigNumberRaw.h"
 #include "Point.h"
+#include "PublicKey.h"
 
 using std::shared_ptr;
 using std::make_shared;
 
-namespace CryptoMagic {
+namespace SkyCryptor {
+  class PublicKey;
   class Point;
 
   /**
@@ -134,6 +136,13 @@ namespace CryptoMagic {
      * @return
      */
     Point operator*(const Point& other);
+
+    /**
+     * \brief MUL operator for BigNumber * PublicKey = Point
+     * @param other
+     * @return
+     */
+    Point operator*(const PublicKey& other);
 
     /**
      * \brief Inverting current BigNumber: ~BigNumber = BigNumber

@@ -7,7 +7,7 @@
 
 #include "Point.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   /**
    * \brief Combination of parameters as a definition for cryptographic capsule

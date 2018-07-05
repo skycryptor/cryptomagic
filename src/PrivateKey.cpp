@@ -4,7 +4,7 @@
 
 #include "PrivateKey.h"
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   PrivateKey::PrivateKey(BigNumber &bn, Context *ctx) : bigNumber(bn), publicKey(ctx) {
     context = ctx;

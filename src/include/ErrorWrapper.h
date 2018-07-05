@@ -9,7 +9,7 @@
 
 using namespace std;
 
-namespace CryptoMagic {
+namespace SkyCryptor {
 
   class ErrorWrapper {
    protected:
