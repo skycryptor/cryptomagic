@@ -45,7 +45,7 @@ namespace SkyCryptor {
 
   vector<char> CryptoMagic::decapsulate_original(Capsule &capsule, PrivateKey &privateKey) {
     auto ctx = (Context *)&context;
-    auto symmetric_key = privateKey * (capsule.get_particleE() * capsule.get_particleV());
+    auto symmetric_key = privateKey * (capsule.get_particleE() + capsule.get_particleV());
     return KDF(symmetric_key, ctx);
   }
 
