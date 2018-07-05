@@ -8,22 +8,23 @@
 
 namespace SkyCryptor {
 
-  string KDF(Point& shared_key, Context *ctx) {
-    string point_bytes = shared_key.toBytes();
-    char digest[ctx->get_key_length()];
-    PKCS5_PBKDF2_HMAC(point_bytes.c_str(), (int)point_bytes.length(), NULL, 0, ctx->get_iteration_count(), EVP_sha256(), ctx->get_key_length(), (unsigned char*)digest);
-    return string(digest);
+  vector<char> KDF(Point& shared_key, Context *ctx) {
+    auto point_bytes = shared_key.toBytes();
+    vector<char> digest(ctx->get_key_length());
+    PKCS5_PBKDF2_HMAC(&point_bytes[0], (int)point_bytes.size(), NULL, 0, ctx->get_iteration_count(), EVP_sha256(), ctx->get_key_length(), (unsigned char*)&digest[0]);
+    return digest;
   }
 
-  string HASH(Context *ctx, vector<string>& parts) {
-    char digest[SHA256_DIGEST_LENGTH];
+  vector<char> HASH(Context *ctx, vector<vector<char>>& parts) {
+    vector<char> digest;
+    digest.reserve(SHA256_DIGEST_LENGTH);
     SHA256_CTX shaCtx;
     SHA256_Init(&shaCtx);
     for(auto &p : parts) {
-      SHA256_Update(&shaCtx, p.c_str(), p.length());
+      SHA256_Update(&shaCtx, &p[0], p.size());
     }
 
-    SHA256_Final((unsigned char*)digest, &shaCtx);
-    return string(digest);
+    SHA256_Final((unsigned char*)&digest[0], &shaCtx);
+    return digest;
   }
 }

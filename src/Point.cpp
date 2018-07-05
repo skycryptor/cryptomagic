@@ -42,23 +42,21 @@ namespace SkyCryptor {
     return g * randBN;
   }
 
-  string Point::toBytes() const {
+  vector<char> Point::toBytes() const {
     BigNumber bn(context);
     char *hexStr = EC_POINT_point2hex(context->get_ec_group(), point_raw->get_ec_point(), POINT_CONVERSION_UNCOMPRESSED, bn.getRawBnCtx());
-    string s(hexStr);
-    delete hexStr;
-    return s;
+    return vector<char>(hexStr, hexStr + strlen(hexStr));
   }
 
-  Point Point::from_bytes(const string &bytes, Context *ctx) {
+  Point Point::from_bytes(const vector<char>& bytes, Context *ctx) {
     BigNumber bn(ctx);
     Point p(EC_POINT_new(ctx->get_ec_group()), ctx);
-    EC_POINT_hex2point(ctx->get_ec_group(), bytes.c_str(), p.point_raw->get_ec_point(), bn.getRawBnCtx());
+    EC_POINT_hex2point(ctx->get_ec_group(), &bytes[0], p.point_raw->get_ec_point(), bn.getRawBnCtx());
     return p;
   }
 
-  string Point::hash(Context *ctx, vector<Point>& points) {
-    vector<string> point_hashes;
+  vector<char> Point::hash(Context *ctx, vector<Point>& points) {
+    vector<vector<char>> point_hashes;
     point_hashes.reserve(points.size());
     for(auto &p : points) {
       point_hashes.push_back(p.toBytes());

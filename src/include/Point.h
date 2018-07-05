@@ -64,7 +64,7 @@ namespace SkyCryptor {
      * @param bytes
      * @return
      */
-    static Point from_bytes(const string& bytes, Context *ctx);
+    static Point from_bytes(const vector<char>& bytes, Context *ctx);
 
     /**
      * \brief Generating random point for context based Elliptic curve
@@ -80,13 +80,13 @@ namespace SkyCryptor {
      * @param ...
      * @return
      */
-    static string hash(Context *ctx, vector<Point>& points);
+    static vector<char> hash(Context *ctx, vector<Point>& points);
 
     /**
      * \brief Getting bytes from our Point object
      * @return
      */
-    string toBytes() const;
+    vector<char> toBytes() const;
 
     /**
      * \brief Converting Point to BigNumber

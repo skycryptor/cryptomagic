@@ -28,4 +28,8 @@ namespace SkyCryptor {
     auto bn = BigNumber::generate_random(ctx);
     return PrivateKey(bn, ctx);
   }
+
+  Point PrivateKey::operator*(const Point &other) const {
+    return other * bigNumber;
+  }
 }

@@ -15,9 +15,11 @@ TEST_CASE( "Encapsulating Public Key from random PrivateKey" ) {
   auto SK = PrivateKey::generate(cm.getContext());
   auto publicKey = SK.get_publicKey();
 
-  string symmetric_key;
+  vector<char> symmetric_key;
   Capsule capsule = cm.encapsulate(publicKey, symmetric_key);
 
-  REQUIRE( symmetric_key.length() > 0 );
-  REQUIRE( symmetric_key.length() <= cm.getContext()->get_key_length() );
+  vector<char> symmetric_key_decapsulate = cm.decapsulate_original(capsule, SK);
+
+  REQUIRE( symmetric_key.size() == cm.getContext()->get_key_length() );
+  REQUIRE( symmetric_key_decapsulate.size() == cm.getContext()->get_key_length() );
 }

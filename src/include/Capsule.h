@@ -28,6 +28,24 @@ namespace SkyCryptor {
      */
     Capsule(Point E, Point V, BigNumber S);
     ~Capsule() = default;
+
+    /**
+     * Getting particle E as a Point
+     * @return
+     */
+    Point get_particleE() const;
+
+    /**
+     * Getting particle V as a Point
+     * @return
+     */
+    Point get_particleV() const;
+
+    /**
+     * Getting particle S as a BigNumber
+     * @return
+     */
+    BigNumber get_particleS() const;
   };
 }
 

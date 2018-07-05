@@ -6,6 +6,7 @@
 #include "Point.h"
 #include "Capsule.h"
 #include "PublicKey.h"
+#include "PrivateKey.h"
 
 namespace SkyCryptor {
 
@@ -46,7 +47,16 @@ namespace SkyCryptor {
      * @param[out] symmetric_key_out
      * @return Capsule
      */
-    Capsule encapsulate(PublicKey& pk, string& symmetric_key_out) const;
+    Capsule encapsulate(PublicKey& pk, vector<char>& symmetric_key_out) const;
+
+    /**
+     * \brief Decapsulate given capsule with private key,
+     * NOTE: Provided private key, should be the original key from which Public Key capsule is created
+     * @param capsule
+     * @param privateKey
+     * @return
+     */
+    vector<char> decapsulate_original(Capsule& capsule, PrivateKey& privateKey);
   };
 
 }

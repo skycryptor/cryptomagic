@@ -11,7 +11,7 @@
 namespace SkyCryptor {
 
   /**
-   * Base private key containing implementation for EC Private keys
+   * \brief Base private key containing implementation for EC Private keys
    */
   class PrivateKey {
     /// Private key bigNumber representation
@@ -24,7 +24,7 @@ namespace SkyCryptor {
 
    public:
     /**
-     * Main constructor for making PublicKey object
+     * \brief Main constructor for making PublicKey object
      * @param bn BigNumber for private key representation
      * @param ctx Cryptographic context pointer
      */
@@ -33,19 +33,26 @@ namespace SkyCryptor {
     ~PrivateKey() = default;
 
     /**
-     * Getting generated PublicKey
+     * \brief Getting generated PublicKey
      * NOTE: we can re-generate public key with #generate_publicKey()
      * @return PublicKey
      */
     PublicKey get_publicKey();
 
     /**
-     * Generating PrivateKey using BigNumber random generator
+     * \brief Generating PrivateKey using BigNumber random generator
      * This function will make PrivateKey object and will assign it inside given Context
      * @param ctx
      * @return PrivateKey
      */
     static PrivateKey generate(Context *ctx);
+
+    /**
+     * \brief MUL operator for having PrivateKey * Point = Point
+     * @param other
+     * @return
+     */
+    Point operator*(const Point& other) const;
   };
 
 }

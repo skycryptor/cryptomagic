@@ -18,7 +18,7 @@ namespace SkyCryptor {
  * @param shared_key
  * @return
  */
-string KDF(Point& shared_key, Context *ctx);
+vector<char> KDF(Point& shared_key, Context *ctx);
 
 /**
  * \brief Implementing hash function with given byte array parts and crypto context
@@ -28,7 +28,7 @@ string KDF(Point& shared_key, Context *ctx);
  * @param ...
  * @return
  */
-string HASH(Context *ctx, vector<string>& parts);
+vector<char> HASH(Context *ctx, vector<vector<char>>& parts);
 
 }
 
