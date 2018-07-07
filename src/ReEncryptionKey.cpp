@@ -3,6 +3,7 @@
 //
 
 #include "ReEncryptionKey.h"
+#include "iostream"
 
 namespace SkyCryptor {
 
@@ -18,6 +19,6 @@ namespace SkyCryptor {
   }
 
   Point ReEncryptionKey::operator*(const Point &point) const {
-    return rk_point * point;
+    return point * rk_number;
   }
 }

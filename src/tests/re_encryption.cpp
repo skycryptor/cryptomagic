@@ -18,10 +18,22 @@ TEST_CASE( "Re-encryption key generation" ) {
   auto publicKeyB = privateKeyB.get_publicKey();
   auto g = Point::get_generator(cm.getContext());
 
-  auto rk = cm.get_re_encryption_key(privateKeyA, publicKeyB);
+  // Encapsulate
+  vector<char> symmetric_key;
+  Capsule capsule = cm.encapsulate(publicKeyA, symmetric_key);
 
-  auto bnZero = BigNumber::from_integer(0, cm.getContext());
-  auto rk_bn = rk.get_rk_number();
+  // Decapsulating from original
+  vector<char> symmetric_key_decapsulate = cm.decapsulate_original(capsule, privateKeyA);
 
-  REQUIRE_FALSE( rk_bn == bnZero );
+  REQUIRE( symmetric_key_decapsulate.size() == cm.getContext()->get_key_length() );
+  REQUIRE( symmetric_key == symmetric_key_decapsulate );
+
+  // Getting re-encryption Key!
+  auto rkAB = cm.get_re_encryption_key(privateKeyA, publicKeyB);
+
+  // Getting re-encryption capsule
+  auto reCapsule = cm.get_re_encryption_capsule(capsule, rkAB);
+  auto symmetricKeyRE = cm.decapsulate_re_encrypted(reCapsule, privateKeyB);
+
+  REQUIRE( symmetricKeyRE == symmetric_key );
 }

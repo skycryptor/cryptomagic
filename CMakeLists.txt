@@ -19,6 +19,6 @@ target_link_libraries(${PROJECT_NAME} OpenSSL::Crypto)
 
 enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -j4)
-add_executable(${PROJECT_TESTS} src/tests/tests.cpp src/tests/bignumber.cpp src/tests/capsule.cpp src/tests/re_encryption.cpp)
+add_executable(${PROJECT_TESTS} src/tests/tests.cpp src/tests/bignumber.cpp src/tests/re_encryption.cpp)
 target_link_libraries(${PROJECT_TESTS} ${PROJECT_NAME} OpenSSL::Crypto)
 add_test(NAME ${PROJECT_TESTS} COMMAND ${PROJECT_TESTS} --use-colour=yes)
