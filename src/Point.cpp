@@ -2,6 +2,7 @@
 // Created by Tigran on 6/25/18.
 //
 
+#include "cstring"
 #include "Point.h"
 #include "defines.h"
 #include "helpers.h"

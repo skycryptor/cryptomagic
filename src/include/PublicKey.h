@@ -33,7 +33,16 @@ namespace SkyCryptor {
      * @param ctx Cryptographic context pointer
      */
     PublicKey(const Point &ec_point, Context *ctx);
-    PublicKey(Context *ctx);
+    /**
+     * \brief Making PublicKey with NULL point to fill it later on
+     * @param ctx
+     */
+    explicit PublicKey(Context *ctx);
+    /**
+     * \brief Making public key object from existing one
+     * @param pk
+     */
+    PublicKey(const PublicKey& pk);
     ~PublicKey() = default;
 
     /**

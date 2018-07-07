@@ -16,8 +16,6 @@ namespace SkyCryptor {
   class PrivateKey {
     /// Private key bigNumber representation
     BigNumber bigNumber;
-    /// Keeping public key for having it specifically for this Private Key
-    PublicKey publicKey;
     /// Keeping crypto context for making decision based on specific context parameters
     /// NOTE: this class is not taking responsibility for deleting Context pointer
     Context *context;
@@ -29,7 +27,18 @@ namespace SkyCryptor {
      * @param ctx Cryptographic context pointer
      */
     PrivateKey(BigNumber& bn, Context *ctx);
-    PrivateKey(Context *ctx);
+    /**
+     * \brief By providing only Crypto context we are making random Private Key
+     * this is the same as calling static generate(ctx) function
+     * @param ctx
+     */
+    explicit PrivateKey(Context *ctx);
+
+    /**
+     * \brief this is an implementation for copying existing private key as an object
+     * @param privateKey
+     */
+    PrivateKey(const PrivateKey& privateKey);
     ~PrivateKey() = default;
 
     /**
@@ -46,6 +55,12 @@ namespace SkyCryptor {
      * @return PrivateKey
      */
     static PrivateKey generate(Context *ctx);
+
+    /**
+     * \brief Getting big number which is representing this Private Key
+     * @return
+     */
+    BigNumber getBigNumber();
 
     /**
      * \brief MUL operator for having PrivateKey * Point = Point

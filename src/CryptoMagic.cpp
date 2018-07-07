@@ -1,6 +1,7 @@
 #include "CryptoMagic.h"
 
 #include "helpers.h"
+#include "KeyPair.h"
 
 namespace SkyCryptor {
 
@@ -18,23 +19,27 @@ namespace SkyCryptor {
 
   Capsule CryptoMagic::encapsulate(PublicKey &pk, vector<char> &symmetric_key_out) const {
     auto ctx = (Context *)&context;
-    auto rand_u = BigNumber::generate_random(ctx);
-    auto rand_r = BigNumber::generate_random(ctx);
-    auto g = Point::get_generator(ctx);
+    // generating 2 random key pairs
+    auto kp1 = KeyPair::generate(ctx);
+    auto kp2 = KeyPair::generate(ctx);
 
-    // Calculating parts E, V
-    auto point_E = rand_r * g;
-    auto point_V = rand_u * g;
+    // getting private keys out of generated KeyPair
+    auto skU = kp1.getPrivateKey().getBigNumber();
+    auto skR = kp2.getPrivateKey().getBigNumber();
+
+    // getting public key points
+    auto point_E = kp1.getPublicKey().getPoint();
+    auto point_V = kp2.getPublicKey().getPoint();
 
     vector<Point> tmpHash = {point_E, point_V};
     vector<char> hash = Point::hash(ctx, tmpHash);
     auto hash_bn = BigNumber::from_bytes((unsigned char*)&hash[0], hash.size(), ctx);
 
     // Calculating part S from BN hashing
-    auto part_S = rand_u + (rand_r * hash_bn);
+    auto part_S = skU + (skR * hash_bn);
 
     // Making symmetric key
-    auto point_symmetric = (rand_u + rand_r) * pk;
+    auto point_symmetric = (skU + skR) * pk;
     vector<char> symmetric_key = KDF(point_symmetric, ctx);
 
     // setting output byte buffer

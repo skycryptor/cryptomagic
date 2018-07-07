@@ -31,4 +31,9 @@ namespace SkyCryptor {
   Point PublicKey::operator*(const BigNumber &other) const {
     return (*point) * other;
   }
+
+  PublicKey::PublicKey(const PublicKey &pk) {
+    context = pk.context;
+    point = pk.point;
+  }
 }
