@@ -45,7 +45,7 @@ namespace SkyCryptor {
     // setting output byte buffer
     symmetric_key_out.assign(symmetric_key.begin(), symmetric_key.end());
 
-    return Capsule(point_E, point_V, part_S);
+    return Capsule(point_E, point_V, part_S, ctx);
   }
 
   vector<char> CryptoMagic::decapsulate_original(Capsule &capsule, PrivateKey &privateKey) {
@@ -70,5 +70,33 @@ namespace SkyCryptor {
     auto rk = privateKeyA * (~hash_bn);
 
     return ReEncryptionKey(rk, tmp_publicKeyPoint);
+  }
+
+  Capsule CryptoMagic::get_re_encryption_capsule(Capsule &capsuleOriginal, ReEncryptionKey &reEncryptionKey) {
+    auto ctx = &context;
+    auto primeE = reEncryptionKey * capsuleOriginal.get_particleE();
+    auto primeV = reEncryptionKey * capsuleOriginal.get_particleV();
+
+    // TODO: we should definitely change this, and figure out how to calculate primeS
+    auto primeS = BigNumber::from_integer(1, ctx) * capsuleOriginal.get_particleS();
+
+    auto primeXG = reEncryptionKey.get_rk_point();
+    return Capsule(primeE, primeV, primeS, primeXG, ctx);
+  }
+
+  vector<char> CryptoMagic::decapsulate_re_encrypted(Capsule &re_encrypted_capsule, PrivateKey &privateKey) {
+    auto ctx = (Context *)&context;
+    auto primeXG = re_encrypted_capsule.get_particleXG();
+    auto primeE = re_encrypted_capsule.get_particleE();
+    auto primeV = re_encrypted_capsule.get_particleV();
+    vector<Point> points_for_hash = {
+      primeXG,
+      privateKey.get_publicKey().getPoint(),
+      privateKey * primeXG
+    };
+    auto tmp_hash_bytes = Point::hash(ctx, points_for_hash);
+    auto hash_bn = BigNumber::from_bytes((unsigned char*)&tmp_hash_bytes[0], tmp_hash_bytes.size(), ctx);
+    auto tmp_kdf_point = hash_bn * (primeE + primeV);
+    return KDF(tmp_kdf_point, ctx);
   }
 }

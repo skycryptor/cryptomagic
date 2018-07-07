@@ -66,6 +66,22 @@ namespace SkyCryptor {
      * @return
      */
     ReEncryptionKey get_re_encryption_key(PrivateKey& privateKeyA, PublicKey& publicKeyB);
+
+    /**
+     * \brief Getting re-encryption capsule from given original capsule and re-encryption key
+     * @param capsuleOriginal
+     * @param reEncryptionKey
+     * @return
+     */
+    Capsule get_re_encryption_capsule(Capsule& capsuleOriginal, ReEncryptionKey& reEncryptionKey);
+
+    /**
+     * \brief Decapsulating given capsule with provided private key
+     * @param re_encrypted_capsule
+     * @param privateKey
+     * @return
+     */
+    vector<char> decapsulate_re_encrypted(Capsule& re_encrypted_capsule, PrivateKey& privateKey);
   };
 
 }

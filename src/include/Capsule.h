@@ -18,6 +18,11 @@ namespace SkyCryptor {
     Point particleE;
     Point particleV;
     BigNumber particleS;
+    Point particleXG;
+
+    /// Keeping crypto context available for capsule
+    /// NOTE: this class is not taking responsibility for cleaning up this pointer
+    Context *context;
 
    public:
     /**
@@ -25,8 +30,18 @@ namespace SkyCryptor {
      * @param E
      * @param V
      * @param S
+     * @param ctx
      */
-    Capsule(Point E, Point V, BigNumber S);
+    Capsule(Point& E, Point& V, BigNumber& S, Context *ctx);
+    /**
+     * \brief Making capsule with particles and public key to be encoded with it
+     * @param E
+     * @param V
+     * @param S
+     * @param XG
+     * @param ctx
+     */
+    Capsule(Point& E, Point& V, BigNumber& S, Point& XG, Context *ctx);
     ~Capsule() = default;
 
     /**
@@ -46,6 +61,12 @@ namespace SkyCryptor {
      * @return
      */
     BigNumber get_particleS() const;
+
+    /**
+     * Getting particle XG
+     * @return
+     */
+    Point get_particleXG() const;
   };
 }
 

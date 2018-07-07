@@ -6,7 +6,8 @@
 
 namespace SkyCryptor {
 
-  Capsule::Capsule(Point E, Point V, BigNumber S) : particleE(E), particleV(V), particleS(S) {}
+  Capsule::Capsule(Point& E, Point& V, BigNumber& S, Context *ctx)
+    : particleE(E), particleV(V), particleS(S), particleXG(ctx) {}
 
   Point Capsule::get_particleE() const {
     return particleE;
@@ -18,5 +19,12 @@ namespace SkyCryptor {
 
   BigNumber Capsule::get_particleS() const {
     return particleS;
+  }
+
+  Capsule::Capsule(Point &E, Point &V, BigNumber &S, Point &XG, Context *ctx)
+    : particleE(E), particleV(V), particleS(S), particleXG(XG) {}
+
+  Point Capsule::get_particleXG() const {
+    return particleXG;
   }
 }

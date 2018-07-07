@@ -36,6 +36,13 @@ namespace SkyCryptor {
      * @return
      */
     Point get_rk_point();
+
+    /**
+     * \brief making operator for having ReEncryptionKey * Point = Point
+     * @param point
+     * @return
+     */
+    Point operator*(const Point& point) const;
   };
 }
 

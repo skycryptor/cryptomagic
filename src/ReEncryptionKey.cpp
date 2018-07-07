@@ -16,4 +16,8 @@ namespace SkyCryptor {
   Point ReEncryptionKey::get_rk_point() {
     return rk_point;
   }
+
+  Point ReEncryptionKey::operator*(const Point &point) const {
+    return rk_point * point;
+  }
 }
