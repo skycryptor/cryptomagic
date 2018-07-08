@@ -25,4 +25,56 @@ extern "C" void * cryptomagic_new();
  */
 extern "C" void cryptomagic_clear(void *cm_ptr);
 
+/**
+ * \brief Generating private key from given CryptoMagic pointer
+ * @param cm_ptr
+ * @return raw pointer to private key
+ */
+extern "C" void * cryptomagic_generate_private_key(void *cm_ptr);
+
+/**
+ * \brief Clearing private key from memory
+ * @param private_key_ptr
+ */
+extern "C" void cryptomagic_private_key_free(void *private_key_ptr);
+
+/**
+ * \brief Getting public key from given private key
+ * @param private_key_ptr
+ * @return raw pointer to public key object
+ */
+extern "C" void * cryptomagic_get_public_key(void *private_key_ptr);
+
+/**
+ * \brief Cleaning up public key object from memory
+ * @param public_key_ptr
+ * @return
+ */
+extern "C" void cryptomagic_public_key_free(void *public_key_ptr);
+
+/**
+ * \brief Handling encapsulation process and returning both Capsule raw pointer and symmetric key buffer
+ * @param cm_ptr main cryptomagic object raw pointer to perform action
+ * @param public_key_ptr
+ * @package[out] symmetric_key_out
+ * @package[out] symmetric_key_len
+ * @return raw pointer to capsule object
+ */
+extern "C" void * encapsulate(void * cm_ptr, void *public_key_ptr, char **symmetric_key_out, int *symmetric_key_len);
+
+/**
+ * \brief Cleaning capsule from memory
+ * @param capsule_ptr
+ */
+extern "C" void cryptomagic_capsule_free(void *capsule_ptr);
+
+/**
+ * \brief Decapsulating given capsule with given private key and returning symmetric byte buffer
+ * @param cm_ptr main cryptomagic object raw pointer to perform action
+ * @param private_key_ptr
+ * @param[out] symmetric_key_out
+ * @param[out] symmetric_key_len
+ */
+extern "C" void decapsulate_original(void * cm_ptr, void *capsule_ptr, void * private_key_ptr, char **symmetric_key_out, int *symmetric_key_len);
+
 #endif //CRYPTOMAIC_CRYPTOMAGIC_H

@@ -42,6 +42,11 @@ namespace SkyCryptor {
      * @param ctx
      */
     Capsule(Point& E, Point& V, BigNumber& S, Point& XG, Context *ctx);
+    /**
+     * \brief Copy constructor from another capsule
+     * @param other
+     */
+    Capsule(const Capsule& other);
     ~Capsule() = default;
 
     /**
