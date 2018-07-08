@@ -46,7 +46,9 @@ namespace SkyCryptor {
   vector<char> Point::toBytes() const {
     BigNumber bn(context);
     char *hexStr = EC_POINT_point2hex(context->get_ec_group(), point_raw->get_ec_point(), POINT_CONVERSION_UNCOMPRESSED, bn.getRawBnCtx());
-    return vector<char>(hexStr, hexStr + strlen(hexStr));
+    auto ret = vector<char>(hexStr, hexStr + strlen(hexStr));
+    free(hexStr);
+    return ret;
   }
 
   Point Point::from_bytes(const vector<char>& bytes, Context *ctx) {
