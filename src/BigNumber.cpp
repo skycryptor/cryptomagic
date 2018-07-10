@@ -56,7 +56,7 @@ namespace SkyCryptor {
   }
 
   BigNumber BigNumber::from_bytes(unsigned char *buffer, int len, Context *ctx) {
-    return BigNumber(BN_bin2bn((const unsigned char*)&buffer, len, NULL), ctx);
+    return BigNumber(BN_bin2bn((const unsigned char*)buffer, len, NULL), ctx);
   }
 
   BigNumber BigNumber::from_integer(unsigned long num, Context *ctx) {
@@ -82,11 +82,10 @@ namespace SkyCryptor {
     return Point(raw_p, context);
   }
 
-  void BigNumber::toBytes(string& result_out) {
-    auto binData = new char[BN_num_bytes(bn_raw->get_bignum())];
-    BN_bn2bin(bn_raw->get_bignum(), (unsigned char*) binData);
-    result_out.assign(binData);
-    delete[] binData;
+  vector<char> BigNumber::toBytes() {
+    vector<char> ret(BN_num_bytes(bn_raw->get_bignum()));
+    BN_bn2bin(bn_raw->get_bignum(), (unsigned char*) &ret[0]);
+    return ret;
   }
 
   BIGNUM *BigNumber::getRawBigNum() const {

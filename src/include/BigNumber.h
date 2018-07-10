@@ -100,10 +100,9 @@ namespace SkyCryptor {
 
     /**
      * \brief Getting BIGNUM bytes from existing OpenSSL BIGNUM
-     * @param[out] result_out Serialized string to fill up.
-     * @return nothing.
+     * @return vector of bytes
      */
-    void toBytes(string& result_out);
+    vector<char> toBytes();
 
     /**
      * \brief Getting reference to OpenSSL BIGNUM

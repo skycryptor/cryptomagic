@@ -19,8 +19,8 @@ TEST_CASE( "C interface test1" ) {
   char *symmetricKey1; int symmetricKeyLen1;
   char *symmetricKey2; int symmetricKeyLen2;
 
-  void *capsule = encapsulate(cm, pk, &symmetricKey1, &symmetricKeyLen1);
-  decapsulate_original(cm, capsule, sk, &symmetricKey2, &symmetricKeyLen2);
+  void *capsule = cryptomagic_encapsulate(cm, pk, &symmetricKey1, &symmetricKeyLen1);
+  cryptomagic_decapsulate_original(cm, capsule, sk, &symmetricKey2, &symmetricKeyLen2);
 
   REQUIRE( symmetricKeyLen1 == symmetricKeyLen2 );
   REQUIRE( strncmp(symmetricKey1, symmetricKey2, symmetricKeyLen1) == 0 );

@@ -2,6 +2,7 @@
 // Created by Tigran on 7/5/18.
 //
 
+#include <include/helpers.h>
 #include "catch/catch.hpp"
 #include "CryptoMagic.h"
 #include "PrivateKey.h"
@@ -35,5 +36,5 @@ TEST_CASE( "Re-encryption key generation" ) {
   auto reCapsule = cm.get_re_encryption_capsule(capsule, rkAB);
   auto symmetricKeyRE = cm.decapsulate_re_encrypted(reCapsule, privateKeyB);
 
-//  REQUIRE( symmetricKeyRE == symmetric_key );
+  REQUIRE( symmetricKeyRE == symmetric_key );
 }
