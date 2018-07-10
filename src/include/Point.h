@@ -65,6 +65,7 @@ namespace SkyCryptor {
      * @return
      */
     static Point from_bytes(const vector<char>& bytes, Context *ctx);
+    static Point from_bytes(const char *bytes, Context *ctx);
 
     /**
      * \brief Generating random point for context based Elliptic curve

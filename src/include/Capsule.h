@@ -24,6 +24,7 @@ namespace SkyCryptor {
     /// NOTE: this class is not taking responsibility for cleaning up this pointer
     Context *context;
 
+    bool reEncruption = false;
    public:
     /**
      * \brief Making capsule with given particles
@@ -41,7 +42,7 @@ namespace SkyCryptor {
      * @param XG
      * @param ctx
      */
-    Capsule(Point& E, Point& V, BigNumber& S, Point& XG, Context *ctx);
+    Capsule(Point& E, Point& V, BigNumber& S, Point& XG, Context *ctx, bool isReEncruption = false);
     /**
      * \brief Copy constructor from another capsule
      * @param other
@@ -72,6 +73,32 @@ namespace SkyCryptor {
      * @return
      */
     Point get_particleXG() const;
+
+    /**
+     * \brief Setting capsule as re-encryption capsule
+     */
+    void setReEncription();
+
+    /**
+     * \brief Checking if we have re-encryption capsule or not
+     * @return
+     */
+    bool isReEncryption();
+
+    /**
+     * \brief Serializing capsule to bytes
+     * @return
+     */
+    vector<char> toBytes();
+
+    /**
+     * \brief Getting Capsule from encoded bytes
+     * @param buffer
+     * @param length
+     * @param ctx
+     * @return
+     */
+    static Capsule from_bytes(const char *buffer, int length, Context *ctx);
   };
 }
 

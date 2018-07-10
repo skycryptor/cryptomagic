@@ -101,5 +101,15 @@ void *cryptomagic_public_key_from_bytes(void *cm_ptr, char *buffer, int length) 
 }
 
 void cryptomagic_capsule_to_bytes(void *capsule, char **buffer, int *length) {
+  auto c = (Capsule*) capsule;
+  auto capsule_buffer = c->toBytes();
+  *buffer = (char*)malloc(capsule_buffer.size());
+  *length = capsule_buffer.size();
+  memcpy(*buffer, &capsule_buffer[0], capsule_buffer.size());
+}
 
+void *cryptomagic_capsule_from_bytes(void * cm_ptr, char *buffer, int length) {
+  auto cm = (CryptoMagic*) cm_ptr;
+  auto capsule = Capsule::from_bytes(buffer, length, cm->getContext());
+  return new Capsule(capsule);
 }

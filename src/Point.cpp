@@ -52,9 +52,13 @@ namespace SkyCryptor {
   }
 
   Point Point::from_bytes(const vector<char>& bytes, Context *ctx) {
+    return Point::from_bytes(&bytes[0], ctx);
+  }
+
+  Point Point::from_bytes(const char *bytes, Context *ctx) {
     BigNumber bn(ctx);
     Point p(EC_POINT_new(ctx->get_ec_group()), ctx);
-    EC_POINT_hex2point(ctx->get_ec_group(), &bytes[0], p.point_raw->get_ec_point(), bn.getRawBnCtx());
+    EC_POINT_hex2point(ctx->get_ec_group(), bytes, p.point_raw->get_ec_point(), bn.getRawBnCtx());
     return p;
   }
 

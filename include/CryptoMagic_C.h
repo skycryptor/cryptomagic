@@ -125,11 +125,12 @@ void cryptomagic_capsule_to_bytes(void *capsule, char **buffer, int *length);
 
 /**
  * \brief Allocating and returning capsule from given byte array
+ * @param cm_ptr
  * @param buffer
  * @param length
  * @return
  */
-void * cryptomagic_capsule_from_bytes(char *buffer, int length);
+void * cryptomagic_capsule_from_bytes(void * cm_ptr, char *buffer, int length);
 
 #ifdef __cplusplus
 }
