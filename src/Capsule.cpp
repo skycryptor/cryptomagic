@@ -14,10 +14,10 @@ namespace SkyCryptor {
     context = ctx;
   }
 
-  Capsule::Capsule(Point &E, Point &V, BigNumber &S, Point &XG, Context *ctx, bool isReEncruption)
+  Capsule::Capsule(Point &E, Point &V, BigNumber &S, Point &XG, Context *ctx, bool isReEncription)
     : particleE(E), particleV(V), particleS(S), particleXG(XG) {
     context = ctx;
-    reEncruption = isReEncruption;
+    reEncription = isReEncription;
   }
 
   Capsule::Capsule(const Capsule &other)
@@ -42,11 +42,11 @@ namespace SkyCryptor {
   }
 
   void Capsule::setReEncription() {
-    reEncruption = true;
+    reEncription = true;
   }
 
   bool Capsule::isReEncryption() {
-    return reEncruption;
+    return reEncription;
   }
 
   vector<char> Capsule::toBytes() {
@@ -64,7 +64,7 @@ namespace SkyCryptor {
     vector<char> ret(1 + pE.size() +  4 + pV.size() + 4 + pS.size() + 4 + pXG.size() + 4);
     int mem_index = 0;
     // 1 byte for keeping ReEncryption boolean
-    ret[mem_index] = (char) (reEncruption ? 1 : 0);
+    ret[mem_index] = (char) (reEncription ? 1 : 0);
     mem_index += 1;
     memcpy(&ret[mem_index], &pE_len, 4);
     mem_index += 4;

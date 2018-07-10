@@ -24,7 +24,7 @@ namespace SkyCryptor {
     /// NOTE: this class is not taking responsibility for cleaning up this pointer
     Context *context;
 
-    bool reEncruption = false;
+    bool reEncription = false;
    public:
     /**
      * \brief Making capsule with given particles
@@ -42,7 +42,7 @@ namespace SkyCryptor {
      * @param XG
      * @param ctx
      */
-    Capsule(Point& E, Point& V, BigNumber& S, Point& XG, Context *ctx, bool isReEncruption = false);
+    Capsule(Point& E, Point& V, BigNumber& S, Point& XG, Context *ctx, bool isReEncription = false);
     /**
      * \brief Copy constructor from another capsule
      * @param other
