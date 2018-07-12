@@ -15,10 +15,10 @@ namespace SkyCryptor {
     context = ctx;
   }
 
-  Capsule::Capsule(Point &E, Point &V, BigNumber &S, Point &XG, Context *ctx, bool isReEncription)
+  Capsule::Capsule(Point &E, Point &V, BigNumber &S, Point &XG, Context *ctx, bool isReEncryption)
     : particleE(E), particleV(V), particleS(S), particleXG(XG) {
     context = ctx;
-    reEncription = isReEncription;
+    reEncrypted = isReEncryption;
   }
 
   Capsule::Capsule(const Capsule &other)
@@ -42,12 +42,12 @@ namespace SkyCryptor {
     return particleXG;
   }
 
-  void Capsule::setReEncription() {
-    reEncription = true;
+  void Capsule::setReEncrypted() {
+    reEncrypted = true;
   }
 
-  bool Capsule::isReEncryption() {
-    return reEncription;
+  bool Capsule::isreEncrypted() {
+    return reEncrypted;
   }
 
   vector<char> Capsule::toBytes() {

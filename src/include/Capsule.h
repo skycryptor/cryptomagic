@@ -24,7 +24,7 @@ namespace SkyCryptor {
     /// NOTE: this class is not taking responsibility for cleaning up this pointer
     Context *context;
 
-    bool reEncription = false;
+    bool reEncrypted = false;
    public:
     /**
      * \brief Making capsule with given particles
@@ -77,13 +77,13 @@ namespace SkyCryptor {
     /**
      * \brief Setting capsule as re-encryption capsule
      */
-    void setReEncription();
+    void setReEncrypted();
 
     /**
      * \brief Checking if we have re-encryption capsule or not
      * @return
      */
-    bool isReEncryption();
+    bool isreEncrypted();
 
     /**
      * \brief Serializing capsule to bytes

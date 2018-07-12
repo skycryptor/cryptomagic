@@ -61,11 +61,12 @@ void cryptomagic_capsule_free(void *capsule_ptr) {
   delete capsule;
 }
 
-void cryptomagic_decapsulate_original(void * cm_ptr, void *capsule_ptr, void *private_key_ptr, char **symmetric_key_out, int *symmetric_key_len) {
+void cryptomagic_decapsulate(void * cm_ptr, void *capsule_ptr, void *private_key_ptr, char **symmetric_key_out, int *symmetric_key_len) {
   auto cm = (CryptoMagic*) cm_ptr;
   auto sk = (PrivateKey*) private_key_ptr;
   auto capsule = (Capsule*) capsule_ptr;
-  vector<char> symmetricKey = cm->decapsulate_original(*capsule, *sk);
+  vector<char> symmetricKey = capsule->isreEncrypted() ?
+                              cm->decapsulate_original(*capsule, *sk) : cm->decapsulate_re_encrypted(*capsule, *sk);
   *symmetric_key_out = (char*)malloc(symmetricKey.size());
   *symmetric_key_len = (int)symmetricKey.size();
   memcpy(*symmetric_key_out, &symmetricKey[0], symmetricKey.size());
@@ -133,14 +134,4 @@ void *cryptomagic_get_re_encryption_capsule(void *cm_ptr, void *capsule_ptr, voi
   auto rkAB = (ReEncryptionKey*) rkAB_ptr;
   auto re_capsule = cm->get_re_encryption_capsule(*capsule, *rkAB);
   return new Capsule(re_capsule);
-}
-
-void cryptomagic_decapsulate_re_encrypted(void *cm_ptr, void *re_capsule_ptr, void *skB_ptr, char **buffer, int *length) {
-  auto cm = (CryptoMagic*) cm_ptr;
-  auto re_capsule = (Capsule*) re_capsule_ptr;
-  auto skB = (PrivateKey*) skB_ptr;
-  auto bytesVec = cm->decapsulate_re_encrypted(*re_capsule, *skB);
-  *buffer = (char*)malloc(bytesVec.size());
-  *length = bytesVec.size();
-  memcpy(*buffer, &bytesVec[0], bytesVec.size());
 }
