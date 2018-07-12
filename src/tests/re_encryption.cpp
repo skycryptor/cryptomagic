@@ -23,6 +23,10 @@ TEST_CASE( "Re-encryption key generation" ) {
   vector<char> symmetric_key;
   Capsule capsule = cm.encapsulate(publicKeyA, symmetric_key);
 
+  // Testing from bytes to bytes
+  auto capsule_data = capsule.toBytes();
+  capsule = Capsule::from_bytes(capsule_data, cm.getContext());
+
   // Decapsulating from original
   vector<char> symmetric_key_decapsulate = cm.decapsulate_original(capsule, privateKeyA);
 

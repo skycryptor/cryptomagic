@@ -99,6 +99,7 @@ namespace SkyCryptor {
      * @return
      */
     static Capsule from_bytes(const char *buffer, int length, Context *ctx);
+    static Capsule from_bytes(vector<char> buffer, Context *ctx);
   };
 }
 

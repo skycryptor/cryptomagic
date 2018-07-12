@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <cstring>
 #include <map>
+#include <iostream>
 #include "Capsule.h"
 
 namespace SkyCryptor {
@@ -52,6 +53,7 @@ namespace SkyCryptor {
   vector<char> Capsule::toBytes() {
     auto pE = particleE.toBytes();
     auto pE_len = htonl(pE.size());
+    std::cout << string(pE.begin(), pE.end()) << std::endl;
 
     auto pV = particleV.toBytes();
     auto pV_len = htonl(pV.size());
@@ -68,23 +70,25 @@ namespace SkyCryptor {
     mem_index += 1;
     memcpy(&ret[mem_index], &pE_len, 4);
     mem_index += 4;
-    memcpy(&ret[mem_index], &pE[0], 4);
+    memcpy(&ret[mem_index], &pE[0], pE.size());
     mem_index += pE.size();
 
     memcpy(&ret[mem_index], &pV_len, 4);
     mem_index += 4;
-    memcpy(&ret[mem_index], &pV[0], 4);
+    memcpy(&ret[mem_index], &pV[0], pV.size());
     mem_index += pV.size();
 
     memcpy(&ret[mem_index], &pS_len, 4);
     mem_index += 4;
-    memcpy(&ret[mem_index], &pS[0], 4);
+    memcpy(&ret[mem_index], &pS[0], pS.size());
     mem_index += pS.size();
 
     memcpy(&ret[mem_index], &pXG_len, 4);
     mem_index += 4;
-    memcpy(&ret[mem_index], &pXG[0], 4);
-    mem_index += pXG.size();
+    if (pXG_len > 0) {
+      memcpy(&ret[mem_index], &pXG[0], pXG.size());
+      mem_index += pXG.size();
+    }
 
     return ret;
   }
@@ -102,6 +106,7 @@ namespace SkyCryptor {
     tmp += 4;
     partE_len = ntohl(partE_len);
     vector<char> pE_buffer(tmp, tmp + partE_len);
+    std::cout << string(pE_buffer.begin(), pE_buffer.end()) << std::endl;
     auto pE = Point::from_bytes(pE_buffer, ctx);
     tmp += partE_len;
 
@@ -127,10 +132,17 @@ namespace SkyCryptor {
     memcpy(&partXG_len, tmp, 4);
     tmp += 4;
     partXG_len = ntohl(partXG_len);
-    vector<char> pXG_buffer(tmp, tmp + partXG_len);
-    auto pXG = Point::from_bytes(pXG_buffer, ctx);
-    tmp += partXG_len;
+    Point pXG(ctx);
+    if (partXG_len > 0) {
+      vector<char> pXG_buffer(tmp, tmp + partXG_len);
+      pXG = Point::from_bytes(pXG_buffer, ctx);
+      tmp += partXG_len;
+    }
 
     return Capsule(pE, pV, pS, pXG, ctx, isReEncrypted);
+  }
+
+  Capsule Capsule::from_bytes(vector<char> buffer, Context *ctx) {
+    return Capsule::from_bytes(&buffer[0], buffer.size(), ctx);
   }
 }
