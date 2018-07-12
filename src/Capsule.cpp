@@ -53,28 +53,22 @@ namespace SkyCryptor {
   vector<char> Capsule::toBytes() {
     auto pE = particleE.toBytes();
     auto pE_len = htonl(pE.size());
-    std::cout << string(pE.begin(), pE.end()) << std::endl;
 
+    auto pXG = particleXG.toBytes();
     auto pV = particleV.toBytes();
-    auto pV_len = htonl(pV.size());
 
     auto pS = particleS.toBytes();
     auto pS_len = htonl(pS.size());
 
-    auto pXG = particleXG.toBytes();
-    auto pXG_len = htonl(pXG.size());
-    vector<char> ret(1 + pE.size() +  4 + pV.size() + 4 + pS.size() + 4 + pXG.size() + 4);
+    vector<char> ret(4 + pE.size() + pV.size() + 4 + pS.size() + 1 + pXG.size());
     int mem_index = 0;
-    // 1 byte for keeping ReEncryption boolean
-    ret[mem_index] = (char) (reEncription ? 1 : 0);
-    mem_index += 1;
+
     memcpy(&ret[mem_index], &pE_len, 4);
     mem_index += 4;
+
     memcpy(&ret[mem_index], &pE[0], pE.size());
     mem_index += pE.size();
 
-    memcpy(&ret[mem_index], &pV_len, 4);
-    mem_index += 4;
     memcpy(&ret[mem_index], &pV[0], pV.size());
     mem_index += pV.size();
 
@@ -83,9 +77,11 @@ namespace SkyCryptor {
     memcpy(&ret[mem_index], &pS[0], pS.size());
     mem_index += pS.size();
 
-    memcpy(&ret[mem_index], &pXG_len, 4);
-    mem_index += 4;
-    if (pXG_len > 0) {
+    if (!pXG.empty()) {
+      ret[mem_index] = (char) 1;
+    } else {
+      ret[mem_index] = (char) 0;
+      mem_index += 1;
       memcpy(&ret[mem_index], &pXG[0], pXG.size());
       mem_index += pXG.size();
     }
@@ -96,28 +92,19 @@ namespace SkyCryptor {
   Capsule Capsule::from_bytes(const char *buffer, int length, Context *ctx) {
     const char *tmp = buffer;
 
-    // Getting boolean for re-encryption indicator
-    bool isReEncrypted = tmp[0] == 1;
-    tmp += 1;
-
     // Getting Particle E
-    int partE_len;
-    memcpy(&partE_len, tmp, 4);
+    int point_len;
+    memcpy(&point_len, tmp, 4);
     tmp += 4;
-    partE_len = ntohl(partE_len);
-    vector<char> pE_buffer(tmp, tmp + partE_len);
-    std::cout << string(pE_buffer.begin(), pE_buffer.end()) << std::endl;
+    point_len = ntohl(point_len);
+    vector<char> pE_buffer(tmp, tmp + point_len);
     auto pE = Point::from_bytes(pE_buffer, ctx);
-    tmp += partE_len;
+    tmp += point_len;
 
     // Getting Particle V
-    int partV_len;
-    memcpy(&partV_len, tmp, 4);
-    tmp += 4;
-    partV_len = ntohl(partV_len);
-    vector<char> pV_buffer(tmp, tmp + partV_len);
+    vector<char> pV_buffer(tmp, tmp + point_len);
     auto pV = Point::from_bytes(pV_buffer, ctx);
-    tmp += partV_len;
+    tmp += point_len;
 
     // Getting Particle S
     int partS_len;
@@ -127,16 +114,14 @@ namespace SkyCryptor {
     auto pS = BigNumber::from_bytes((unsigned char*)tmp, partS_len, ctx);
     tmp += partS_len;
 
-    // Getting Particle XG
-    int partXG_len;
-    memcpy(&partXG_len, tmp, 4);
-    tmp += 4;
-    partXG_len = ntohl(partXG_len);
+    // Getting boolean for re-encryption indicator
+    bool isReEncrypted = *tmp == 1;
+    tmp += 1;
     Point pXG(ctx);
-    if (partXG_len > 0) {
-      vector<char> pXG_buffer(tmp, tmp + partXG_len);
+    if (isReEncrypted) {
+      vector<char> pXG_buffer(tmp, tmp + point_len);
       pXG = Point::from_bytes(pXG_buffer, ctx);
-      tmp += partXG_len;
+      tmp += point_len;
     }
 
     return Capsule(pE, pV, pS, pXG, ctx, isReEncrypted);
