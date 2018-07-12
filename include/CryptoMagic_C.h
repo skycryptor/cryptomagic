@@ -132,6 +132,40 @@ void cryptomagic_capsule_to_bytes(void *capsule, char **buffer, int *length);
  */
 void * cryptomagic_capsule_from_bytes(void * cm_ptr, char *buffer, int length);
 
+/**
+ * \brief Getting re-encryption key A->B using PrivateKey A and PublicKey B
+ * @param cm_ptr main cryptomagic object raw pointer to perform action
+ * @param skA_ptr
+ * @param pkB_ptr
+ * @return
+ */
+void * cryptomagic_get_re_encryption_key(void * cm_ptr, void *skA_ptr, void *pkB_ptr);
+
+/**
+ * \brief Cleaning up re-encryption key from memory
+ * @param rkk_ptr
+ */
+void cryptomagic_re_encryption_key_free(void *rkk_ptr);
+
+/**
+ * \brief Getting re-encryption capsule using Original capsule and PublicKey B
+ * @param cm_ptr main cryptomagic object raw pointer to perform action
+ * @param capsule_ptr
+ * @param rkAB_ptr
+ * @return
+ */
+void * cryptomagic_get_re_encryption_capsule(void * cm_ptr, void * capsule_ptr, void *rkAB_ptr);
+
+/**
+ * \brief Decapsulating re-encrypted capsule from given re-encryption capsule and PrivateKey B
+ * @param cm_ptr main cryptomagic object raw pointer to perform action
+ * @param re_capsule_ptr
+ * @param skB_ptr
+ * @param[out] buffer symmetric key buffer
+ * @param[out] length symmetric key buffer length
+ */
+void cryptomagic_decapsulate_re_encrypted(void * cm_ptr, void *re_capsule_ptr, void *skB_ptr, char **buffer, int *length);
+
 #ifdef __cplusplus
 }
 #endif

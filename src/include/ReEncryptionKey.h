@@ -23,6 +23,7 @@ namespace SkyCryptor {
      * @param point
      */
     ReEncryptionKey(const BigNumber& bn, const Point& point);
+    ReEncryptionKey(const ReEncryptionKey& rkk);
     ~ReEncryptionKey() = default;
 
     /**

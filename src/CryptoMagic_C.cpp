@@ -113,3 +113,34 @@ void *cryptomagic_capsule_from_bytes(void * cm_ptr, char *buffer, int length) {
   auto capsule = Capsule::from_bytes(buffer, length, cm->getContext());
   return new Capsule(capsule);
 }
+
+void *cryptomagic_get_re_encryption_key(void * cm_ptr, void *skA_ptr, void *pkB_ptr) {
+  auto cm = (CryptoMagic*) cm_ptr;
+  auto skA = (PrivateKey*) skA_ptr;
+  auto pkA = (PublicKey*) pkB_ptr;
+  auto rkk = cm->get_re_encryption_key(*skA, *pkA);
+  return new ReEncryptionKey(rkk);
+}
+
+void cryptomagic_re_encryption_key_free(void *rkk_ptr) {
+  auto rkk = (ReEncryptionKey*) rkk_ptr;
+  delete rkk;
+}
+
+void *cryptomagic_get_re_encryption_capsule(void *cm_ptr, void *capsule_ptr, void *rkAB_ptr) {
+  auto cm = (CryptoMagic*) cm_ptr;
+  auto capsule = (Capsule*) capsule_ptr;
+  auto rkAB = (ReEncryptionKey*) rkAB_ptr;
+  auto re_capsule = cm->get_re_encryption_capsule(*capsule, *rkAB);
+  return new Capsule(re_capsule);
+}
+
+void cryptomagic_decapsulate_re_encrypted(void *cm_ptr, void *re_capsule_ptr, void *skB_ptr, char **buffer, int *length) {
+  auto cm = (CryptoMagic*) cm_ptr;
+  auto re_capsule = (Capsule*) re_capsule_ptr;
+  auto skB = (PrivateKey*) skB_ptr;
+  auto bytesVec = cm->decapsulate_re_encrypted(*re_capsule, *skB);
+  *buffer = (char*)malloc(bytesVec.size());
+  *length = bytesVec.size();
+  memcpy(*buffer, &bytesVec[0], bytesVec.size());
+}
