@@ -66,7 +66,8 @@ void cryptomagic_decapsulate(void * cm_ptr, void *capsule_ptr, void *private_key
   auto sk = (PrivateKey*) private_key_ptr;
   auto capsule = (Capsule*) capsule_ptr;
   vector<char> symmetricKey = capsule->isreEncrypted() ?
-                              cm->decapsulate_original(*capsule, *sk) : cm->decapsulate_re_encrypted(*capsule, *sk);
+                              cm->decapsulate_re_encrypted(*capsule, *sk)
+                              : cm->decapsulate_original(*capsule, *sk);
   *symmetric_key_out = (char*)malloc(symmetricKey.size());
   *symmetric_key_len = (int)symmetricKey.size();
   memcpy(*symmetric_key_out, &symmetricKey[0], symmetricKey.size());
