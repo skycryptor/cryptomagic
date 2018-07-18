@@ -44,6 +44,29 @@ namespace SkyCryptor {
      * @return
      */
     Point operator*(const Point& point) const;
+
+    /**
+     * \brief converting our re-encryption key to bytes
+     * @return
+     */
+    vector<char> toBytes();
+
+    /**
+     * \brief Making re-encryption key from encoded bytes using provided raw bytes pointer
+     * @param buffer
+     * @param length
+     * @param ctx
+     * @return
+     */
+    static ReEncryptionKey fromBytes(const char *buffer, int length, Context *ctx);
+
+    /**
+     * \brief Making re-encryption key from encoded bytes using provided bytes vector
+     * @param buffer
+     * @param ctx
+     * @return
+     */
+    static ReEncryptionKey fromBytes(vector<char> buffer, Context *ctx);
   };
 }
 

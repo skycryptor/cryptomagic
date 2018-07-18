@@ -124,6 +124,12 @@ void *cryptomagic_get_re_encryption_key(void * cm_ptr, void *skA_ptr, void *pkB_
   return new ReEncryptionKey(rkk);
 }
 
+void *cryptomagic_get_re_encryption_from_bytes(void *cm_ptr, char *buffer, int length) {
+  auto cm = (CryptoMagic*) cm_ptr;
+  auto rkk = ReEncryptionKey::fromBytes(buffer, length, cm->getContext());
+  return new ReEncryptionKey(rkk);
+}
+
 void cryptomagic_re_encryption_key_free(void *rkk_ptr) {
   auto rkk = (ReEncryptionKey*) rkk_ptr;
   delete rkk;
@@ -135,4 +141,12 @@ void *cryptomagic_get_re_encryption_capsule(void *cm_ptr, void *capsule_ptr, voi
   auto rkAB = (ReEncryptionKey*) rkAB_ptr;
   auto re_capsule = cm->get_re_encryption_capsule(*capsule, *rkAB);
   return new Capsule(re_capsule);
+}
+
+void cryptomagic_re_encryption_to_bytes(void * rkk_ptr, char **buffer, int *length) {
+  auto rkk = (ReEncryptionKey*)rkk_ptr;
+  auto bytes_vec = rkk->toBytes();
+  *length = bytes_vec.size();
+  *buffer = (char*)malloc(*length);
+  memcpy(*buffer, &bytes_vec[0], *length);
 }
