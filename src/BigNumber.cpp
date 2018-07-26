@@ -2,9 +2,8 @@
 // Created by Tigran on 6/23/18.
 //
 
-#include "BigNumber.h"
-#include "iostream"
 #include <arpa/inet.h>
+#include "BigNumber.h"
 #include "defines.h"
 
 namespace SkyCryptor {

@@ -2,10 +2,10 @@
 // Created by tigran on 7/8/18.
 //
 
+#include <cstring>
 #include "catch/catch.hpp"
 #include "CryptoMagic_C.h"
 #include "iostream"
-#include <string.h>
 
 using namespace std;
 

@@ -5,7 +5,7 @@
 #ifndef CRYPTOMAIC_PUBLICKEY_H
 #define CRYPTOMAIC_PUBLICKEY_H
 
-#include "memory"
+#include <memory>
 #include "BigNumber.h"
 #include "Point.h"
 #include "Context.h"

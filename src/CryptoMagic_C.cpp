@@ -4,9 +4,9 @@
 
 #include "CryptoMagic_C.h"
 #include "CryptoMagic.h"
-#include "openssl/bio.h"
-#include "openssl/ssl.h"
-#include "openssl/err.h"
+#include <openssl/bio.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
 using namespace SkyCryptor;
 

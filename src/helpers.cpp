@@ -3,8 +3,8 @@
 //
 
 #include "helpers.h"
-#include "openssl/evp.h"
-#include "openssl/sha.h"
+#include <openssl/evp.h>
+#include <openssl/sha.h>
 
 namespace SkyCryptor {
 

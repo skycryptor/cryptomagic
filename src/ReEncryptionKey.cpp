@@ -4,7 +4,7 @@
 
 #include "ReEncryptionKey.h"
 #include <netinet/in.h>
-#include "string.h"
+#include <cstring>
 
 namespace SkyCryptor {
 

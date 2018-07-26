@@ -5,8 +5,8 @@
 #ifndef CRYPTOMAIC_POINT_H
 #define CRYPTOMAIC_POINT_H
 
-#include "memory"
-#include "vector"
+#include <memory>
+#include <vector>
 #include "BigNumber.h"
 #include "PointRaw.h"
 #include "Context.h"

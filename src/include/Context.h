@@ -5,8 +5,8 @@
 #ifndef CRYPTOMAIC_CONTEXT_H
 #define CRYPTOMAIC_CONTEXT_H
 
-#include "string"
-#include "openssl/ec.h"
+#include <string>
+#include <openssl/ec.h>
 
 using namespace std;
 

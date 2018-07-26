@@ -5,8 +5,8 @@
 #ifndef CRYPTOMAIC_BIGNUMBERRAW_H
 #define CRYPTOMAIC_BIGNUMBERRAW_H
 
-#include "openssl/bn.h"
-#include "openssl/ec.h"
+#include <openssl/bn.h>
+#include <openssl/ec.h>
 
 namespace SkyCryptor {
   class BigNumberRaw {

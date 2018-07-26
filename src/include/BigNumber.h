@@ -5,9 +5,9 @@
 #ifndef CRYPTOMAIC_BIGNUMBER_H
 #define CRYPTOMAIC_BIGNUMBER_H
 
-#include "memory"
-#include "openssl/bn.h"
-#include "openssl/ec.h"
+#include <memory>
+#include <openssl/bn.h>
+#include <openssl/ec.h>
 #include "Context.h"
 #include "ErrorWrapper.h"
 #include "BigNumberRaw.h"
