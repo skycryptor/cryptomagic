@@ -68,7 +68,6 @@ namespace SkyCryptor {
 
   vector<char> Point::hash(Context *ctx, vector<Point>& points) {
     vector<vector<char>> point_hashes;
-    point_hashes.reserve(points.size());
     for(auto &p : points) {
       point_hashes.push_back(p.toBytes());
     }
