@@ -3,7 +3,7 @@ project(cryptomagic)
 
 set(CMAKE_CXX_STANDARD 11)
 
-#set(OPENSSL_ROOT_DIR /usr/local/opt/openssl/)
+set(OPENSSL_ROOT_DIR /usr/local/opt/openssl/)
 
 find_package(OpenSSL REQUIRED)
 if(OPENSSL_FOUND)
