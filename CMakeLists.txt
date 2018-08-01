@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 project(cryptomagic)
 
 set(CMAKE_CXX_STANDARD 11)
-
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(OPENSSL_ROOT_DIR /usr/local/opt/openssl/)
 
 find_package(OpenSSL REQUIRED)
