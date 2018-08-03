@@ -12,7 +12,7 @@ ExternalProject_Add(mbed_tls
 ExternalProject_Get_Property(mbed_tls install_dir)
 
 set(CMAKE_CXX_STANDARD 11)
-
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(OPENSSL_ROOT_DIR /usr/local/opt/openssl/)
 
 find_package(OpenSSL REQUIRED)
