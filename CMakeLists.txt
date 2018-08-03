@@ -16,9 +16,10 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(OPENSSL_ROOT_DIR /usr/local/opt/openssl/)
 
 find_package(OpenSSL REQUIRED)
-set(OPENSSL_VERSION 1.0.2)
+
 if(OPENSSL_FOUND)
     set(OPENSSL_USE_STATIC_LIBS TRUE)
+    set(OPENSSL_MSVC_STATIC_RT TRUE)
 endif()
 
 include_directories(${OPENSSL_INCLUDE_DIR} src src/include ${install_dir}/build/include include)
