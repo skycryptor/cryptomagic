@@ -19,7 +19,6 @@ find_package(OpenSSL REQUIRED)
 
 if(OPENSSL_FOUND)
     set(OPENSSL_USE_STATIC_LIBS TRUE)
-    set(OPENSSL_MSVC_STATIC_RT TRUE)
 endif()
 
 include_directories(${OPENSSL_INCLUDE_DIR} src src/include ${install_dir}/build/include include)
