@@ -16,6 +16,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(OPENSSL_ROOT_DIR /usr/local/opt/openssl/)
 
 find_package(OpenSSL REQUIRED)
+
 if(OPENSSL_FOUND)
     set(OPENSSL_USE_STATIC_LIBS TRUE)
 endif()
