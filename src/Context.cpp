@@ -3,29 +3,23 @@
 //
 
 #include "Context.h"
-#include <openssl/objects.h>
-
 
 namespace SkyCryptor {
 
-  Context::Context(const char * ec_name) {
-    elliptic_curve_name = ec_name;
-    ec_nid = OBJ_txt2nid(elliptic_curve_name.c_str());
-    if (ec_nid != 0) {
-      ec_group = EC_GROUP_new_by_curve_name(ec_nid);
-      if (ec_group == NULL) {
-        ec_group = nullptr;
-      }
+  Context::Context(int group_id) {
+    ec_nid = group_id;
+    mbedtls_ecp_group_init(ec_group);
+    int res = mbedtls_ecp_group_load(ec_group, group_id);
+    if (res != 0) {
+      // TODO: think about error reporting!!
     }
+    ec_group.
   }
 
-  string Context::get_elliptic_curve_name() {
-    return elliptic_curve_name;
-  }
 
   Context::~Context() {
     if (ec_group != nullptr) {
-      EC_GROUP_free(ec_group);
+      mbedtls_ecp_group_free(ec_group);
     }
   }
 
@@ -38,7 +32,7 @@ namespace SkyCryptor {
   }
 
   Context Context::getDefault() {
-    return Context("secp256k1");
+    return Context(MBEDTLS_ECP_DP_SECP256K1);
   }
 
   unsigned int Context::get_key_length() {
@@ -55,5 +49,9 @@ namespace SkyCryptor {
 
   void Context::get_iteration_count(unsigned int iter) {
     iteration_count = iter;
+  }
+
+  BIGNUM *Context::get_ec_order() {
+    return &ec_group->N;
   }
 }

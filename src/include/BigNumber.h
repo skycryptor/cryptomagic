@@ -6,8 +6,6 @@
 #define CRYPTOMAIC_BIGNUMBER_H
 
 #include <memory>
-#include <openssl/bn.h>
-#include <openssl/ec.h>
 #include "Context.h"
 #include "ErrorWrapper.h"
 #include "BigNumberRaw.h"
@@ -87,12 +85,6 @@ namespace SkyCryptor {
     static BigNumber from_bytes(unsigned char *buffer, int len, Context *ctx);
 
     /**
-     * \brief Getting BigNumber as a HEX string/byte array
-     * @return
-     */
-    string toHex() const;
-
-    /**
      * \brief Convert BigNumber to Point
      * @return
      */
@@ -109,11 +101,6 @@ namespace SkyCryptor {
      * @return
      */
     BIGNUM *getRawBigNum() const;
-    /**
-     * \brief Getting reference to OpenSSL BN_CTX to make context based operations with it
-     * @return
-     */
-    BN_CTX *getRawBnCtx() const;
 
     /**
      * \brief Checking if BigNumbers are equal

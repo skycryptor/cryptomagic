@@ -5,18 +5,14 @@
 #ifndef CRYPTOMAIC_BIGNUMBERRAW_H
 #define CRYPTOMAIC_BIGNUMBERRAW_H
 
-#include <openssl/bn.h>
-#include <openssl/ec.h>
+#include "defines.h"
+#include <mbedtls/bignum.h>
 
 namespace SkyCryptor {
   class BigNumberRaw {
    private:
-    // OpenSSL bignumber parameter
+    // bignumber pointer
     BIGNUM *bignum = nullptr;
-    // EC order
-    BIGNUM *ec_order = nullptr;
-    // BigNumber context for making OpenSSL BIGNUM operations
-    BN_CTX *bnCtx = nullptr;
 
    public:
     BigNumberRaw() = default;
@@ -24,12 +20,6 @@ namespace SkyCryptor {
 
     BIGNUM * get_bignum();
     void set_bignum(BIGNUM * bn);
-
-    BIGNUM * get_ec_order();
-    void set_ec_order(BIGNUM * order);
-
-    BN_CTX * get_bnCtx();
-    void set_bnCtx(BN_CTX * ctx);
   };
 }
 

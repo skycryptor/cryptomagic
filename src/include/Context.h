@@ -6,9 +6,7 @@
 #define CRYPTOMAIC_CONTEXT_H
 
 #include <string>
-#include <openssl/ec.h>
-
-using namespace std;
+#include "defines.h"
 
 namespace SkyCryptor {
 
@@ -20,7 +18,7 @@ namespace SkyCryptor {
   class Context {
    private:
     /// Keeping current elliptic curve name as a context
-    string elliptic_curve_name;
+    std::string elliptic_curve_name;
     /// EC NID from OpenSSL definitions
     int ec_nid = 0;
     /// Making EC group from OpenSSL
@@ -36,7 +34,7 @@ namespace SkyCryptor {
      * \brief Defining context from given Elliptic curve name
      * @param ec_name
      */
-    explicit Context(const char * ec_name);
+    explicit Context(int group_id);
     ~Context();
 
     /**
@@ -44,12 +42,6 @@ namespace SkyCryptor {
      * @return
      */
     static Context getDefault();
-
-    /**
-     * \brief Getting EC Name as a string
-     * @return
-     */
-    string get_elliptic_curve_name();
 
     /**
      * \brief Getting EC NID from OpenSSL numerical definition
@@ -86,6 +78,12 @@ namespace SkyCryptor {
      * @return
      */
     void get_iteration_count(unsigned int iter);
+
+    /**
+     * \brief Getting EC order from defined elliptic curve
+     * @return
+     */
+     BIGNUM *get_ec_order();
   };
 
 }
