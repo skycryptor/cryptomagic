@@ -4,15 +4,11 @@
 
 #include "CryptoMagic_C.h"
 #include "CryptoMagic.h"
-#include <openssl/bio.h>
-#include <openssl/ssl.h>
-#include <openssl/err.h>
+#include "cstring"
 
 using namespace SkyCryptor;
 
 void cryptomagic_init() {
-  ERR_load_BIO_strings();
-  OpenSSL_add_all_algorithms();
 }
 
 void * cryptomagic_new() {

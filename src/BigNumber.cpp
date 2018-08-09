@@ -4,8 +4,11 @@
 
 #include <arpa/inet.h>
 #include <mbedtls/bignum.h>
+#include <mbedtls/ctr_drbg.h>
+#include <mbedtls/entropy.h>
 #include "BigNumber.h"
 #include "defines.h"
+#include "iostream"
 
 namespace SkyCryptor {
 
@@ -13,7 +16,7 @@ namespace SkyCryptor {
 
   BigNumber::BigNumber(BIGNUM *bn, Context *ctx) {
     if (bn == nullptr) {
-      BIGNUM *bnRaw;
+      BIGNUM *bnRaw = (BIGNUM *)malloc(sizeof(BIGNUM));
       mbedtls_mpi_init(bnRaw);
       bn = bnRaw;
     }
@@ -22,6 +25,7 @@ namespace SkyCryptor {
 
     // Making zero static variable
     if (BigNumber::BNZero == nullptr) {
+      BigNumber::BNZero = (BIGNUM*) malloc(sizeof(BIGNUM));
       mbedtls_mpi_init(BigNumber::BNZero);
       mbedtls_mpi_lset(BigNumber::BNZero, 0);
     }
@@ -33,7 +37,12 @@ namespace SkyCryptor {
 
   BigNumber BigNumber::generate_random(Context *ctx) {
     BigNumber bn(ctx);
-    int res = mbedtls_mpi_fill_random(bn.getRawBigNum(), ctx->get_key_length(), nullptr, nullptr);
+    mbedtls_ctr_drbg_context ctr_drbg_ctx;
+    mbedtls_entropy_context entropy_ctx;
+    mbedtls_ctr_drbg_init(&ctr_drbg_ctx);
+    mbedtls_entropy_init(&entropy_ctx);
+    mbedtls_ctr_drbg_seed(&ctr_drbg_ctx, mbedtls_entropy_func, &entropy_ctx, NULL, 0);
+    int res = mbedtls_mpi_fill_random(bn.getRawBigNum(), 30, mbedtls_ctr_drbg_random, &ctr_drbg_ctx);
     if (res != 0) {
       // TODO: make error reporting!!
       return bn;
@@ -68,12 +77,6 @@ namespace SkyCryptor {
 
   bool BigNumber::isFromECGroup() const {
     return mbedtls_mpi_cmp_abs(bn_raw->get_bignum(), BigNumber::BNZero) ==1 && mbedtls_mpi_cmp_abs(bn_raw->get_bignum(), context->get_ec_order()) == -1;
-  }
-
-  Point BigNumber::toPoint() const {
-    EC_POINT *raw_p = EC_POINT_new(context->get_ec_group());
-    EC_POINT_bn2point(context->get_ec_group(), bn_raw->get_bignum(), raw_p, bn_raw->get_bnCtx());
-    return Point(raw_p, context);
   }
 
   vector<char> BigNumber::toBytes() {
@@ -124,7 +127,7 @@ namespace SkyCryptor {
   }
 
   BigNumber BigNumber::operator+(const BigNumber &other) {
-    BigNumber bn(BN_new(), context);
+    BigNumber bn(context);
     int res = mbedtls_mpi_add_mpi(bn.bn_raw->get_bignum(), bn_raw->get_bignum(), other.bn_raw->get_bignum());
     if (res != 1) {
       // TODO: handle error case!!
@@ -133,7 +136,7 @@ namespace SkyCryptor {
   }
 
   BigNumber BigNumber::operator-(const BigNumber &other) {
-    BigNumber bn(BN_new(), context);
+    BigNumber bn(context);
     int res = mbedtls_mpi_sub_mpi(bn.bn_raw->get_bignum(), bn_raw->get_bignum(), other.bn_raw->get_bignum());
     if (res != 1) {
       // TODO: handle error case!!
@@ -142,7 +145,7 @@ namespace SkyCryptor {
   }
 
   BigNumber BigNumber::operator%(const BigNumber &other) {
-    BigNumber bn(BN_new(), context);
+    BigNumber bn(context);
     int res = mbedtls_mpi_mod_mpi(bn.bn_raw->get_bignum(), bn_raw->get_bignum(), other.bn_raw->get_bignum());
     if (res != 1) {
       // TODO: handle error case!!

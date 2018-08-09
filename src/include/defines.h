@@ -6,7 +6,6 @@
 #define CRYPTOMAIC_DEFINES_H
 
 #include <mbedtls/ecp.h>
-#include <mbedtls/ecp.h>
 
 // Defining Error Codes for CryptoMagic
 #define ERROR_BIGNUMBER_RANDOM_GENERATION 600
@@ -20,7 +19,10 @@
 #define ERROR_POINT_COPY 608
 #define ERROR_INITIALIZING_EC_GROUP_ORDER 609
 
+#define SHA256_DIGEST_LENGTH 32
+
 typedef mbedtls_mpi BIGNUM;
 typedef mbedtls_ecp_group EC_GROUP;
+typedef mbedtls_ecp_point EC_POINT;
 
 #endif //CRYPTOMAIC_DEFINES_H

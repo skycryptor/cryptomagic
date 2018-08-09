@@ -7,6 +7,7 @@
 
 #include "defines.h"
 #include <mbedtls/bignum.h>
+#include "stdlib.h"
 
 namespace SkyCryptor {
   class BigNumberRaw {

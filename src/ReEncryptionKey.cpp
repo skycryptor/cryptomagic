@@ -59,7 +59,7 @@ namespace SkyCryptor {
     memcpy(&rk_point_size, &buffer[buffer_index], 4);
     buffer_index += 4;
     rk_point_size = ntohl(rk_point_size);
-    auto rk_point = Point::from_bytes(&buffer[buffer_index], ctx);
+    auto rk_point = Point::from_bytes(&buffer[buffer_index], length, ctx);
 
     return ReEncryptionKey(rk_number, rk_point);
   }

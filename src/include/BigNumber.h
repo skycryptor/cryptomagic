@@ -85,12 +85,6 @@ namespace SkyCryptor {
     static BigNumber from_bytes(unsigned char *buffer, int len, Context *ctx);
 
     /**
-     * \brief Convert BigNumber to Point
-     * @return
-     */
-    Point toPoint() const;
-
-    /**
      * \brief Getting BIGNUM bytes from existing OpenSSL BIGNUM
      * @return vector of bytes
      */

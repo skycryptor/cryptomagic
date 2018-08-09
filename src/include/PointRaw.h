@@ -5,7 +5,8 @@
 #ifndef CRYPTOMAIC_POINTRAW_H
 #define CRYPTOMAIC_POINTRAW_H
 
-#include <openssl/ec.h>
+#include "defines.h"
+#include <mbedtls/ecp.h>
 
 namespace SkyCryptor {
 

@@ -9,11 +9,10 @@ namespace SkyCryptor {
   Context::Context(int group_id) {
     ec_nid = group_id;
     mbedtls_ecp_group_init(ec_group);
-    int res = mbedtls_ecp_group_load(ec_group, group_id);
+    int res = mbedtls_ecp_group_load(ec_group, (mbedtls_ecp_group_id)group_id);
     if (res != 0) {
       // TODO: think about error reporting!!
     }
-    ec_group.
   }
 
 

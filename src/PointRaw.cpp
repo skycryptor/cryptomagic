@@ -8,7 +8,7 @@ namespace SkyCryptor {
 
   PointRaw::~PointRaw() {
     if (ec_point != nullptr) {
-      EC_POINT_free(ec_point);
+      mbedtls_ecp_point_free(ec_point);
     }
   }
 
@@ -18,7 +18,7 @@ namespace SkyCryptor {
 
   void PointRaw::set_ec_point(EC_POINT *p) {
     if (ec_point != nullptr) {
-      EC_POINT_free(ec_point);
+      mbedtls_ecp_point_free(ec_point);
     }
     ec_point = p;
   }

@@ -22,7 +22,7 @@ namespace SkyCryptor {
     /// EC NID from OpenSSL definitions
     int ec_nid = 0;
     /// Making EC group from OpenSSL
-    EC_GROUP *ec_group = nullptr;
+    EC_GROUP *ec_group = (EC_GROUP*)malloc(sizeof(EC_GROUP));
 
     /// Defining key length for using it for functions like KDF
     unsigned int key_length = 128;

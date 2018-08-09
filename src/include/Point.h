@@ -65,7 +65,7 @@ namespace SkyCryptor {
      * @return
      */
     static Point from_bytes(const vector<char>& bytes, Context *ctx);
-    static Point from_bytes(const char *bytes, Context *ctx);
+    static Point from_bytes(const char *bytes, int len, Context *ctx);
 
     /**
      * \brief Generating random point for context based Elliptic curve
@@ -90,12 +90,6 @@ namespace SkyCryptor {
     vector<char> toBytes() const;
 
     /**
-     * \brief Converting Point to BigNumber
-     * @return
-     */
-    BigNumber toBigNumber();
-
-    /**
      * \brief Equality operator for Point == Point
      * @param other
      * @return
@@ -108,12 +102,6 @@ namespace SkyCryptor {
      * @return
      */
     Point operator*(const BigNumber& other) const;
-    /**
-     * \brief MUL Operator for Point * Point = Point
-     * @param other
-     * @return
-     */
-    Point operator*(const Point& other) const;
 
     /**
      * \brief ADD Operator for Point + Point = Point
@@ -121,19 +109,6 @@ namespace SkyCryptor {
      * @return
      */
     Point operator+(const Point& other) const;
-
-    /**
-     * \brief Invert Operator for ~Point = Point
-     * @return
-     */
-    Point operator~() const;
-
-    /**
-     * \brief SUB operator for Point - Point = Point
-     * @param other
-     * @return
-     */
-    Point operator-(const Point& other) const;
   };
 
 }
