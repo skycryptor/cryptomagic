@@ -21,10 +21,10 @@ TEST_CASE( "BigNumber from_integer" ) {
   REQUIRE( bn1 == bn2 );
   REQUIRE( (bn1 + bn2) == bn3 );
   REQUIRE( (bn2 * bn3) == bn5 );
-//  REQUIRE( (bn5 / bn3) == bn2 );
+  REQUIRE( (bn5 / bn3) == bn2 );
   REQUIRE( (bn3 * (~bn3)) == (bn2 * (~bn2)) );
   REQUIRE( (bn3 - bn2)== bn1 );
-//  REQUIRE( (~(bn1 * bn2)) == ((~bn1) * (~bn2)) );
+  REQUIRE( (~(bn1 * bn2)) == ((~bn1) * (~bn2)) );
 }
 
 TEST_CASE( "BigNumber and Point actions" ) {

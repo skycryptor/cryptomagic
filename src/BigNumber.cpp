@@ -6,6 +6,8 @@
 #include <mbedtls/bignum.h>
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/entropy.h>
+#include <include/BigNumber.h>
+
 #include "BigNumber.h"
 #include "defines.h"
 #include "iostream"
@@ -102,7 +104,7 @@ namespace SkyCryptor {
     if (res != 0) {
       // TODO: handle error case!!
     }
-    return bn;
+    return bn % context->get_ec_order();
   }
 
   Point BigNumber::operator*(const Point &other) {
@@ -123,7 +125,7 @@ namespace SkyCryptor {
   }
 
   BigNumber BigNumber::operator/(const BigNumber &other) {
-    return (*this) * (~other);
+    return ((*this) * (~other)) % context->get_ec_order();
   }
 
   BigNumber BigNumber::operator+(const BigNumber &other) {
@@ -132,7 +134,7 @@ namespace SkyCryptor {
     if (res != 1) {
       // TODO: handle error case!!
     }
-    return bn;
+    return bn % context->get_ec_order();
   }
 
   BigNumber BigNumber::operator-(const BigNumber &other) {
@@ -141,12 +143,16 @@ namespace SkyCryptor {
     if (res != 1) {
       // TODO: handle error case!!
     }
-    return bn;
+    return bn % context->get_ec_order();
   }
 
   BigNumber BigNumber::operator%(const BigNumber &other) {
+    return (*this) % other.bn_raw->get_bignum();
+  }
+
+  BigNumber BigNumber::operator%(BIGNUM *other) {
     BigNumber bn(context);
-    int res = mbedtls_mpi_mod_mpi(bn.bn_raw->get_bignum(), bn_raw->get_bignum(), other.bn_raw->get_bignum());
+    int res = mbedtls_mpi_mod_mpi(bn.bn_raw->get_bignum(), bn_raw->get_bignum(), other);
     if (res != 1) {
       // TODO: handle error case!!
     }

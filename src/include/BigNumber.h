@@ -157,6 +157,13 @@ namespace SkyCryptor {
      * @return
      */
     BigNumber operator%(const BigNumber& other);
+
+    /**
+     * \brief MOD operator implementation: BigNumber % BIGNUM = BigNumber
+     * @param other
+     * @return
+     */
+    BigNumber operator%(BIGNUM * other);
   };
 }
 

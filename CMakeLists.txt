@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 project(cryptomagic)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
-set(MBED_TLS_VERSION 2.12.0)
+set(MBED_TLS_VERSION 2.7.5)
 
 ExternalProject_Add(mbed_tls
   URL https://github.com/ARMmbed/mbedtls/archive/mbedtls-${MBED_TLS_VERSION}.tar.gz
