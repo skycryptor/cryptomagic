@@ -78,10 +78,10 @@ namespace SkyCryptor {
     memcpy(&ret[mem_index], &pS[0], pS.size());
     mem_index += pS.size();
 
-    if (!pXG.empty()) {
-      ret[mem_index] = (char) 1;
-    } else {
+    if (!reEncrypted) {
       ret[mem_index] = (char) 0;
+    } else {
+      ret[mem_index] = (char) 1;
       mem_index += 1;
       memcpy(&ret[mem_index], &pXG[0], pXG.size());
       mem_index += pXG.size();
