@@ -24,6 +24,7 @@ namespace SkyCryptor {
   Capsule::Capsule(const Capsule &other)
     : particleE(other.particleE), particleV(other.particleV), particleXG(other.particleXG), particleS(other.particleS) {
     context = other.context;
+    reEncrypted = other.reEncrypted;
   }
 
   Point Capsule::get_particleE() const {

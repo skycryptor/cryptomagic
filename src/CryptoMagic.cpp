@@ -81,7 +81,7 @@ namespace SkyCryptor {
     auto primeS = BigNumber::from_integer(1, ctx) * capsuleOriginal.get_particleS();
 
     auto primeXG = reEncryptionKey.get_rk_point();
-    return Capsule(primeE, primeV, primeS, primeXG, ctx);
+    return Capsule(primeE, primeV, primeS, primeXG, ctx, true);
   }
 
   vector<char> CryptoMagic::decapsulate_re_encrypted(Capsule &re_encrypted_capsule, PrivateKey &privateKey) {
