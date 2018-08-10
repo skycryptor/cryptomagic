@@ -55,7 +55,7 @@ namespace SkyCryptor {
 
     char byteBuffer[500];
     size_t bufferLen;
-    int res = mbedtls_ecp_point_write_binary(context->get_ec_group(), point_raw->get_ec_point(), MBEDTLS_ECP_PF_COMPRESSED, &bufferLen, (unsigned char*)byteBuffer,
+    int res = mbedtls_ecp_point_write_binary(context->get_ec_group(), point_raw->get_ec_point(), MBEDTLS_ECP_PF_UNCOMPRESSED, &bufferLen, (unsigned char*)byteBuffer,
                                              sizeof(byteBuffer));
     if (res != 0) {
       // TODO: make error handling here!!
