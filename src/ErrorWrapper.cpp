@@ -2,7 +2,6 @@
 // Created by Tigran on 6/25/18.
 //
 
-#include <openssl/err.h>
 #include "ErrorWrapper.h"
 
 namespace SkyCryptor {
@@ -20,8 +19,9 @@ namespace SkyCryptor {
   }
 
   void ErrorWrapper::setOpenSSLErrorMessage() {
-    openssl_error_code = ERR_get_error();
-    error_message = string(ERR_error_string(openssl_error_code, NULL));
+    // TODO: NEED RE-DESIGN ERROR REPORTING!!!
+//    openssl_error_code = ERR_get_error();
+//    error_message = string(ERR_error_string(openssl_error_code, NULL));
   }
 
   void ErrorWrapper::setOpenSSLError(int code) {
