@@ -7,12 +7,12 @@
 namespace SkyCryptor {
 
   PublicKey::PublicKey(const Point &ec_point, Context *ctx) {
-    point = make_shared<Point>(ec_point);
+    point = std::make_shared<Point>(ec_point);
     context = ctx;
   }
 
   PublicKey::PublicKey(Context *ctx) {
-    point = make_shared<Point>(ctx);
+    point = std::make_shared<Point>(ctx);
     context = ctx;
   }
 

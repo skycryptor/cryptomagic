@@ -17,7 +17,7 @@ namespace SkyCryptor {
     context = ctx;
   }
 
-  Capsule CryptoMagic::encapsulate(PublicKey &pk, vector<char> &symmetric_key_out) const {
+  Capsule CryptoMagic::encapsulate(PublicKey &pk, std::vector<char> &symmetric_key_out) const {
     auto ctx = (Context *)&context;
     // generating 2 random key pairs
     auto kp1 = KeyPair::generate(ctx);
@@ -31,8 +31,8 @@ namespace SkyCryptor {
     auto point_E = kp1.getPublicKey().getPoint();
     auto point_V = kp2.getPublicKey().getPoint();
 
-    vector<Point> tmpHash = {point_E, point_V};
-    vector<char> hash = Point::hash(ctx, tmpHash);
+    std::vector<Point> tmpHash = {point_E, point_V};
+    std::vector<char> hash = Point::hash(ctx, tmpHash);
     auto hash_bn = BigNumber::from_bytes((unsigned char*)&hash[0], hash.size(), ctx);
 
     // Calculating part S from BN hashing
@@ -40,7 +40,7 @@ namespace SkyCryptor {
 
     // Making symmetric key
     auto point_symmetric = (skU + skR) * pk;
-    vector<char> symmetric_key = KDF(point_symmetric, ctx);
+    std::vector<char> symmetric_key = KDF(point_symmetric, ctx);
 
     // setting output byte buffer
     symmetric_key_out.assign(symmetric_key.begin(), symmetric_key.end());
@@ -48,7 +48,7 @@ namespace SkyCryptor {
     return Capsule(point_E, point_V, part_S, ctx);
   }
 
-  vector<char> CryptoMagic::decapsulate_original(Capsule &capsule, PrivateKey &privateKey) {
+  std::vector<char> CryptoMagic::decapsulate_original(Capsule &capsule, PrivateKey &privateKey) {
     auto ctx = (Context *)&context;
     auto symmetric_key = privateKey * (capsule.get_particleE() + capsule.get_particleV());
     return KDF(symmetric_key, ctx);
@@ -60,7 +60,7 @@ namespace SkyCryptor {
     auto tmp_publicKey = tmp_privateKey.get_publicKey();
     auto tmp_publicKeyPoint = tmp_publicKey.getPoint();
     auto publicKeyPointB = publicKeyB.getPoint();
-    vector<Point> points_for_hash = {
+    std::vector<Point> points_for_hash = {
         tmp_publicKeyPoint,
         publicKeyPointB,
         tmp_privateKey * publicKeyPointB
@@ -84,12 +84,12 @@ namespace SkyCryptor {
     return Capsule(primeE, primeV, primeS, primeXG, ctx, true);
   }
 
-  vector<char> CryptoMagic::decapsulate_re_encrypted(Capsule &re_encrypted_capsule, PrivateKey &privateKey) {
+  std::vector<char> CryptoMagic::decapsulate_re_encrypted(Capsule &re_encrypted_capsule, PrivateKey &privateKey) {
     auto ctx = (Context *)&context;
     auto primeXG = re_encrypted_capsule.get_particleXG();
     auto primeE = re_encrypted_capsule.get_particleE();
     auto primeV = re_encrypted_capsule.get_particleV();
-    vector<Point> points_for_hash = {
+    std::vector<Point> points_for_hash = {
       primeXG,
       privateKey.get_publicKey().getPoint(),
       privateKey * primeXG

@@ -48,7 +48,7 @@ namespace SkyCryptor {
      * @param[out] symmetric_key_out
      * @return Capsule
      */
-    Capsule encapsulate(PublicKey& pk, vector<char>& symmetric_key_out) const;
+    Capsule encapsulate(PublicKey& pk, std::vector<char>& symmetric_key_out) const;
 
     /**
      * \brief Decapsulate given capsule with private key,
@@ -57,7 +57,7 @@ namespace SkyCryptor {
      * @param privateKey
      * @return
      */
-    vector<char> decapsulate_original(Capsule& capsule, PrivateKey& privateKey);
+    std::vector<char> decapsulate_original(Capsule& capsule, PrivateKey& privateKey);
 
     /**
      * \brief Getting re-encryption key out of Private key (Alice) and public key (Bob) using random private key generation
@@ -81,7 +81,7 @@ namespace SkyCryptor {
      * @param privateKey
      * @return
      */
-    vector<char> decapsulate_re_encrypted(Capsule& re_encrypted_capsule, PrivateKey& privateKey);
+    std::vector<char> decapsulate_re_encrypted(Capsule& re_encrypted_capsule, PrivateKey& privateKey);
   };
 
 }

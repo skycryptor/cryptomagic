@@ -2,6 +2,8 @@
 // Created by Tigran on 7/6/18.
 //
 
+#include <vector>
+
 #include "CryptoMagic_C.h"
 #include "CryptoMagic.h"
 #include "cstring"
@@ -44,7 +46,7 @@ void cryptomagic_public_key_free(void *public_key_ptr) {
 void *cryptomagic_encapsulate(void *cm_ptr, void *public_key_ptr, char **symmetric_key_out, int *symmetric_key_len) {
   auto cm = (CryptoMagic*) cm_ptr;
   auto pk = (PublicKey*) public_key_ptr;
-  vector<char> symmetricKey;
+  std::vector<char> symmetricKey;
   Capsule c = cm->encapsulate((*pk), symmetricKey);
   *symmetric_key_out = (char*)malloc(symmetricKey.size());
   *symmetric_key_len = (int)symmetricKey.size();
@@ -61,7 +63,7 @@ void cryptomagic_decapsulate(void * cm_ptr, void *capsule_ptr, void *private_key
   auto cm = (CryptoMagic*) cm_ptr;
   auto sk = (PrivateKey*) private_key_ptr;
   auto capsule = (Capsule*) capsule_ptr;
-  vector<char> symmetricKey = capsule->isreEncrypted() ?
+  std::vector<char> symmetricKey = capsule->isreEncrypted() ?
                               cm->decapsulate_re_encrypted(*capsule, *sk)
                               : cm->decapsulate_original(*capsule, *sk);
   *symmetric_key_out = (char*)malloc(symmetricKey.size());
@@ -93,7 +95,7 @@ void *cryptomagic_private_key_from_bytes(void * cm_ptr, const char *buffer, int 
 
 void *cryptomagic_public_key_from_bytes(void *cm_ptr, char *buffer, int length) {
   auto cm = (CryptoMagic*) cm_ptr;
-  vector<char> bytesVec(buffer, buffer + length);
+  std::vector<char> bytesVec(buffer, buffer + length);
   auto point = Point::from_bytes(bytesVec, cm->getContext());
   return new PublicKey(point, cm->getContext());
 }
@@ -146,3 +148,4 @@ void cryptomagic_re_encryption_to_bytes(void * rkk_ptr, char **buffer, int *leng
   *buffer = (char*)malloc(*length);
   memcpy(*buffer, &bytes_vec[0], *length);
 }
+

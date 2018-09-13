@@ -2,8 +2,8 @@
 // Created by Tigran on 7/3/18.
 //
 
-#ifndef CRYPTOMAIC_BIGNUMBERRAW_H
-#define CRYPTOMAIC_BIGNUMBERRAW_H
+#ifndef _CRYPTOMAGIC_BIG_NUMBER_RAW_H__
+#define _CRYPTOMAGIC_BIG_NUMBER_RAW_H__
 
 #include "defines.h"
 #include <mbedtls/bignum.h>
@@ -24,4 +24,4 @@ namespace SkyCryptor {
   };
 }
 
-#endif //CRYPTOMAIC_BIGNUMBERRAW_H
+#endif // _CRYPTOMAGIC_BIG_NUMBER_RAW_H__

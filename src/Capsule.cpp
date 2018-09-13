@@ -6,6 +6,8 @@
 #include <cstring>
 #include <map>
 #include <iostream>
+
+#include "BigNumber.h"
 #include "Capsule.h"
 
 namespace SkyCryptor {
@@ -51,7 +53,7 @@ namespace SkyCryptor {
     return reEncrypted;
   }
 
-  vector<char> Capsule::toBytes() {
+  std::vector<char> Capsule::toBytes() {
     auto pE = particleE.toBytes();
     auto pE_len = htonl(pE.size());
 
@@ -61,7 +63,7 @@ namespace SkyCryptor {
     auto pS = particleS.toBytes();
     auto pS_len = htonl(pS.size());
 
-    vector<char> ret(4 + pE.size() + pV.size() + 4 + pS.size() + 1 + pXG.size());
+    std::vector<char> ret(4 + pE.size() + pV.size() + 4 + pS.size() + 1 + pXG.size());
     int mem_index = 0;
 
     memcpy(&ret[mem_index], &pE_len, 4);
@@ -98,12 +100,12 @@ namespace SkyCryptor {
     memcpy(&point_len, tmp, 4);
     tmp += 4;
     point_len = ntohl(point_len);
-    vector<char> pE_buffer(tmp, tmp + point_len);
+    std::vector<char> pE_buffer(tmp, tmp + point_len);
     auto pE = Point::from_bytes(pE_buffer, ctx);
     tmp += point_len;
 
     // Getting Particle V
-    vector<char> pV_buffer(tmp, tmp + point_len);
+    std::vector<char> pV_buffer(tmp, tmp + point_len);
     auto pV = Point::from_bytes(pV_buffer, ctx);
     tmp += point_len;
 
@@ -120,7 +122,7 @@ namespace SkyCryptor {
     tmp += 1;
     Point pXG(ctx);
     if (isReEncrypted) {
-      vector<char> pXG_buffer(tmp, tmp + point_len);
+      std::vector<char> pXG_buffer(tmp, tmp + point_len);
       pXG = Point::from_bytes(pXG_buffer, ctx);
       tmp += point_len;
     }
@@ -128,7 +130,7 @@ namespace SkyCryptor {
     return Capsule(pE, pV, pS, pXG, ctx, isReEncrypted);
   }
 
-  Capsule Capsule::from_bytes(vector<char> buffer, Context *ctx) {
+  Capsule Capsule::from_bytes(std::vector<char> buffer, Context *ctx) {
     return Capsule::from_bytes(&buffer[0], buffer.size(), ctx);
   }
 }
