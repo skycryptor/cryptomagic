@@ -24,12 +24,12 @@ namespace SkyCryptor {
     auto kp2 = KeyPair::generate(ctx);
 
     // getting private keys out of generated KeyPair
-    auto skU = kp1.getPrivateKey().getBigNumber();
-    auto skR = kp2.getPrivateKey().getBigNumber();
+    auto skU = kp1.getPrivateKey().get_key_value();
+    auto skR = kp2.getPrivateKey().get_key_value();
 
     // getting public key points
-    auto point_E = kp1.getPublicKey().getPoint();
-    auto point_V = kp2.getPublicKey().getPoint();
+    auto point_E = kp1.getPublicKey().get_point();
+    auto point_V = kp2.getPublicKey().get_point();
 
     std::vector<Point> tmpHash = {point_E, point_V};
     std::vector<char> hash = Point::hash(ctx, tmpHash);
@@ -57,9 +57,9 @@ namespace SkyCryptor {
   ReEncryptionKey CryptoMagic::get_re_encryption_key(PrivateKey &privateKeyA, PublicKey &publicKeyB) {
     auto ctx = (Context *)&context;
     auto tmp_privateKey = PrivateKey::generate(ctx);
-    auto tmp_publicKey = tmp_privateKey.get_publicKey();
-    auto tmp_publicKeyPoint = tmp_publicKey.getPoint();
-    auto publicKeyPointB = publicKeyB.getPoint();
+    auto tmp_publicKey = tmp_privateKey.get_public_key();
+    auto tmp_publicKeyPoint = tmp_publicKey.get_point();
+    auto publicKeyPointB = publicKeyB.get_point();
     std::vector<Point> points_for_hash = {
         tmp_publicKeyPoint,
         publicKeyPointB,
@@ -91,7 +91,7 @@ namespace SkyCryptor {
     auto primeV = re_encrypted_capsule.get_particleV();
     std::vector<Point> points_for_hash = {
       primeXG,
-      privateKey.get_publicKey().getPoint(),
+      privateKey.get_public_key().get_point(),
       privateKey * primeXG
     };
     auto tmp_hash_bytes = Point::hash(ctx, points_for_hash);

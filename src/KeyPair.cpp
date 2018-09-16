@@ -6,25 +6,36 @@
 
 namespace SkyCryptor {
 
-  KeyPair::KeyPair(PrivateKey& privateKey, Context *ctx) : privateKey(privateKey), publicKey(ctx) {
-    publicKey = privateKey.get_publicKey();
-    context = ctx;
-  }
+KeyPair::KeyPair(const PrivateKey& privateKey, 
+                 std::weak_ptr<Context> ctx)
+    : privateKey(privateKey)
+    , publicKey(privateKey.get_publicKey())
+    , context_(ctx)
+{
 
-  KeyPair::KeyPair(PrivateKey &privateKey, PublicKey &publicKey, Context *ctx) : privateKey(privateKey), publicKey(publicKey) {
-    context = ctx;
-  }
-
-  KeyPair KeyPair::generate(Context *ctx) {
-    auto sk = PrivateKey::generate(ctx);
-    return KeyPair(sk, ctx);
-  }
-
-  PublicKey KeyPair::getPublicKey() {
-    return publicKey;
-  }
-
-  PrivateKey KeyPair::getPrivateKey() {
-    return privateKey;
-  }
 }
+
+KeyPair::KeyPair(const PrivateKey& privateKey, 
+                 const PublicKey& publicKey, 
+                 std::weak_ptr<Context> ctx) 
+    : privateKey(privateKey)
+    , publicKey(publicKey)
+    , context_(ctx)
+{
+
+}
+
+KeyPair KeyPair::generate(std::weak_ptr<Context> ctx) {
+  auto sk = PrivateKey::generate(ctx);
+  return std::move(KeyPair(std::move(sk), ctx));
+}
+
+const PublicKey& KeyPair::get_public_key() const {
+  return public_key_;
+}
+
+const PrivateKey& KeyPair::get_private_key() const {
+  return private_key_;
+}
+
+} // namespace SkyCryptor

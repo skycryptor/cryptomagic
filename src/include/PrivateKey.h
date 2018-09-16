@@ -7,76 +7,64 @@
 
 #include "BigNumber.h"
 #include "PublicKey.h"
+#include <memory>
 
 namespace SkyCryptor {
 
+/**
+ * \brief Base private key containing implementation for EC Private keys
+ */
+class PrivateKey {
+
+public:
   /**
-   * \brief Base private key containing implementation for EC Private keys
+   * \brief Main constructor for making PublicKey object
+   * @param bn BigNumber for private key representation
+   * @param ctx Cryptographic context pointer
    */
-  class PrivateKey {
-    /// Private key bigNumber representation
-    BigNumber bigNumber;
-    /// Keeping crypto context for making decision based on specific context parameters
-    /// NOTE: this class is not taking responsibility for deleting Context pointer
-    Context *context;
+  PrivateKey(BigNumber& bn, Context *ctx);
 
-   public:
-    /**
-     * \brief Main constructor for making PublicKey object
-     * @param bn BigNumber for private key representation
-     * @param ctx Cryptographic context pointer
-     */
-    PrivateKey(BigNumber& bn, Context *ctx);
-    /**
-     * \brief By providing only Crypto context we are making random Private Key
-     * this is the same as calling static generate(ctx) function
-     * @param ctx
-     */
-    explicit PrivateKey(Context *ctx);
+  /**
+   * \brief By providing only Crypto context we are making random Private Key
+   * this is the same as calling static generate(ctx) function
+   * @param ctx
+   */
+  explicit PrivateKey(Context *ctx);
 
-    /**
-     * \brief this is an implementation for copying existing private key as an object
-     * @param privateKey
-     */
-    PrivateKey(const PrivateKey& privateKey);
-    ~PrivateKey() = default;
+  PrivateKey(const PrivateKey& privateKey) = default;
+  ~PrivateKey() = default;
 
-    /**
-     * \brief Getting generated PublicKey
-     * NOTE: we can re-generate public key with #generate_publicKey()
-     * @return PublicKey
-     */
-    PublicKey get_publicKey();
+  /**
+   * \brief Getting generated PublicKey
+   * NOTE: we can re-generate public key with #generate_publicKey()
+   * @return PublicKey
+   */
+  PublicKey get_public_key();
 
-    /**
-     * \brief Generating PrivateKey using BigNumber random generator
-     * This function will make PrivateKey object and will assign it inside given Context
-     * @param ctx
-     * @return PrivateKey
-     */
-    static PrivateKey generate(Context *ctx);
+  /**
+   * \brief Generating PrivateKey using BigNumber random generator
+   * This function will make PrivateKey object and will assign it inside given Context
+   * @param ctx
+   * @return PrivateKey
+   */
+  static PrivateKey generate(Context *ctx);
 
-    /**
-     * \brief Getting big number which is representing this Private Key
-     * @return
-     */
-    BigNumber getBigNumber();
+  /**
+   * \brief Getting the big number which is representing this Private Key.
+   */
+  const BigNumber& get_key_value() const;
 
-    /**
-     * \brief MUL operator for having PrivateKey * Point = Point
-     * @param other
-     * @return
-     */
-    Point operator*(const Point& other) const;
+private:
 
-    /**
-     * MUL operator with BigNumber: PrivateKey * BigNumber = BigNumber
-     * @param other
-     * @return
-     */
-    BigNumber operator*(const BigNumber& other) const;
-  };
+  /// Private key bigNumber representation
+  BigNumber private_key_;
 
-}
+  /// Keeping crypto context for making decision based on specific context parameters
+  /// NOTE: this class is not taking responsibility for deleting Context pointer
+  std::weak_ptr<Context> context_;
+
+};
+
+} // namespace SkyCryptor
 
 #endif //CRYPTOMAIC_PRIVATEKEY_H

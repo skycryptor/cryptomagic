@@ -6,40 +6,32 @@
 
 namespace SkyCryptor {
 
-  PrivateKey::PrivateKey(BigNumber &bn, Context *ctx) : bigNumber(bn) {
-    context = ctx;
-  }
-
-  PrivateKey::PrivateKey(Context *ctx) : bigNumber(ctx) {
-    bigNumber = BigNumber::generate_random(ctx);
-    context = ctx;
-  }
-
-  PublicKey PrivateKey::get_publicKey() {
-    // Making public key out of given/initialized bigNumber and context
-    auto g = Point::get_generator(context);
-    auto point = bigNumber * g;
-    return PublicKey(point, context);
-  }
-
-  PrivateKey PrivateKey::generate(Context *ctx) {
-    auto bn = BigNumber::generate_random(ctx);
-    return PrivateKey(bn, ctx);
-  }
-
-  Point PrivateKey::operator*(const Point &other) const {
-    return other * bigNumber;
-  }
-
-  BigNumber PrivateKey::operator*(const BigNumber &other) const {
-    return bigNumber * other;
-  }
-
-  PrivateKey::PrivateKey(const PrivateKey& privateKey) : bigNumber(privateKey.bigNumber) {
-    context = privateKey.context;
-  }
-
-  BigNumber PrivateKey::getBigNumber() {
-    return bigNumber;
-  }
+PrivateKey::PrivateKey(const BigNumber& &private_key, std::weak_ptr<Context> *ctx) 
+  : private_key_(private_key)
+  , context_(ctx)
+{
 }
+
+PrivateKey::PrivateKey(Context *ctx) 
+  : context_(ctx) 
+{
+  private_key_ = BigNumber::generate_random(context_.get());
+}
+
+PublicKey PrivateKey::get_public_key() {
+  // Making public key out of given/initialized bigNumber and context
+  auto g = Point::get_generator(context.get());
+  auto point = bigNumber * g;
+  return std::move(PublicKey(point, context));
+}
+
+PrivateKey PrivateKey::generate(Context *ctx) {
+  auto private_key = BigNumber::generate_random(ctx);
+  return PrivateKey(private_key, ctx);
+}
+
+const BigNumber& PrivateKey::get_key_value() const {
+  return private_key_;
+}
+
+} // namespace SkyCryptor

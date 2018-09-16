@@ -46,7 +46,7 @@ public:
   std::shared_ptr<PointRaw> get_point_raw() const;
 
   /**
-   * \brief Getting Generator Point from provided context based Elliptic curve
+   * \brief Getting Generator Point from provided context based on Elliptic curve.
    * @param ctx
    * @return
    */
