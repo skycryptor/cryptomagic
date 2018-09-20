@@ -1,9 +1,5 @@
-//
-// Created by Tigran on 6/23/18.
-//
-
-#ifndef _CRYPTOMAGIC_BIGNUMBER_H__
-#define _CRYPTOMAGIC_BIGNUMBER_H__
+#ifndef _PROXYLIB_BIG_NUMBER_H__
+#define _PROXYLIB_BIG_NUMBER_H__
 
 #include <memory>
 #include <vector>
@@ -15,7 +11,6 @@ namespace SkyCryptor {
 
 class BigNumberRaw;
 class Point;
-class PublicKey;
 
 /// \brief Generic implementation for BigNumber
 class BigNumber : public ErrorWrapper {
@@ -27,55 +22,52 @@ public:
   static BIGNUM *BNZero;
 
   /**
-   * \brief Making BigNumber object from given raw big number and context
+   * \brief Making BigNumber object from given raw big number.
    * @param bn
-   * @param ctx
    */
-  BigNumber(BIGNUM *bn, Context *ctx);
-  explicit BigNumber(Context *ctx);
+  BigNumber(BIGNUM *bn);
+  BigNumber() = default;
 
   /**
    * \brief Copying BigNumber object from existing one
    * @param bn
    */
-  BigNumber(const BigNumber& bn);
+  BigNumber(const BigNumber& bn) = default;
   virtual ~BigNumber() = default;
 
   /**
-   * \brief Generate random BigNumber from given crypto context
-   * @param ctx
+   * \brief Generate random BigNumber.
    * @return
    */
-  static BigNumber generate_random(Context *ctx);
+  static BigNumber generate_random();
 
   /**
    * \brief Get BigNumber from integer
    * @param num
-   * @param ctx
    * @return
    */
-  static BigNumber from_integer(unsigned long num, Context *ctx);
+  static BigNumber from_integer(uint32_t num);
 
   /**
    * \brief Get BigNumber from big endian ordered bytes
    * @param buffer
    * @param len
-   * @param ctx
    * @return
    */
-  static BigNumber from_bytes(unsigned char *buffer, int len, Context *ctx);
+  static BigNumber from_bytes(unsigned char *buffer, int len);
 
   /**
    * \brief Getting BIGNUM bytes from existing OpenSSL BIGNUM
    * @return vector of bytes
    */
-  std::vector<char> toBytes();
+  std::vector<char> to_bytes() const;
 
   /**
    * \brief Getting reference to OpenSSL BIGNUM
+   * /TODO(martun): try to get rid of this function.
    * @return
    */
-  BIGNUM *getRawBigNum() const;
+  BIGNUM* get_raw_bignum() const;
 
   /**
    * \brief Checking if BigNumbers are equal
@@ -96,14 +88,7 @@ public:
    * @param other
    * @return
    */
-  Point operator*(const Point& other);
-
-  /**
-   * \brief MUL operator for BigNumber * PublicKey = Point
-   * @param other
-   * @return
-   */
-  Point operator*(const PublicKey& other);
+  Point operator*(const Point& other) const;
 
   /**
    * \brief Inverting current BigNumber: ~BigNumber = BigNumber
@@ -116,54 +101,52 @@ public:
    * @param other
    * @return
    */
-  BigNumber operator/(const BigNumber& other);
+  BigNumber operator/(const BigNumber& other) const;
 
   /**
    * \brief ADD operator implementation: BigNumber + BigNumber = BigNumber
    * @param other
    * @return
    */
-  BigNumber operator+(const BigNumber& other);
+  BigNumber operator+(const BigNumber& other) const;
 
   /**
    * \brief SUB operator implementation: BigNumber - BigNumber = BigNumber
    * @param other
    * @return
    */
-  BigNumber operator-(const BigNumber& other);
+  BigNumber operator-(const BigNumber& other) const;
 
   /**
    * \brief MOD operator implementation: BigNumber % BigNumber = BigNumber
    * @param other
    * @return
    */
-  BigNumber operator%(const BigNumber& other);
+  BigNumber operator%(const BigNumber& other) const;
 
   /**
    * \brief MOD operator implementation: BigNumber % BIGNUM = BigNumber
    * @param other
    * @return
    */
-  BigNumber operator%(BIGNUM * other);
-
-private:
-
-  /// Cryptographic context for big number operations
-  /// NOTE: this class not taking any ownership for this pointer
-  Context *context;
-
-  /// Shared pointer for raw big number implementation
-  /// This is based on specific Crypto backend choosed compile time
-  std::shared_ptr<BigNumberRaw> bn_raw;
+  //  BigNumber operator%(BIGNUM * other);
 
   /**
    * \brief Checking if number is in current EC group
+  *  /TODO(martun): check what this means.
    * @return
    */
-  bool isFromECGroup() const;
+  bool is_from_EC_group() const;
+
+  static uint32_t get_ec_order();
+
+private:
+  /// Shared pointer for raw big number implementation
+  /// This is based on specific Crypto backend choosed compile time
+  std::shared_ptr<BigNumberRaw> bn_raw_;
 
 };
 
 } // namespace SkyCryptor
 
-#endif // _CRYPTOMAGIC_BIGNUMBER_H__
+#endif // _PROXYLIB_BIG_NUMBER_H__

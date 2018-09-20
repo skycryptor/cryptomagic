@@ -1,14 +1,9 @@
-//
-// Created by Tigran on 6/25/18.
-//
-
-#ifndef __CRYPTOMAGIC_POINT_H__
-#define __CRYPTOMAGIC_POINT_H__
+#ifndef __PROXYLIB_POINT_H__
+#define __PROXYLIB_POINT_H__
 
 #include <memory>
 #include <vector>
 #include "PointRaw.h"
-#include "Context.h"
 #include "ErrorWrapper.h"
 
 namespace SkyCryptor {
@@ -46,11 +41,11 @@ public:
   std::shared_ptr<PointRaw> get_point_raw() const;
 
   /**
-   * \brief Getting Generator Point from provided context based on Elliptic curve.
+   * \brief Getting Generator Point based on Elliptic curve.
    * @param ctx
    * @return
    */
-  static Point get_generator(Context *ctx);
+  static Point get_generator();
 
   /**
    * \brief Converting serialized bytes to Point object
@@ -58,30 +53,30 @@ public:
    * @param bytes
    * @return
    */
-  static Point from_bytes(const std::vector<char>& bytes, Context *ctx);
-  static Point from_bytes(const char *bytes, int len, Context *ctx);
+  static Point from_bytes(const std::vector<char>& bytes);
+  static Point from_bytes(const char *bytes, int len);
 
   /**
    * \brief Generating random point for context based Elliptic curve
    * @param ctx
    * @return
    */
-  static Point generate_random(Context *ctx);
+  static Point generate_random();
 
   /**
    * \brief Hashing our Point object as a BigNumber
-   * @param ctx crypto context for hashing
    * @param points std::vector of points to be hashed
    * @param ...
    * @return
    */
-  static std::vector<char> hash(Context *ctx, std::vector<Point>& points);
+  // TODO(martun): move this out of this class, move to some hasher class.
+  static std::vector<char> hash(const std::vector<Point>& points);
 
   /**
    * \brief Getting bytes from our Point object
    * @return
    */
-  std::vector<char> toBytes() const;
+  std::vector<char> to_bytes() const;
 
   /**
    * \brief Equality operator for Point == Point
@@ -105,12 +100,7 @@ public:
   Point operator+(const Point& other) const;
 
 private:
-
   std::shared_ptr<PointRaw> point_raw = std::make_shared<PointRaw>();
-
-  // Cryptographic context for big number operations
-  // NOTE: this class not taking any ownership for this pointer
-  Context *context = nullptr;
 
 };
 

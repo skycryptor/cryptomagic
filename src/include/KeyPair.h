@@ -1,9 +1,5 @@
-//
-// Created by tigran on 7/6/18.
-//
-
-#ifndef CRYPTOMAIC_KEYPAIR_H
-#define CRYPTOMAIC_KEYPAIR_H
+#ifndef _PROXYLIB_KEY_PAIR_H__
+#define _PROXYLIB_KEY_PAIR_H__
 
 #include <memory>
 
@@ -16,14 +12,15 @@ namespace SkyCryptor {
  * \brief Key Pair for public and Private Keys
  * This class used as a combination of Public and Private keys, and can do some actions with both of them
  */
+template<class POINT_TYPE, class NUMBER_TYPE>
 class KeyPair {
 public:
   /**
    * \brief If we want to get KeyPair and generate public key out of given private key.
-   * using this constructor, because only PrivateKey is enough to have a key pair
+   * using this constructor, because only PrivateKey<NUMBER_TYPE> is enough to have a key pair
    * @param privateKey
    */
-  explicit KeyPair(const PrivateKey& privateKey, 
+  explicit KeyPair(const PrivateKey<NUMBER_TYPE>& privateKey, 
                    std::weak_ptr<Context> ctx);
 
   /**
@@ -31,8 +28,8 @@ public:
    * @param privateKey
    * @param publicKey
    */
-  KeyPair(const PrivateKey& privateKey, 
-          const PublicKey& publicKey, 
+  KeyPair(const PrivateKey<NUMBER_TYPE>& privateKey, 
+          const PublicKey<POINT_TYPE, NUMBER_TYPE>& publicKey, 
           std::weak_ptr<Context> ctx);
 
   ~KeyPair() = default;
@@ -49,21 +46,21 @@ public:
    * \brief Getting public key
    * @return
    */
-  const PublicKey& get_public_key() const;
+  const PublicKey<POINT_TYPE, NUMBER_TYPE>& get_public_key() const;
 
   /**
    * Getting private key
    * @return
    */
-  const PrivateKey& get_private_key() const;
+  const PrivateKey<NUMBER_TYPE>& get_private_key() const;
 
 private:
 
   /// Public key definition as a private class member
-  PublicKey public_key_;
+  PublicKey<POINT_TYPE, NUMBER_TYPE> public_key_;
 
   /// Private key definition as a private class member
-  PrivateKey private_key_;
+  PrivateKey<NUMBER_TYPE> private_key_;
 
   /// Context pointer for having our crypto context available here
   /// NOTE: this class is not taking responsibility to free up this pointer
@@ -73,4 +70,7 @@ private:
 
 } // namespace SkyCryptor 
 
-#endif //CRYPTOMAIC_KEYPAIR_H
+// Include template function implementations.
+#include "KeyPair.hpp"
+
+#endif //_PROXYLIB_KEY_PAIR_H__

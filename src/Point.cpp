@@ -1,7 +1,3 @@
-//
-// Created by Tigran on 6/25/18.
-//
-
 #include <cstring>
 #include <vector>
 
@@ -12,7 +8,7 @@
 
 namespace SkyCryptor {
 
-Point::Point(EC_POINT *point, Context *ctx) {
+Point::Point(EC_POINT *point) {
   if (point == nullptr) {
     EC_POINT *p = (EC_POINT*)malloc(sizeof(EC_POINT));
     mbedtls_ecp_point_init(p);
@@ -20,16 +16,16 @@ Point::Point(EC_POINT *point, Context *ctx) {
   } else {
     point_raw->set_ec_point(point);
   }
-  context = ctx;
 }
 
 Point::Point(const Point &p) {
   *this = p;
 }
 
-Point Point::get_generator(Context *ctx) {
-  Point p(ctx);
-  int res = mbedtls_ecp_copy(p.point_raw->get_ec_point(), &ctx->get_ec_group()->G);
+Point Point::get_generator() {
+  Point p;
+  int res = mbedtls_ecp_copy(p.point_raw->get_ec_point(), 
+                             Context::get_default()->get_ec_group()->G);
   if (res != 0) {
     // TODO: make error handling here!!
   }
@@ -40,9 +36,9 @@ std::shared_ptr<PointRaw> Point::get_point_raw() const {
   return this->point_raw;
 }
 
-Point Point::generate_random(Context *ctx) {
-  auto g = Point::get_generator(ctx);
-  auto randBN = BigNumber::generate_random(ctx);
+Point Point::generate_random() {
+  auto g = Point::get_generator();
+  auto randBN = BigNumber::generate_random;
   if (randBN.hasError()) {
     // TODO: make error handling here!!
     return g;
@@ -51,42 +47,51 @@ Point Point::generate_random(Context *ctx) {
   return g * randBN;
 }
 
-std::vector<char> Point::toBytes() const {
+std::vector<char> Point::to_bytes() const {
   if (point_raw->get_ec_point() == nullptr) {
     return std::vector<char>(0);
   }
 
   char byteBuffer[500];
-  size_t bufferLen;
-  int res = mbedtls_ecp_point_write_binary(context->get_ec_group(), point_raw->get_ec_point(), MBEDTLS_ECP_PF_UNCOMPRESSED, &bufferLen, (unsigned char*)byteBuffer,
-                                           sizeof(byteBuffer));
+  size_t buffer_len;
+  int res = mbedtls_ecp_point_write_binary(
+      Context::get_default()->get_ec_group(), 
+      point_raw->get_ec_point(), 
+      MBEDTLS_ECP_PF_UNCOMPRESSED, 
+      &bufferLen, 
+      (unsigned char*)byteBuffer,
+      sizeof(byteBuffer));
+
   if (res != 0) {
     // TODO: make error handling here!!
     return std::vector<char>(0);
   }
-  return std::vector<char>(byteBuffer, byteBuffer + bufferLen);
+  return std::vector<char>(byteBuffer, byteBuffer + buffer_len);
 }
 
-Point Point::from_bytes(const std::vector<char>& bytes, Context *ctx) {
-  return Point::from_bytes(&bytes[0], bytes.size(), ctx);
+Point Point::from_bytes(const std::vector<char>& bytes) {
+  return Point::from_bytes(&bytes[0], bytes.size());
 }
 
-Point Point::from_bytes(const char *bytes, int len, Context *ctx) {
-  Point p(ctx);
-  int res = mbedtls_ecp_point_read_binary(ctx->get_ec_group(), p.point_raw->get_ec_point(), (unsigned char*)bytes, len);
+Point Point::from_bytes(const char *bytes, int len) {
+  Point p;
+  int res = mbedtls_ecp_point_read_binary(
+      Context::get_default().get_ec_group(), 
+      p.point_raw->get_ec_point(), 
+      (unsigned char*)bytes, len);
   if (res != 0) {
     // TODO: make error handling here!!
   }
   return p;
 }
 
-std::vector<char> Point::hash(Context *ctx, std::vector<Point>& points) {
+std::vector<char> Point::hash(const std::vector<Point>& points) {
   std::vector<std::vector<char>> point_hashes;
   for(auto &p : points) {
-    point_hashes.push_back(p.toBytes());
+    point_hashes.push_back(p.to_bytes());
   }
 
-  return HASH(ctx, point_hashes);
+  return HASH(point_hashes);
 }
 
 bool Point::operator==(const Point& other) const {
@@ -95,9 +100,14 @@ bool Point::operator==(const Point& other) const {
 }
 
 Point Point::operator*(const BigNumber &other) const {
-  Point p(context);
-  int res = mbedtls_ecp_mul(context->get_ec_group(), p.point_raw->get_ec_point(), other.getRawBigNum(), point_raw->get_ec_point(),
-                  nullptr, nullptr);
+  Point p;
+  int res = mbedtls_ecp_mul(
+      Context.get_default().get_ec_group(), 
+      p.point_raw->get_ec_point(), 
+      other.get_raw_bignum(), 
+      point_raw->get_ec_point(),
+      nullptr, 
+      nullptr);
   if (res != 0) {
     // TODO: make error handling here!!
   }
@@ -105,10 +115,16 @@ Point Point::operator*(const BigNumber &other) const {
 }
 
 Point Point::operator+(const Point &other) const {
-  auto bn = BigNumber::from_integer(1, context);
-  Point p(context);
-  int res = mbedtls_ecp_muladd(context->get_ec_group(), p.point_raw->get_ec_point(), bn.getRawBigNum(),
-    point_raw->get_ec_point(), bn.getRawBigNum(), other.point_raw->get_ec_point());
+  auto one = BigNumber::from_integer(1);
+  Point p;
+  // TODO(martun): change this to use mbedtls_ecp_muladd.
+  int res = mbedtls_ecp_muladd(
+      Context.get_default()->get_ec_group(), 
+      p.point_raw->get_ec_point(), 
+      one.get_raw_bignum(),
+      point_raw->get_ec_point(), 
+      one.get_raw_bignum(), 
+      other.point_raw->get_ec_point());
   if (res != 0) {
     // TODO: make error handling here!!
   }
@@ -117,5 +133,4 @@ Point Point::operator+(const Point &other) const {
 }
 
 } // namespace SkyCryptor
-
 

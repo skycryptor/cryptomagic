@@ -1,7 +1,3 @@
-//
-// Created by Tigran on 6/25/18.
-//
-
 #include "ErrorWrapper.h"
 
 namespace SkyCryptor {

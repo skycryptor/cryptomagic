@@ -10,18 +10,20 @@
 #include "stdlib.h"
 
 namespace SkyCryptor {
-  class BigNumberRaw {
-   private:
-    // bignumber pointer
-    BIGNUM *bignum = nullptr;
 
-   public:
-    BigNumberRaw() = default;
-    ~BigNumberRaw();
+class BigNumberRaw {
+ private:
+  // bignumber pointer
+  BIGNUM *bignum = nullptr;
 
-    BIGNUM * get_bignum();
-    void set_bignum(BIGNUM * bn);
-  };
-}
+ public:
+  BigNumberRaw() = default;
+  ~BigNumberRaw();
+
+  BIGNUM * get_bignum();
+  void set_bignum(BIGNUM * bn);
+};
+
+} // namespace SkyCryptor
 
 #endif // _CRYPTOMAGIC_BIG_NUMBER_RAW_H__

@@ -7,38 +7,32 @@
 #include <vector>
 
 #include "ReEncryptionKey.h"
-#include "Point.h"
+#include "POINT_TYPE.h"
 
 namespace SkyCryptor {
 
-ReEncryptionKey::ReEncryptionKey(const BigNumber &bn, const Point &point) 
-  : rk_number(bn),
-    rk_point(point) 
+template<class POINT_TYPE, class NUMBER_TYPE>
+ReEncryptionKey::ReEncryptionKey(const NUMBER_TYPE& rk_number, const POINT_TYPE& rk_point) 
+  : rk_number_(bn),
+    rk_point_(point) 
 {
 }
 
-ReEncryptionKey::ReEncryptionKey(const ReEncryptionKey &rkk) 
-  : rk_number(rkk.rk_number), 
-    rk_point(rkk.rk_point) 
-{
+template<class POINT_TYPE, class NUMBER_TYPE>
+const NUMBER_TYPE& ReEncryptionKey::get_rk_number() const {
+  return rk_number_;
 }
 
-BigNumber ReEncryptionKey::get_rk_number() {
-  return rk_number;
+template<class POINT_TYPE, class NUMBER_TYPE>
+const POINT_TYPE& ReEncryptionKey::get_rk_point() const {
+  return rk_point_;
 }
 
-Point ReEncryptionKey::get_rk_point() {
-  return rk_point;
-}
-
-Point ReEncryptionKey::operator*(const Point &point) const {
-  return point * rk_number;
-}
-
-std::vector<char> ReEncryptionKey::toBytes() {
-  auto rk_number_bytes = rk_number.toBytes();
+template<class POINT_TYPE, class NUMBER_TYPE>
+std::vector<char> ReEncryptionKey::to_bytes() {
+  auto rk_number_bytes = rk_number.to_bytes();
   auto rk_number_size = htonl((int)rk_number_bytes.size());
-  auto rk_point_bytes = rk_point.toBytes();
+  auto rk_point_bytes = rk_point.to_bytes();
   auto rk_point_size = htonl((int)rk_point_bytes.size());
   auto total_vec_len = 4 + rk_number_bytes.size() + 4 + rk_point_bytes.size();
   std::vector<char> ret(total_vec_len);
@@ -55,26 +49,28 @@ std::vector<char> ReEncryptionKey::toBytes() {
   return ret;
 }
 
-ReEncryptionKey ReEncryptionKey::fromBytes(const char *buffer, int length, Context *ctx) {
+template<class POINT_TYPE, class NUMBER_TYPE>
+ReEncryptionKey ReEncryptionKey::from_bytes(const char *buffer, int length, Context *ctx) {
   int rk_number_size;
   int buffer_index = 0;
   memcpy(&rk_number_size, &buffer[buffer_index], 4);
   buffer_index += 4;
   rk_number_size = ntohl(rk_number_size);
-  auto rk_number = BigNumber::from_bytes((unsigned char*)&buffer[buffer_index], rk_number_size, ctx);
+  auto rk_number = NUMBER_TYPE::from_bytes((unsigned char*)&buffer[buffer_index], rk_number_size, ctx);
   buffer_index += rk_number_size;
 
   int rk_point_size;
   memcpy(&rk_point_size, &buffer[buffer_index], 4);
   buffer_index += 4;
   rk_point_size = ntohl(rk_point_size);
-  auto rk_point = Point::from_bytes(&buffer[buffer_index], length, ctx);
+  auto rk_point = POINT_TYPE::from_bytes(&buffer[buffer_index], length, ctx);
 
   return ReEncryptionKey(rk_number, rk_point);
 }
 
-ReEncryptionKey ReEncryptionKey::fromBytes(std::vector<char> buffer, Context *ctx) {
-  return ReEncryptionKey::fromBytes(&buffer[0], buffer.size(), ctx);
+template<class POINT_TYPE, class NUMBER_TYPE>
+ReEncryptionKey ReEncryptionKey::from_bytes(const std::vector<char>& buffer, Context *ctx) {
+  return ReEncryptionKey::from_bytes(&buffer[0], buffer.size(), ctx);
 }
 
 } // namespace SkyCryptor

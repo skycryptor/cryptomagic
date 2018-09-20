@@ -1,18 +1,13 @@
-//
-// Created by Tigran on 7/4/18.
-//
-
-#ifndef CRYPTOMAIC_CAPSULE_H
-#define CRYPTOMAIC_CAPSULE_H
-
-#include "Point.h"
+#ifndef _PROXYLIB_CAPSULE_H__
+#define _PROXYLIB_CAPSULE_H__
 
 namespace SkyCryptor {
 
 /**
  * \brief Combination of parameters as a definition for cryptographic capsule
- * Each capsule contains E(Point), V(Point), s(BigNumber)
+ * Each capsule contains E(POINT_TYPE), V(POINT_TYPE), s(NUMBER_TYPE)
  */
+template<class POINT_TYPE, class NUMBER_TYPE>
 class Capsule {
 public:
 
@@ -21,12 +16,10 @@ public:
    * @param E
    * @param V
    * @param S
-   * @param ctx
    */
-  Capsule(const Point& E, 
-          const Point& V, 
-          const BigNumber& S, 
-          std::weak_ptr<Context> ctx,
+  Capsule(const POINT_TYPE& E, 
+          const POINT_TYPE& V, 
+          const NUMBER_TYPE& S, 
           bool isReEncription = false);
 
   /**
@@ -35,13 +28,11 @@ public:
    * @param V
    * @param S
    * @param XG
-   * @param ctx
    */
-  Capsule(const Point& E, 
-          const Point& V, 
-          const BigNumber& S, 
-          const Point& XG, 
-          std::weak_ptr<Context> ctx, 
+  Capsule(const POINT_TYPE& E, 
+          const POINT_TYPE& V, 
+          const NUMBER_TYPE& S, 
+          const POINT_TYPE& XG, 
           bool isReEncription = false);
 
   /**
@@ -52,28 +43,28 @@ public:
   ~Capsule() = default;
 
   /**
-   * Getting particle E as a Point
+   * Getting particle E as a POINT_TYPE
    * @return
    */
-  const Point& get_particle_E() const;
+  const POINT_TYPE& get_E() const;
 
   /**
-   * Getting particle V as a Point
+   * Getting particle V as a POINT_TYPE
    * @return
    */
-  const Point& get_particle_V() const;
+  const POINT_TYPE& get_V() const;
 
   /**
-   * Getting particle S as a BigNumber
+   * Getting particle S as a NUMBER_TYPE
    * @return
    */
-  const BigNumber get_particle_S() const;
+  const NUMBER_TYPE get_S() const;
 
   /**
    * Getting particle XG
    * @return
    */
-  const Point get_particle_XG() const;
+  const POINT_TYPE get_XG() const;
 
   /**
    * \brief Setting capsule as re-encryption capsule
@@ -100,25 +91,23 @@ public:
    * @param ctx
    * @return
    */
-  static Capsule from_bytes(const char *buffer, int length, Context *ctx);
-  static Capsule from_bytes(const std::vector<char>& buffer, Context *ctx);
+  static Capsule from_bytes(const char *buffer, int length);
+  static Capsule from_bytes(const std::vector<char>& buffer);
 
 private:
 
   /// Defining Capsule particles
-  Point E_;
-  Point V_;
-  BigNumber S_;
-  Point XG_;
+  POINT_TYPE E_;
+  POINT_TYPE V_;
+  NUMBER_TYPE S_;
+  POINT_TYPE XG_;
 
-  /// Keeping crypto context available for capsule
-  /// NOTE: this class is not taking responsibility for cleaning up this pointer
-  std::weak_ptr<Context> context;
-
-  bool re_encrypted_ = false;
-
+  bool re_encrypted_;
 };
 
 } // namespace SkyCryptor
 
-#endif //CRYPTOMAIC_CAPSULE_H
+// Include template function implementations.
+#include "Capsule.hpp"
+
+#endif //_PROXYLIB_CAPSULE_H__

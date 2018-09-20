@@ -1,35 +1,27 @@
-//
-// Created by Tigran on 7/4/18.
-//
-
-#ifndef CRYPTOMAIC_PUBLICKEY_H
-#define CRYPTOMAIC_PUBLICKEY_H
+#ifndef _PROXYLIB_PUBLIC_KEY_H__
+#define _PROXYLIB_PUBLIC_KEY_H__
 
 #include <memory>
-#include "BigNumber.h"
-#include "Point.h"
-#include "Context.h"
 
 namespace SkyCryptor {
 
 /**
  * \brief PublicKey class is a base implementation for keeping EC Public Key as an object
  */
+template<class POINT_TYPE, class NUMBER_TYPE>
 class PublicKey {
 
 public:
   /**
    * Main constructor for making PublicKey object
    * @param ec_point Elliptic curve point for this public Key
-   * @param ctx Cryptographic context pointer
    */
-  PublicKey(const Point &ec_point, std::weak_ptr<Context> ctx);
+  PublicKey(const POINT_TYPE &ec_point);
 
   /**
    * \brief Making PublicKey with NULL point to fill it later on
-   * @param ctx
    */
-  PublicKey(Context *ctx);
+  PublicKey();
 
   /**
    * \brief Making public key object from existing one
@@ -42,25 +34,24 @@ public:
    * Getting point from this public key
    * @return
    */
-  const Point& get_point() const;
+  const POINT_TYPE& get_point() const;
 
   /**
    * \brief Checking if we have an equal PublicKeys or not
    * @param publicKey
-   * @return true if Points are equal
+   * @return true if POINT_TYPEs are equal
    */
   bool operator==(const PublicKey& publicKey) const;
 
 private:
-  /// EC Point for this public key
-  Point point_;
-
-  /// Keeping crypto context for making decision based on specific context parameters
-  /// NOTE: this class is not taking responsibility for deleting Context pointer
-  std::weak_ptr<Context> context_;
+  /// EC POINT_TYPE for this public key
+  POINT_TYPE point_;
 
 };
 
 } // namespace SkyCryptor
 
-#endif // CRYPTOMAIC_PUBLICKEY_H
+// Include template function implementations.
+#include "PublicKey.hpp"
+
+#endif // _PROXYLIB_PUBLIC_KEY_H__

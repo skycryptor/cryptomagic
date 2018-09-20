@@ -1,12 +1,10 @@
-//
-// Created by Tigran on 6/21/18.
-//
-
-#ifndef CRYPTOMAIC_CONTEXT_H
-#define CRYPTOMAIC_CONTEXT_H
+#ifndef _PROXYLIB_CONTEXT_H__
+#define _PROXYLIB_CONTEXT_H__
 
 #include <string>
 #include <cstdint>
+#include <memory>
+
 #include "defines.h"
 
 namespace SkyCryptor {
@@ -23,7 +21,7 @@ public:
    * \brief Making default Context from defined EC name
    * @return
    */
-  static Context& get_default();
+  static const Context& get_default();
 
   /**
    * \brief Defining context from given Elliptic curve name
@@ -61,7 +59,7 @@ public:
    * \brief Getting EC order from defined elliptic curve
    * @return
    */
-   const BIGNUM& get_ec_order();
+   const BIGNUM& get_ec_order() const;
 
 private:
 
@@ -84,4 +82,4 @@ private:
 
 } // namespace SkyCryptor
 
-#endif //CRYPTOMAIC_CONTEXT_H
+#endif //_PROXYLIB_CONTEXT_H__
