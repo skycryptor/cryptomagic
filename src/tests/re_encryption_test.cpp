@@ -1,36 +1,36 @@
-//
-// Created by Tigran on 7/5/18.
-//
-
 #include <include/helpers.h>
+
+#include <iostream>
+
 #include "catch/catch.hpp"
 #include "CryptoMagic.h"
 #include "PrivateKey.h"
-#include "iostream"
+#include "Point.h"
+#include "BigNumber.h"
 
 using namespace std;
 using namespace SkyCryptor;
 
 TEST_CASE( "Re-encryption key generation" ) {
-  CryptoMagic cm;
-  auto privateKeyA = PrivateKey::generate(cm.getContext());
+  Proxy<Point, BigNumber> cm;
+  auto privateKeyA = PrivateKey::generate();
   auto publicKeyA = privateKeyA.get_publicKey();
-  auto privateKeyB = PrivateKey::generate(cm.getContext());
+  auto privateKeyB = PrivateKey::generate();
   auto publicKeyB = privateKeyB.get_publicKey();
-  auto g = Point::get_generator(cm.getContext());
+  auto g = Point::get_generator();
 
   // Encapsulate
   vector<char> symmetric_key;
   Capsule capsule = cm.encapsulate(publicKeyA, symmetric_key);
 
   // Testing from bytes to bytes
-  auto capsule_data = capsule.toBytes();
-  capsule = Capsule::from_bytes(capsule_data, cm.getContext());
+  auto capsule_data = capsule.to_bytes();
+  capsule = Capsule::from_bytes(capsule_data);
 
   // Decapsulating from original
   vector<char> symmetric_key_decapsulate = cm.decapsulate_original(capsule, privateKeyA);
 
-  REQUIRE( symmetric_key_decapsulate.size() == cm.getContext()->get_key_length() );
+  REQUIRE( symmetric_key_decapsulate.size() == Context.get_default().get_key_length() );
   REQUIRE( symmetric_key == symmetric_key_decapsulate );
 
   // Getting re-encryption Key!
@@ -42,3 +42,4 @@ TEST_CASE( "Re-encryption key generation" ) {
 
   REQUIRE( symmetricKeyRE == symmetric_key );
 }
+
