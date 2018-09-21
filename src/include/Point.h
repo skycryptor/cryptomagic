@@ -3,8 +3,9 @@
 
 #include <memory>
 #include <vector>
-#include "PointRaw.h"
 #include "ErrorWrapper.h"
+#include <mbedtls/ecp.h>
+#include "defines.h"
 
 namespace SkyCryptor {
 
@@ -14,17 +15,19 @@ class BigNumber;
  * \brief Elliptic curve Point class implementation based on OpenSSL EC_POINT interface
  */
 class Point: public ErrorWrapper {
+friend class BigNumber;
+
 public:
 
   /**
-   * \brief Making Point object out of given raw point and Context
+   * \brief Making Point object out of given raw point, rakes ownership of the passed pointer. 
    * NOTE: raw could be NULL, and then defined later on
    * @param point
    * @param ctx
    */
-  Point(EC_POINT *point, Context *ctx);
+  Point(EC_POINT* point);
 
-  explicit Point(Context *ctx) : Point(nullptr, ctx) {};
+  Point();
 
   /**
    * \brief Copying existing point
@@ -32,13 +35,7 @@ public:
    */
   Point(const Point& p);
 
-  virtual ~Point() = default;
-
-  /**
-   * \brief Getting raw point for using raw values defined in encryption backend
-   * @return
-   */
-  std::shared_ptr<PointRaw> get_point_raw() const;
+  virtual ~Point();
 
   /**
    * \brief Getting Generator Point based on Elliptic curve.
@@ -49,7 +46,7 @@ public:
 
   /**
    * \brief Converting serialized bytes to Point object
-   * NOTE: Serialization is done using Point -> Hex conversation
+   * NOTE: Serialization is done using Point -> Hex conversion.
    * @param bytes
    * @return
    */
@@ -100,10 +97,11 @@ public:
   Point operator+(const Point& other) const;
 
 private:
-  std::shared_ptr<PointRaw> point_raw = std::make_shared<PointRaw>();
+  // Raw pointer for OpenSSL object
+  EC_POINT *ec_point_;
 
 };
 
 } // namespace SkyCryptor
 
-#endif // _CRYPTOMAGIC_POINT_H__
+#endif // __PROXYLIB_POINT_H__

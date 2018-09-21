@@ -7,29 +7,28 @@
 #include <vector>
 
 #include "ReEncryptionKey.h"
-#include "POINT_TYPE.h"
 
 namespace SkyCryptor {
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-ReEncryptionKey::ReEncryptionKey(const NUMBER_TYPE& rk_number, const POINT_TYPE& rk_point) 
+ReEncryptionKey<POINT_TYPE, NUMBER_TYPE>::ReEncryptionKey(const NUMBER_TYPE& rk_number, const POINT_TYPE& rk_point) 
   : rk_number_(bn),
     rk_point_(point) 
 {
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-const NUMBER_TYPE& ReEncryptionKey::get_rk_number() const {
+const NUMBER_TYPE& ReEncryptionKey<POINT_TYPE, NUMBER_TYPE>::get_rk_number() const {
   return rk_number_;
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-const POINT_TYPE& ReEncryptionKey::get_rk_point() const {
+const POINT_TYPE& ReEncryptionKey<POINT_TYPE, NUMBER_TYPE>::get_rk_point() const {
   return rk_point_;
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-std::vector<char> ReEncryptionKey::to_bytes() {
+std::vector<char> ReEncryptionKey<POINT_TYPE, NUMBER_TYPE>::to_bytes() {
   auto rk_number_bytes = rk_number.to_bytes();
   auto rk_number_size = htonl((int)rk_number_bytes.size());
   auto rk_point_bytes = rk_point.to_bytes();
@@ -50,7 +49,7 @@ std::vector<char> ReEncryptionKey::to_bytes() {
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-ReEncryptionKey ReEncryptionKey::from_bytes(const char *buffer, int length, Context *ctx) {
+ReEncryptionKey ReEncryptionKey<POINT_TYPE, NUMBER_TYPE>::from_bytes(const char *buffer, int length, Context *ctx) {
   int rk_number_size;
   int buffer_index = 0;
   memcpy(&rk_number_size, &buffer[buffer_index], 4);
@@ -69,8 +68,8 @@ ReEncryptionKey ReEncryptionKey::from_bytes(const char *buffer, int length, Cont
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-ReEncryptionKey ReEncryptionKey::from_bytes(const std::vector<char>& buffer, Context *ctx) {
-  return ReEncryptionKey::from_bytes(&buffer[0], buffer.size(), ctx);
+ReEncryptionKey ReEncryptionKey<POINT_TYPE, NUMBER_TYPE>::from_bytes(const std::vector<char>& buffer, Context *ctx) {
+  return ReEncryptionKey<POINT_TYPE, NUMBER_TYPE>::from_bytes(&buffer[0], buffer.size(), ctx);
 }
 
 } // namespace SkyCryptor

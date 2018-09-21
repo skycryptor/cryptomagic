@@ -20,8 +20,7 @@ public:
    * using this constructor, because only PrivateKey<NUMBER_TYPE> is enough to have a key pair
    * @param privateKey
    */
-  explicit KeyPair(const PrivateKey<NUMBER_TYPE>& privateKey, 
-                   std::weak_ptr<Context> ctx);
+  explicit KeyPair(const PrivateKey<NUMBER_TYPE>& privateKey);
 
   /**
    * \brief Getting key KeyPair class object from given public and private keys
@@ -29,8 +28,7 @@ public:
    * @param publicKey
    */
   KeyPair(const PrivateKey<NUMBER_TYPE>& privateKey, 
-          const PublicKey<POINT_TYPE, NUMBER_TYPE>& publicKey, 
-          std::weak_ptr<Context> ctx);
+          const PublicKey<POINT_TYPE, NUMBER_TYPE>& publicKey);
 
   ~KeyPair() = default;
 
@@ -40,7 +38,7 @@ public:
    * @param ctx
    * @return
    */
-  static KeyPair generate(std::weak_ptr<Context> ctx);
+  static KeyPair generate();
 
   /**
    * \brief Getting public key
@@ -61,10 +59,6 @@ private:
 
   /// Private key definition as a private class member
   PrivateKey<NUMBER_TYPE> private_key_;
-
-  /// Context pointer for having our crypto context available here
-  /// NOTE: this class is not taking responsibility to free up this pointer
-  std::weak_ptr<Context> context_;
 
 };
 

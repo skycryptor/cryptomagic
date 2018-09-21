@@ -30,12 +30,12 @@ int32_t Context::get_ec_nid() {
   return ec_nid_;
 }
 
-EC_GROUP* Context::get_ec_group() {
+EC_GROUP* Context::get_ec_group() const {
   return ec_group_.get();
 }
 
-std::shared_ptr<Context> Context::get_default() {
-  static std::shared_ptr<Context> ctx = std::make_shared<Context>(MBEDTLS_ECP_DP_SECP256K1);
+Context& Context::get_default() {
+  static Context ctx(MBEDTLS_ECP_DP_SECP256K1);
   return ctx;
 }
 

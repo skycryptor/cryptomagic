@@ -7,7 +7,6 @@
 #include <map>
 #include <iostream>
 
-#include "NUMBER_TYPE.h"
 #include "Capsule.h"
 
 namespace SkyCryptor {
@@ -80,13 +79,13 @@ bool Capsule::is_re_encrypted() const {
 
 template<class POINT_TYPE, class NUMBER_TYPE>
 std::vector<char> Capsule::to_bytes() const {
-  auto pE = E.to_bytes();
+  auto pE = E_.to_bytes();
   auto pE_len = htonl(pE.size());
 
-  auto pXG = XG.to_bytes();
-  auto pV = V.to_bytes();
+  auto pXG = XG_.to_bytes();
+  auto pV = V_.to_bytes();
 
-  auto pS = S.to_bytes();
+  auto pS = S_.to_bytes();
   auto pS_len = htonl(pS.size());
 
   std::vector<char> ret(4 + pE.size() + pV.size() + 4 + pS.size() + 1 + pXG.size());

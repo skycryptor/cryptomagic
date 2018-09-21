@@ -14,19 +14,18 @@ class Point;
 
 /// \brief Generic implementation for BigNumber
 class BigNumber : public ErrorWrapper {
-
+friend class Point;
 public:
-  /// keeping zero bignum initiated and allocated for later usage
-  /// this will be created on first BigNumber constructor work at any time
-  /// then just we will be checking if it's created or not
-  static BIGNUM *BNZero;
 
   /**
    * \brief Making BigNumber object from given raw big number.
    * @param bn
    */
-  BigNumber(BIGNUM *bn);
+  BigNumber(const BIGNUM& bn);
   BigNumber() = default;
+
+  // Returns a reference to a static object which contains number 0.
+  static const BigNumber& get_zero();
 
   /**
    * \brief Copying BigNumber object from existing one
@@ -61,13 +60,6 @@ public:
    * @return vector of bytes
    */
   std::vector<char> to_bytes() const;
-
-  /**
-   * \brief Getting reference to OpenSSL BIGNUM
-   * /TODO(martun): try to get rid of this function.
-   * @return
-   */
-  BIGNUM* get_raw_bignum() const;
 
   /**
    * \brief Checking if BigNumbers are equal
@@ -138,12 +130,11 @@ public:
    */
   bool is_from_EC_group() const;
 
-  static uint32_t get_ec_order();
+  static const BigNumber& get_ec_order();
 
 private:
-  /// Shared pointer for raw big number implementation
-  /// This is based on specific Crypto backend choosed compile time
-  std::shared_ptr<BigNumberRaw> bn_raw_;
+
+  BIGNUM bn_raw_;
 
 };
 

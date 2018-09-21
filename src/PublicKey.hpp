@@ -1,33 +1,30 @@
 namespace SkyCryptor {
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-PublicKey::PublicKey(const Point &ec_point, Context *ctx)
-    : point_(ctx)
-    , context_(ctx)
+PublicKey<POINT_TYPE, NUMBER_TYPE>::PublicKey(const Point& ec_point_)
+    : point__(ctx)
 {
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-PublicKey::PublicKey(const Context& ctx) 
-    : point_(*ctx) // Martun: this will generate a random point???
-    , context_(ctx)
+PublicKey<POINT_TYPE, NUMBER_TYPE>::PublicKey() 
 {
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-bool PublicKey::operator==(const PublicKey &publicKey) const {
-  return point == publicKey;
+bool PublicKey<POINT_TYPE, NUMBER_TYPE>::operator==(const PublicKey& publicKey) const {
+  return point_ == publicKey;
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-const Point& PublicKey::get_point() const {
-  return point;
+const POINT_TYPE& PublicKey<POINT_TYPE, NUMBER_TYPE>::get_point_() const {
+  return point_;
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-PublicKey::PublicKey(const PublicKey &pk) {
+PublicKey<POINT_TYPE, NUMBER_TYPE>::PublicKey(const PublicKey& pk) {
   context = pk.context;
-  point = pk.point;
+  point_ = pk.point_;
 }
 
 } // namespace SkyCryptor

@@ -35,7 +35,7 @@ public:
    * NOTE: we can re-generate public key with #generate_publicKey()
    * @return PublicKey
    */
-  PublicKey get_public_key() const;
+  PublicKey<NUMBER_TYPE> get_public_key() const;
 
   /**
    * \brief Generating PrivateKey using NUMBER_TYPE random generator

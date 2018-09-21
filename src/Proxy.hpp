@@ -4,7 +4,7 @@
 namespace SkyCryptor {
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-Capsule<POINT_TYPE, NUMBER_TYPE> Proxy::encapsulate(
+Capsule<POINT_TYPE, NUMBER_TYPE> Proxy<POINT_TYPE, NUMBER_TYPE>::encapsulate(
     const PublicKey<POINT_TYPE, NUMBER_TYPE>& pk, 
     std::vector<char>& symmetric_key_out) const {
   // generating 2 random key pairs
@@ -37,7 +37,7 @@ Capsule<POINT_TYPE, NUMBER_TYPE> Proxy::encapsulate(
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-std::vector<char> Proxy::decapsulate_original(
+std::vector<char> Proxy<POINT_TYPE, NUMBER_TYPE>::decapsulate_original(
     const Capsule<POINT_TYPE, NUMBER_TYPE>& capsule, 
     const PrivateKey<NUMBER_TYPE>& private_key) {
   auto symmetric_key = private_key.get_key_value() * 
@@ -46,7 +46,7 @@ std::vector<char> Proxy::decapsulate_original(
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-ReEncryptionKey<POINT_TYPE, NUMBER_TYPE> Proxy::get_re_encryption_key(
+ReEncryptionKey<POINT_TYPE, NUMBER_TYPE> Proxy<POINT_TYPE, NUMBER_TYPE>::get_re_encryption_key(
     const PrivateKey<NUMBER_TYPE>& private_key_A, 
     const PublicKey<POINT_TYPE, NUMBER_TYPE>& public_key_B) {
   auto tmp_private_key = PrivateKey<NUMBER_TYPE>::generate(context_);
@@ -67,7 +67,7 @@ ReEncryptionKey<POINT_TYPE, NUMBER_TYPE> Proxy::get_re_encryption_key(
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-Capsule<POINT_TYPE, NUMBER_TYPE> Proxy::get_re_encryption_capsule(
+Capsule<POINT_TYPE, NUMBER_TYPE> Proxy<POINT_TYPE, NUMBER_TYPE>::get_re_encryption_capsule(
     const Capsule<POINT_TYPE, NUMBER_TYPE>& capsule_original, 
     const ReEncryptionKey<POINT_TYPE, NUMBER_TYPE>& re_encryption_key) {
   POINT_TYPE prime_E = re_encryption_key.get_rk_number() * capsule_original.get_E();
@@ -80,12 +80,12 @@ Capsule<POINT_TYPE, NUMBER_TYPE> Proxy::get_re_encryption_capsule(
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
-std::vector<char> Proxy::decapsulate_re_encrypted(
+std::vector<char> Proxy<POINT_TYPE, NUMBER_TYPE>::decapsulate_re_encrypted(
     const Capsule<POINT_TYPE, NUMBER_TYPE>& re_encrypted_capsule, 
     const PrivateKey<NUMBER_TYPE>& private_key) {
-  auto prime_XG = re_encrypted_capsule.get_XG();
-  auto prime_E = re_encrypted_capsule.get_E();
-  auto prime_V = re_encrypted_capsule.get_V();
+  POINT_TYPE prime_XG = re_encrypted_capsule.get_XG();
+  POINT_TYPE prime_E = re_encrypted_capsule.get_E();
+  POINT_TYPE prime_V = re_encrypted_capsule.get_V();
   std::vector<POINT_TYPE> points_for_hash = {
     prime_XG,
     private_key.get_public_key().get_point(),

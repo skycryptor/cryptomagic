@@ -18,7 +18,7 @@ namespace SkyCryptor {
  * @param shared_key
  * @return
  */
-std::vector<char> KDF(const Point& shared_key, const Context& ctx);
+std::vector<char> KDF(const Context& ctx, const Point& shared_key);
 
 /**
  * \brief Implementing hash function with given byte array parts and crypto context

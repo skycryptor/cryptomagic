@@ -21,7 +21,7 @@ public:
    * \brief Making default Context from defined EC name
    * @return
    */
-  static const Context& get_default();
+  static Context& get_default();
 
   /**
    * \brief Defining context from given Elliptic curve name
@@ -41,7 +41,7 @@ public:
    * \brief Getting raw pointer for EC group from OpenSSL definition
    * @return
    */
-  EC_GROUP* get_ec_group();
+  EC_GROUP* get_ec_group() const;
 
   /**
    * \brief Getting key length

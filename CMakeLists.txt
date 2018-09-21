@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(cryptomagic)
+project(ProxyLib)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 set(MBED_TLS_VERSION 2.7.5)
@@ -15,14 +15,12 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 include_directories(src src/include ${install_dir}/build/include include)
 
-set(PROXYLIB_SOURCES \
-    src/Context.cpp \
-    src/BigNumber.cpp \
-    src/ErrorWrapper.cpp \
-    src/Point.cpp \
-    src/BigNumberRaw.cpp \
-    src/PointRaw.cpp \
-    src/helpers.cpp \
+set(PROXYLIB_SOURCES
+    src/Context.cpp
+    src/BigNumber.cpp
+    src/ErrorWrapper.cpp
+    src/Point.cpp
+    src/helpers.cpp
     src/Proxy_C.cpp)
 
 set(PROJECT_TESTS ${PROJECT_NAME}_tests)
@@ -41,11 +39,11 @@ add_custom_target(lib ALL
 
 enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -j4)
-add_executable(${PROJECT_TESTS} \
-               src/tests/tests.cpp \
-               src/tests/big_number_test.cpp \
-               src/tests/re_encryption_test.cpp \
-               src/tests/c_interface_test.cpp\
+add_executable(${PROJECT_TESTS}
+               src/tests/tests.cpp
+               src/tests/big_number_test.cpp
+               src/tests/re_encryption_test.cpp
+               src/tests/c_interface_test.cpp
               )
 
 target_link_libraries(${PROJECT_TESTS} ${PROJECT_NAME})

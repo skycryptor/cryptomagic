@@ -2,10 +2,10 @@
 #define _CRYPTOMAGIC_PROXY_H__
 
 #include "Context.h"
-#include "Capsule<POINT_TYPE, NUMBER_TYPE>.h"
-#include "PublicKey<POINT_TYPE, NUMBER_TYPE>.h"
-#include "PrivateKey<NUMBER_TYPE>.h"
-#include "ReEncryptionKey<POINT_TYPE, NUMBER_TYPE>.h"
+#include "Capsule.h"
+#include "PublicKey.h"
+#include "PrivateKey.h"
+#include "ReEncryptionKey.h"
 
 namespace SkyCryptor {
 

@@ -16,7 +16,7 @@ public:
    * Main constructor for making PublicKey object
    * @param ec_point Elliptic curve point for this public Key
    */
-  PublicKey(const POINT_TYPE &ec_point);
+  PublicKey(const POINT_TYPE& ec_point);
 
   /**
    * \brief Making PublicKey with NULL point to fill it later on

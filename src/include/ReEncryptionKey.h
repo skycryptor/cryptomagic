@@ -1,12 +1,5 @@
-//
-// Created by Tigran on 7/5/18.
-//
-
 #ifndef _CRYPTOMAGIC_RE_ENCRYPTION_KEY_H__
 #define _CRYPTOMAGIC_RE_ENCRYPTION_KEY_H__
-
-#include "NUMBER_TYPE.h"
-#include "POINT_TYPE.h"
 
 namespace SkyCryptor {
 
