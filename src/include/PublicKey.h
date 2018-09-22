@@ -27,7 +27,7 @@ public:
    * \brief Making public key object from existing one
    * @param pk
    */
-  PublicKey(const PublicKey& pk) = default;
+  PublicKey(const PublicKey<POINT_TYPE, NUMBER_TYPE>& pk) = default;
   ~PublicKey() = default;
 
   /**

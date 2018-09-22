@@ -20,7 +20,7 @@ public:
   Capsule(const POINT_TYPE& E, 
           const POINT_TYPE& V, 
           const NUMBER_TYPE& S, 
-          bool isReEncription = false);
+          bool is_re_encripted = false);
 
   /**
    * \brief Making capsule with particles and public key to be encoded with it
@@ -33,7 +33,7 @@ public:
           const POINT_TYPE& V, 
           const NUMBER_TYPE& S, 
           const POINT_TYPE& XG, 
-          bool isReEncription = false);
+          bool is_re_encripted = false);
 
   /**
    * \brief Copy constructor from another capsule
@@ -58,13 +58,13 @@ public:
    * Getting particle S as a NUMBER_TYPE
    * @return
    */
-  const NUMBER_TYPE get_S() const;
+  const NUMBER_TYPE& get_S() const;
 
   /**
    * Getting particle XG
    * @return
    */
-  const POINT_TYPE get_XG() const;
+  const POINT_TYPE& get_XG() const;
 
   /**
    * \brief Setting capsule as re-encryption capsule
@@ -82,17 +82,16 @@ public:
    * \param[out] bytes_out - Serialized byte array of current capsule. 
    * @return
    */
-  void to_byte_array(std::vector<char>& bytes_out) const;
+  void to_bytes(std::vector<char>& bytes_out) const;
 
   /**
    * \brief Getting Capsule from encoded bytes
    * @param buffer
    * @param length
-   * @param ctx
    * @return
    */
-  static Capsule from_bytes(const char *buffer, int length);
-  static Capsule from_bytes(const std::vector<char>& buffer);
+  static Capsule<POINT_TYPE, NUMBER_TYPE> from_bytes(const char *buffer, int length);
+  static Capsule<POINT_TYPE, NUMBER_TYPE> from_bytes(const std::vector<char>& buffer);
 
 private:
 

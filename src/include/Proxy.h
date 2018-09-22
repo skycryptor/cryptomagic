@@ -40,7 +40,7 @@ public:
    */
   std::vector<char> decapsulate_original(
       const Capsule<POINT_TYPE, NUMBER_TYPE>& capsule, 
-      const PrivateKey<NUMBER_TYPE>& privateKey);
+      const PrivateKey<POINT_TYPE, NUMBER_TYPE>& privateKey);
 
   /**
    * \brief Getting re-encryption key out of Private key (Alice) and public key (Bob) using random private key generation
@@ -49,7 +49,7 @@ public:
    * @return
    */
   ReEncryptionKey<POINT_TYPE, NUMBER_TYPE> get_re_encryption_key(
-      const PrivateKey<NUMBER_TYPE>& private_key_A, 
+      const PrivateKey<POINT_TYPE, NUMBER_TYPE>& private_key_A, 
       const PublicKey<POINT_TYPE, NUMBER_TYPE>& public_key_B);
 
   /**
@@ -70,7 +70,7 @@ public:
    */
   std::vector<char> decapsulate_re_encrypted(
       const Capsule<POINT_TYPE, NUMBER_TYPE>& re_encrypted_capsule, 
-      const PrivateKey<NUMBER_TYPE>& privateKey);
+      const PrivateKey<POINT_TYPE, NUMBER_TYPE>& privateKey);
 
 };
 

@@ -26,17 +26,16 @@ void proxylib_clear(void *cm_ptr) {
 }
 
 void *proxylib_generate_private_key(void *cm_ptr) {
-  auto cm = (Proxy<Point, BigNumber>*) cm_ptr;
-  return new PrivateKey<BigNumber>(PrivateKey<BigNumber>::generate(cm->getContext()));
+  return new PrivateKey<Point, BigNumber>(PrivateKey<Point, BigNumber>::generate());
 }
 
 void proxylib_private_key_free(void *private_key_ptr) {
-  auto sk = (PrivateKey<BigNumber>*) private_key_ptr;
+  auto sk = (PrivateKey<Point, BigNumber>*) private_key_ptr;
   delete sk;
 }
 
 void *proxylib_get_public_key(void *private_key_ptr) {
-  auto sk = (PrivateKey<BigNumber>*) private_key_ptr;
+  auto sk = (PrivateKey<Point, BigNumber>*) private_key_ptr;
   return new PublicKey<Point,BigNumber>(sk->get_public_key());
 }
 
@@ -67,7 +66,7 @@ void proxylib_capsule_free(void *capsule_ptr) {
 
 void proxylib_decapsulate(void * cm_ptr, void *capsule_ptr, void *private_key_ptr, char **symmetric_key_out, int *symmetric_key_len) {
   auto cm = (Proxy<Point, BigNumber>*) cm_ptr;
-  auto sk = (PrivateKey<BigNumber>*) private_key_ptr;
+  auto sk = (PrivateKey<Point, BigNumber>*) private_key_ptr;
   auto capsule = (Capsule<Point, BigNumber>*) capsule_ptr;
   std::vector<char> symmetricKey = capsule->is_re_encrypted() ?
                               cm->decapsulate_re_encrypted(*capsule, *sk)
@@ -78,25 +77,24 @@ void proxylib_decapsulate(void * cm_ptr, void *capsule_ptr, void *private_key_pt
 }
 
 void proxylib_private_key_to_bytes(void *private_key_ptr, char **buffer, int *length) {
-  auto sk = (PrivateKey<BigNumber>*) private_key_ptr;
-  auto bytesVec = sk->getBigNumber().to_bytes();
+  auto sk = (PrivateKey<Point, BigNumber>*) private_key_ptr;
+  auto bytesVec = sk->get_key_value().to_bytes();
   *buffer = (char*)malloc(bytesVec.size());
   *length = bytesVec.size();
   memcpy(*buffer, &bytesVec[0], bytesVec.size());
 }
 
 void proxylib_public_key_to_bytes(void *public_key_ptr, char **buffer, int *length) {
-  auto pk = (PublicKey<Point,BigNumber>*) public_key_ptr;
-  auto bytesVec = pk->getPoint().to_bytes();
+  PublicKey<Point,BigNumber>* pk = (PublicKey<Point,BigNumber>*) public_key_ptr;
+  auto bytesVec = pk->get_point().to_bytes();
   *buffer = (char*)malloc(bytesVec.size());
   *length = bytesVec.size();
   memcpy(*buffer, &bytesVec[0], bytesVec.size());
 }
 
 void *proxylib_private_key_from_bytes(void * cm_ptr, const char *buffer, int length) {
-  auto cm = (Proxy<Point, BigNumber>*) cm_ptr;
-  auto bn = BigNumber::from_bytes((unsigned char*) buffer, length, cm->getContext());
-  return new PrivateKey<BigNumber>(bn, cm->getContext());
+  auto bn = BigNumber::from_bytes((unsigned char*) buffer, length);
+  return new PrivateKey<Point, BigNumber>(bn);
 }
 
 void *proxylib_public_key_from_bytes(void *cm_ptr, char *buffer, int length) {
@@ -108,7 +106,8 @@ void *proxylib_public_key_from_bytes(void *cm_ptr, char *buffer, int length) {
 
 void proxylib_capsule_to_bytes(void *capsule, char **buffer, int *length) {
   auto c = (Capsule<Point, BigNumber>*) capsule;
-  auto capsule_buffer = c->to_bytes();
+  std::vector<char> capsule_buffer;
+  c->to_bytes(capsule_buffer);
   *buffer = (char*)malloc(capsule_buffer.size());
   *length = capsule_buffer.size();
   memcpy(*buffer, &capsule_buffer[0], capsule_buffer.size());
@@ -116,21 +115,20 @@ void proxylib_capsule_to_bytes(void *capsule, char **buffer, int *length) {
 
 void *proxylib_capsule_from_bytes(void * cm_ptr, char *buffer, int length) {
   auto cm = (Proxy<Point, BigNumber>*) cm_ptr;
-  auto capsule = Capsule<Point, BigNumber>::from_bytes(buffer, length, cm->getContext());
+  auto capsule = Capsule<Point, BigNumber>::from_bytes(buffer, length);
   return new Capsule<Point, BigNumber>(capsule);
 }
 
 void *proxylib_get_re_encryption_key(void * cm_ptr, void *skA_ptr, void *pkB_ptr) {
   auto cm = (Proxy<Point, BigNumber>*) cm_ptr;
-  auto skA = (PrivateKey<BigNumber>*) skA_ptr;
+  auto skA = (PrivateKey<Point, BigNumber>*) skA_ptr;
   auto pkA = (PublicKey<Point,BigNumber>*) pkB_ptr;
   auto rkk = cm->get_re_encryption_key(*skA, *pkA);
   return new ReEncryptionKey<Point, BigNumber>(rkk);
 }
 
 void *proxylib_get_re_encryption_from_bytes(void *cm_ptr, char *buffer, int length) {
-  auto cm = (Proxy<Point, BigNumber>*) cm_ptr;
-  auto rkk = ReEncryptionKey<Point, BigNumber>::from_bytes(buffer, length, cm->getContext());
+  auto rkk = ReEncryptionKey<Point, BigNumber>::from_bytes(buffer, length);
   return new ReEncryptionKey<Point, BigNumber>(rkk);
 }
 

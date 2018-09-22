@@ -41,22 +41,22 @@ public:
    * \brief Making re-encryption key from encoded bytes using provided raw bytes pointer
    * @param buffer
    * @param length
-   * @param ctx
    * @return
    */
-  static ReEncryptionKey from_bytes(const char *buffer, int length, Context *ctx);
+  static ReEncryptionKey<POINT_TYPE, NUMBER_TYPE> from_bytes(
+      const char *buffer, int length);
 
   /**
    * \brief Making re-encryption key from encoded bytes using provided bytes std::vector
    * @param buffer
-   * @param ctx
    * @return
    */
-  static ReEncryptionKey from_bytes(const std::vector<char>& buffer, Context *ctx);
+  static ReEncryptionKey<POINT_TYPE, NUMBER_TYPE> from_bytes(
+      const std::vector<char>& buffer);
 
 private:
 
-  NUMBER_TYPE rk_number_; // rename rk
+  NUMBER_TYPE rk_number_; // TODO(martun): rename rk
 
   // value of x * g, I.E. temporary public key.
   POINT_TYPE rk_point_; // TODO(martun): rename to internal_public_key

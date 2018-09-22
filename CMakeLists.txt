@@ -40,10 +40,10 @@ add_custom_target(lib ALL
 enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -j4)
 add_executable(${PROJECT_TESTS}
-               src/tests/tests.cpp
                src/tests/big_number_test.cpp
                src/tests/re_encryption_test.cpp
                src/tests/c_interface_test.cpp
+               src/tests/tests.cpp
               )
 
 target_link_libraries(${PROJECT_TESTS} ${PROJECT_NAME})

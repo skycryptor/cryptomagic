@@ -17,18 +17,18 @@ class KeyPair {
 public:
   /**
    * \brief If we want to get KeyPair and generate public key out of given private key.
-   * using this constructor, because only PrivateKey<NUMBER_TYPE> is enough to have a key pair
+   * using this constructor, because only PrivateKey<POINT_TYPE, NUMBER_TYPE> is enough to have a key pair
    * @param privateKey
    */
-  explicit KeyPair(const PrivateKey<NUMBER_TYPE>& privateKey);
+  explicit KeyPair(const PrivateKey<POINT_TYPE, NUMBER_TYPE>& private_key);
 
   /**
    * \brief Getting key KeyPair class object from given public and private keys
    * @param privateKey
    * @param publicKey
    */
-  KeyPair(const PrivateKey<NUMBER_TYPE>& privateKey, 
-          const PublicKey<POINT_TYPE, NUMBER_TYPE>& publicKey);
+  KeyPair(const PrivateKey<POINT_TYPE, NUMBER_TYPE>& private_key,
+          const PublicKey<POINT_TYPE, NUMBER_TYPE>& public_key);
 
   ~KeyPair() = default;
 
@@ -38,7 +38,7 @@ public:
    * @param ctx
    * @return
    */
-  static KeyPair generate();
+  static KeyPair<POINT_TYPE, NUMBER_TYPE> generate();
 
   /**
    * \brief Getting public key
@@ -50,7 +50,7 @@ public:
    * Getting private key
    * @return
    */
-  const PrivateKey<NUMBER_TYPE>& get_private_key() const;
+  const PrivateKey<POINT_TYPE, NUMBER_TYPE>& get_private_key() const;
 
 private:
 
@@ -58,7 +58,7 @@ private:
   PublicKey<POINT_TYPE, NUMBER_TYPE> public_key_;
 
   /// Private key definition as a private class member
-  PrivateKey<NUMBER_TYPE> private_key_;
+  PrivateKey<POINT_TYPE, NUMBER_TYPE> private_key_;
 
 };
 
