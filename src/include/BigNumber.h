@@ -1,170 +1,138 @@
-//
-// Created by Tigran on 6/23/18.
-//
-
-#ifndef CRYPTOMAIC_BIGNUMBER_H
-#define CRYPTOMAIC_BIGNUMBER_H
+#ifndef _PROXYLIB_BIG_NUMBER_H__
+#define _PROXYLIB_BIG_NUMBER_H__
 
 #include <memory>
+#include <vector>
+
 #include "Context.h"
 #include "ErrorWrapper.h"
-#include "BigNumberRaw.h"
-#include "Point.h"
-#include "PublicKey.h"
-
-using std::shared_ptr;
-using std::make_shared;
 
 namespace SkyCryptor {
-  class PublicKey;
-  class Point;
+
+class BigNumberRaw;
+class Point;
+
+/// \brief Generic implementation for BigNumber
+class BigNumber : public ErrorWrapper {
+friend class Point;
+public:
 
   /**
-   * \brief Generic implementation for BigNumber
+   * \brief Making BigNumber object from given raw big number.
+   * @param bn
    */
-  class BigNumber : public ErrorWrapper {
-   private:
+  BigNumber(const BIGNUM& bn);
+  BigNumber();
+  /// \brief Creating a bignumber from an integer value.
+  BigNumber(uint32_t value);
+  ~BigNumber();
 
-    /// Cryptographic context for big number operations
-    /// NOTE: this class not taking any ownership for this pointer
-    Context *context = nullptr;
+  // Returns a reference to a static object which contains number 0.
+  static const BigNumber& get_zero();
 
-    /// Shared pointer for raw big number implementation
-    /// This is based on specific Crypto backend choosed compile time
-    shared_ptr<BigNumberRaw> bn_raw = make_shared<BigNumberRaw>();
+  /**
+   * \brief Copying BigNumber object from existing one
+   * @param bn
+   */
+  BigNumber(const BigNumber& bn);
 
-    /**
-     * \brief Checking if number is in current EC group
-     * @return
-     */
-    bool isFromECGroup() const;
+  /**
+   * \brief Generate random BigNumber.
+   * @return
+   */
+  static BigNumber generate_random();
 
-   public:
-    /// keeping zero bignum initiated and allocated for later usage
-    /// this will be created on first BigNumber constructor work at any time
-    /// then just we will be checking if it's created or not
-    static BIGNUM *BNZero;
+  /**
+   * \brief Get BigNumber from integer
+   * @param num
+   * @return
+   */
+  static BigNumber from_integer(uint32_t num);
 
-    /**
-     * \brief Making BigNumber object from given raw big number and context
-     * @param bn
-     * @param ctx
-     */
-    BigNumber(BIGNUM *bn, Context *ctx);
-    explicit BigNumber(Context *ctx) : BigNumber(nullptr, ctx) {}
+  /**
+   * \brief Get BigNumber from big endian ordered bytes
+   * @param buffer
+   * @param len
+   * @return
+   */
+  static BigNumber from_bytes(unsigned char *buffer, int len);
 
-    /**
-     * \brief Copying BigNumber object from existing one
-     * @param bn
-     */
-    BigNumber(const BigNumber& bn);
-    virtual ~BigNumber() = default;
+  /**
+   * \brief Getting BIGNUM bytes from existing OpenSSL BIGNUM
+   * @return vector of bytes
+   */
+  std::vector<char> to_bytes() const;
 
-    /**
-     * \brief Generate random BigNumber from given crypto context
-     * @param ctx
-     * @return
-     */
-    static BigNumber generate_random(Context *ctx);
+  /**
+   * \brief Checking if BigNumbers are equal
+   * @param other
+   * @return
+   */
+  bool operator==(const BigNumber& other) const;
 
-    /**
-     * \brief Get BigNumber from integer
-     * @param num
-     * @param ctx
-     * @return
-     */
-    static BigNumber from_integer(unsigned long num, Context *ctx);
+  /**
+   * \brief MUL operator for BigNumber * BigNumber = BigNumber
+   * @param other
+   * @return
+   */
+  BigNumber operator*(const BigNumber& other) const;
 
-    /**
-     * \brief Get BigNumber from big endian ordered bytes
-     * @param buffer
-     * @param len
-     * @param ctx
-     * @return
-     */
-    static BigNumber from_bytes(unsigned char *buffer, int len, Context *ctx);
+  /**
+   * \brief MUL operator for BigNumber * Point = Point
+   * @param other
+   * @return
+   */
+  Point operator*(const Point& other) const;
 
-    /**
-     * \brief Getting BIGNUM bytes from existing OpenSSL BIGNUM
-     * @return vector of bytes
-     */
-    vector<char> toBytes();
+  /**
+   * \brief Inverting current BigNumber: ~BigNumber = BigNumber
+   * @return
+   */
+  BigNumber operator~() const;
 
-    /**
-     * \brief Getting reference to OpenSSL BIGNUM
-     * @return
-     */
-    BIGNUM *getRawBigNum() const;
+  /**
+   * \brief DIV operator for BigNumbers: BigNumber / BigNumber = BigNumber
+   * @param other
+   * @return
+   */
+  BigNumber operator/(const BigNumber& other) const;
 
-    /**
-     * \brief Checking if BigNumbers are equal
-     * @param other
-     * @return
-     */
-    bool operator==(const BigNumber& other) const;
+  /**
+   * \brief ADD operator implementation: BigNumber + BigNumber = BigNumber
+   * @param other
+   * @return
+   */
+  BigNumber operator+(const BigNumber& other) const;
 
-    /**
-     * \brief MUL operator for BigNumber * BigNumber = BigNumber
-     * @param other
-     * @return
-     */
-    BigNumber operator*(const BigNumber& other) const;
+  /**
+   * \brief SUB operator implementation: BigNumber - BigNumber = BigNumber
+   * @param other
+   * @return
+   */
+  BigNumber operator-(const BigNumber& other) const;
 
-    /**
-     * \brief MUL operator for BigNumber * Point = Point
-     * @param other
-     * @return
-     */
-    Point operator*(const Point& other);
+  /**
+   * \brief MOD operator implementation: BigNumber % BigNumber = BigNumber
+   * @param other
+   * @return
+   */
+  BigNumber operator%(const BigNumber& other) const;
 
-    /**
-     * \brief MUL operator for BigNumber * PublicKey = Point
-     * @param other
-     * @return
-     */
-    Point operator*(const PublicKey& other);
+  /**
+   * \brief Checking if number is in current EC group
+  *  /TODO(martun): check what this means.
+   * @return
+   */
+  bool is_from_EC_group() const;
 
-    /**
-     * \brief Inverting current BigNumber: ~BigNumber = BigNumber
-     * @return
-     */
-    BigNumber operator~() const;
+  static const BigNumber& get_ec_order();
 
-    /**
-     * \brief DIV operator for BigNumbers: BigNumber / BigNumber = BigNumber
-     * @param other
-     * @return
-     */
-    BigNumber operator/(const BigNumber& other);
+private:
 
-    /**
-     * \brief ADD operator implementation: BigNumber + BigNumber = BigNumber
-     * @param other
-     * @return
-     */
-    BigNumber operator+(const BigNumber& other);
+  BIGNUM* bn_raw_;
 
-    /**
-     * \brief SUB operator implementation: BigNumber - BigNumber = BigNumber
-     * @param other
-     * @return
-     */
-    BigNumber operator-(const BigNumber& other);
+};
 
-    /**
-     * \brief MOD operator implementation: BigNumber % BigNumber = BigNumber
-     * @param other
-     * @return
-     */
-    BigNumber operator%(const BigNumber& other);
+} // namespace SkyCryptor
 
-    /**
-     * \brief MOD operator implementation: BigNumber % BIGNUM = BigNumber
-     * @param other
-     * @return
-     */
-    BigNumber operator%(BIGNUM * other);
-  };
-}
-
-#endif //CRYPTOMAIC_BIGNUMBER_H
+#endif // _PROXYLIB_BIG_NUMBER_H__

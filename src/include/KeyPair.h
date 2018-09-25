@@ -1,63 +1,70 @@
-//
-// Created by tigran on 7/6/18.
-//
+#ifndef _PROXYLIB_KEY_PAIR_H__
+#define _PROXYLIB_KEY_PAIR_H__
 
-#ifndef CRYPTOMAIC_KEYPAIR_H
-#define CRYPTOMAIC_KEYPAIR_H
+#include <memory>
 
 #include "PublicKey.h"
 #include "PrivateKey.h"
 
 namespace SkyCryptor {
+
+/**
+ * \brief Key Pair for public and Private Keys
+ * This class used as a combination of Public and Private keys, and can do some actions with both of them
+ */
+template<class POINT_TYPE, class NUMBER_TYPE>
+class KeyPair {
+public:
   /**
-   * \brief Key Pair for public and Private Keys
-   * This class used as a combination of Public and Private keys, and can do some actions with both of them
+   * \brief If we want to get KeyPair and generate public key out of given private key.
+   * using this constructor, because only PrivateKey<POINT_TYPE, NUMBER_TYPE> is enough to have a key pair
+   * @param privateKey
    */
-  class KeyPair {
-    /// Public key definition as a private class member
-    PublicKey publicKey;
+  explicit KeyPair(const PrivateKey<POINT_TYPE, NUMBER_TYPE>& private_key);
 
-    /// Private key definition as a private class member
-    PrivateKey privateKey;
+  /**
+   * \brief Getting key KeyPair class object from given public and private keys
+   * @param privateKey
+   * @param publicKey
+   */
+  KeyPair(const PrivateKey<POINT_TYPE, NUMBER_TYPE>& private_key,
+          const PublicKey<POINT_TYPE, NUMBER_TYPE>& public_key);
 
-    /// Context pointer for having our crypto context available here
-    /// NOTE: this class is not taking responsibility to free up this pointer
-    Context *context;
-  public:
-    /**
-     * \brief If we want to get KeyPair and generate public key out of given private key
-     * using this constructor, because only PrivateKey is enough to have a key pair
-     * @param privateKey
-     */
-    explicit KeyPair(PrivateKey& privateKey, Context *ctx);
-    /**
-     * \brief Getting key KeyPair class object from given public and private keys
-     * @param privateKey
-     * @param publicKey
-     */
-    KeyPair(PrivateKey& privateKey, PublicKey& publicKey, Context *ctx);
-    ~KeyPair() = default;
+  ~KeyPair() = default;
 
-    /**
-     * \brief Generating random KeyPair with their private and public keys
-     * This is using Private key generator and getting public key out of generated private key
-     * @param ctx
-     * @return
-     */
-    static KeyPair generate(Context *ctx);
+  /**
+   * \brief Generating random KeyPair with their private and public keys
+   * This is using Private key generator and getting public key out of generated private key
+   * @param ctx
+   * @return
+   */
+  static KeyPair<POINT_TYPE, NUMBER_TYPE> generate();
 
-    /**
-     * \brief Getting public key
-     * @return
-     */
-    PublicKey getPublicKey();
+  /**
+   * \brief Getting public key
+   * @return
+   */
+  const PublicKey<POINT_TYPE, NUMBER_TYPE>& get_public_key() const;
 
-    /**
-     * Getting private key
-     * @return
-     */
-    PrivateKey getPrivateKey();
-  };
-}
+  /**
+   * Getting private key
+   * @return
+   */
+  const PrivateKey<POINT_TYPE, NUMBER_TYPE>& get_private_key() const;
 
-#endif //CRYPTOMAIC_KEYPAIR_H
+private:
+
+  /// Public key definition as a private class member
+  PublicKey<POINT_TYPE, NUMBER_TYPE> public_key_;
+
+  /// Private key definition as a private class member
+  PrivateKey<POINT_TYPE, NUMBER_TYPE> private_key_;
+
+};
+
+} // namespace SkyCryptor 
+
+// Include template function implementations.
+#include "KeyPair.hpp"
+
+#endif //_PROXYLIB_KEY_PAIR_H__

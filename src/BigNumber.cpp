@@ -1,161 +1,180 @@
-//
-// Created by Tigran on 6/23/18.
-//
-
 #include <arpa/inet.h>
 #include <mbedtls/bignum.h>
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/entropy.h>
-#include <include/BigNumber.h>
 
+#include "Point.h"
 #include "BigNumber.h"
 #include "defines.h"
-#include "iostream"
+#include "Context.h"
 
 namespace SkyCryptor {
 
-  BIGNUM * BigNumber::BNZero = nullptr;
+BigNumber::BigNumber() {
+  bn_raw_ = (BIGNUM *)malloc(sizeof(BIGNUM));
+  mbedtls_mpi_init(bn_raw_);
+}
 
-  BigNumber::BigNumber(BIGNUM *bn, Context *ctx) {
-    if (bn == nullptr) {
-      BIGNUM *bnRaw = (BIGNUM *)malloc(sizeof(BIGNUM));
-      mbedtls_mpi_init(bnRaw);
-      bn = bnRaw;
-    }
-    bn_raw->set_bignum(bn);
-    context = ctx;
-
-    // Making zero static variable
-    if (BigNumber::BNZero == nullptr) {
-      BigNumber::BNZero = (BIGNUM*) malloc(sizeof(BIGNUM));
-      mbedtls_mpi_init(BigNumber::BNZero);
-      mbedtls_mpi_lset(BigNumber::BNZero, 0);
-    }
-  }
-
-  BigNumber::BigNumber(const BigNumber &bn) {
-    *this = bn;
-  }
-
-  BigNumber BigNumber::generate_random(Context *ctx) {
-    BigNumber bn(ctx);
-    mbedtls_ctr_drbg_context ctr_drbg_ctx;
-    mbedtls_entropy_context entropy_ctx;
-    mbedtls_ctr_drbg_init(&ctr_drbg_ctx);
-    mbedtls_entropy_init(&entropy_ctx);
-    mbedtls_ctr_drbg_seed(&ctr_drbg_ctx, mbedtls_entropy_func, &entropy_ctx, NULL, 0);
-    int res = mbedtls_mpi_fill_random(bn.getRawBigNum(), 30, mbedtls_ctr_drbg_random, &ctr_drbg_ctx);
-    if (res != 0) {
-      // TODO: make error reporting!!
-      return bn;
-    }
-
-    // if we got big number not inside EC group range let's try again
-    if (!bn.isFromECGroup()) {
-      return BigNumber::generate_random(ctx);
-    }
-
-    return bn;
-  }
-
-  BigNumber BigNumber::from_bytes(unsigned char *buffer, int len, Context *ctx) {
-    BigNumber bn(ctx);
-    int res = mbedtls_mpi_read_binary(bn.getRawBigNum(), (const unsigned char*)buffer, len);
-    if (res != 0) {
-      // TODO: define error case!!
-    }
-
-    return bn;
-  }
-
-  BigNumber BigNumber::from_integer(unsigned long num, Context *ctx) {
-    BigNumber bn(ctx);
-    int res = mbedtls_mpi_lset(bn.getRawBigNum(), num);
-    if (res != 0) {
-      // TODO: define error case!!
-    }
-    return bn;
-  }
-
-  bool BigNumber::isFromECGroup() const {
-    return mbedtls_mpi_cmp_abs(bn_raw->get_bignum(), BigNumber::BNZero) ==1 && mbedtls_mpi_cmp_abs(bn_raw->get_bignum(), context->get_ec_order()) == -1;
-  }
-
-  vector<char> BigNumber::toBytes() {
-    vector<char> ret(mbedtls_mpi_size(bn_raw->get_bignum()));
-    int res = mbedtls_mpi_write_binary(bn_raw->get_bignum(), (unsigned char*)&ret[0], ret.size());
-    if (res != 0) {
-      // TODO: handle error case!!
-    }
-    return ret;
-  }
-
-  BIGNUM *BigNumber::getRawBigNum() const {
-    return this->bn_raw->get_bignum();
-  }
-
-  bool BigNumber::operator==(const BigNumber &other) const {
-    return mbedtls_mpi_cmp_mpi(bn_raw->get_bignum(), other.bn_raw->get_bignum()) == 0;
-  }
-
-  BigNumber BigNumber::operator*(const BigNumber &other) const {
-    BigNumber bn(context);
-    int res = mbedtls_mpi_mul_mpi(bn.bn_raw->get_bignum(), bn_raw->get_bignum(), other.bn_raw->get_bignum());
-    if (res != 0) {
-      // TODO: handle error case!!
-    }
-    return bn % context->get_ec_order();
-  }
-
-  Point BigNumber::operator*(const Point &other) {
-    return other * (*this);
-  }
-
-  Point BigNumber::operator*(const PublicKey &other) {
-    return other * (*this);
-  }
-
-  BigNumber BigNumber::operator~() const {
-    BigNumber bn(context);
-    int res = mbedtls_mpi_inv_mod(bn.bn_raw->get_bignum(), bn_raw->get_bignum(), context->get_ec_order());
-    if (res != 0) {
-      // TODO: handle error case!!
-    }
-    return bn;
-  }
-
-  BigNumber BigNumber::operator/(const BigNumber &other) {
-    return ((*this) * (~other)) % context->get_ec_order();
-  }
-
-  BigNumber BigNumber::operator+(const BigNumber &other) {
-    BigNumber bn(context);
-    int res = mbedtls_mpi_add_mpi(bn.bn_raw->get_bignum(), bn_raw->get_bignum(), other.bn_raw->get_bignum());
-    if (res != 1) {
-      // TODO: handle error case!!
-    }
-    return bn % context->get_ec_order();
-  }
-
-  BigNumber BigNumber::operator-(const BigNumber &other) {
-    BigNumber bn(context);
-    int res = mbedtls_mpi_sub_mpi(bn.bn_raw->get_bignum(), bn_raw->get_bignum(), other.bn_raw->get_bignum());
-    if (res != 1) {
-      // TODO: handle error case!!
-    }
-    return bn % context->get_ec_order();
-  }
-
-  BigNumber BigNumber::operator%(const BigNumber &other) {
-    return (*this) % other.bn_raw->get_bignum();
-  }
-
-  BigNumber BigNumber::operator%(BIGNUM *other) {
-    BigNumber bn(context);
-    int res = mbedtls_mpi_mod_mpi(bn.bn_raw->get_bignum(), bn_raw->get_bignum(), other);
-    if (res != 1) {
-      // TODO: handle error case!!
-    }
-    return bn;
+BigNumber::BigNumber(uint32_t value) {
+  bn_raw_ = (BIGNUM *)malloc(sizeof(BIGNUM));
+  mbedtls_mpi_init(bn_raw_);
+  int res = mbedtls_mpi_lset(bn_raw_, value);
+  if (res != 0) {
+    // TODO: define error case!!
   }
 }
+
+BigNumber::BigNumber(const BigNumber& bn) {
+  bn_raw_ = (BIGNUM *)malloc(sizeof(BIGNUM));
+  mbedtls_mpi_init(bn_raw_);
+
+  mbedtls_mpi_copy(bn_raw_, bn.bn_raw_);
+}
+
+BigNumber::~BigNumber() {
+  delete bn_raw_;
+}
+
+BigNumber::BigNumber(const BIGNUM& bn)
+{
+  if (bn_raw_ != nullptr) {
+     mbedtls_mpi_free(bn_raw_);
+  }
+  bn_raw_ = (BIGNUM *)malloc(sizeof(BIGNUM));
+  mbedtls_mpi_init(bn_raw_);
+  
+	mbedtls_mpi_copy(bn_raw_, &bn); 
+}
+
+const BigNumber& BigNumber::get_zero() {
+  static BigNumber BNZero(0);
+  return BNZero;
+}
+
+BigNumber BigNumber::generate_random() {
+  BigNumber bn;
+  mbedtls_ctr_drbg_context ctr_drbg_context_;
+  mbedtls_entropy_context entropy_context_;
+  mbedtls_ctr_drbg_init(&ctr_drbg_context_);
+  mbedtls_entropy_init(&entropy_context_);
+  mbedtls_ctr_drbg_seed(&ctr_drbg_context_, mbedtls_entropy_func, &entropy_context_, NULL, 0);
+  int res = mbedtls_mpi_fill_random(
+      bn.bn_raw_, 
+      30, // TODO(martun): figure out what's this 30.
+      mbedtls_ctr_drbg_random, 
+      &ctr_drbg_context_);
+  if (res != 0) {
+    // TODO: make error reporting!!
+    return bn;
+  }
+
+  // if we got big number not inside EC group range let's try again
+  if (!bn.is_from_EC_group()) {
+    return BigNumber::generate_random();
+  }
+
+  return bn;
+}
+
+BigNumber BigNumber::from_bytes(unsigned char *buffer, int len) {
+  BigNumber bn;
+  int res = mbedtls_mpi_read_binary(bn.bn_raw_, (const unsigned char*)buffer, len);
+  if (res != 0) {
+    // TODO: define error case!!
+  }
+
+  return bn;
+}
+
+BigNumber BigNumber::from_integer(uint32_t num) {
+  BigNumber bn;
+  int res = mbedtls_mpi_lset(bn.bn_raw_, num);
+  if (res != 0) {
+    // TODO: define error case!!
+  }
+  return bn;
+}
+
+bool BigNumber::is_from_EC_group() const {
+  return mbedtls_mpi_cmp_abs(bn_raw_, get_zero().bn_raw_) == 1 && 
+         mbedtls_mpi_cmp_abs(bn_raw_, get_ec_order().bn_raw_) == -1;
+}
+
+std::vector<char> BigNumber::to_bytes() const {
+  std::vector<char> ret(mbedtls_mpi_size(bn_raw_));
+  int res = mbedtls_mpi_write_binary(
+      bn_raw_, (unsigned char*)&ret[0], ret.size());
+  if (res != 0) {
+    // TODO: handle error case!!
+  }
+  return ret;
+}
+
+bool BigNumber::operator==(const BigNumber &other) const {
+  return mbedtls_mpi_cmp_mpi(bn_raw_, other.bn_raw_) == 0;
+}
+
+const BigNumber& BigNumber::get_ec_order() {
+  static BigNumber ec_order(Context::get_default().get_ec_order());
+  return ec_order;
+}
+
+BigNumber BigNumber::operator*(const BigNumber &other) const {
+  BigNumber bn;
+  int res = mbedtls_mpi_mul_mpi(
+      bn.bn_raw_, bn_raw_, other.bn_raw_);
+  if (res != 0) {
+    // TODO: handle error case!!
+  }
+  return bn % get_ec_order();
+}
+
+Point BigNumber::operator*(const Point &other) const {
+  return other * (*this);
+}
+
+// TODO(martun): maybe create a function named "inverse".
+BigNumber BigNumber::operator~() const {
+  BigNumber bn;
+  int res = mbedtls_mpi_inv_mod(
+      bn.bn_raw_, bn_raw_, get_ec_order().bn_raw_);
+  if (res != 0) {
+    // TODO: handle error case!!
+  }
+  return bn;
+}
+
+BigNumber BigNumber::operator/(const BigNumber& other) const {
+  return ((*this) * (~other)) % get_ec_order();
+}
+
+BigNumber BigNumber::operator+(const BigNumber& other) const {
+  BigNumber bn;
+  int res = mbedtls_mpi_add_mpi(
+      bn.bn_raw_, bn_raw_, other.bn_raw_);
+  if (res != 1) {
+    // TODO: handle error case!!
+  }
+  return bn % get_ec_order();
+}
+
+BigNumber BigNumber::operator-(const BigNumber& other) const {
+  BigNumber bn;
+  int res = mbedtls_mpi_sub_mpi(
+      bn.bn_raw_, bn_raw_, other.bn_raw_);
+  if (res != 1) {
+    // TODO: handle error case!!
+  }
+  return bn % get_ec_order();
+}
+
+BigNumber BigNumber::operator%(const BigNumber& other) const {
+  BigNumber bn;
+  int res = mbedtls_mpi_mod_mpi(bn.bn_raw_, bn_raw_, other.bn_raw_);
+  if (res != 1) {
+    // TODO: handle error case!!
+  }
+  return bn;
+}
+
+} // namespace SkyCryptor

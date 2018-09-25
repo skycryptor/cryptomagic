@@ -1,77 +1,57 @@
-//
-// Created by Tigran on 7/4/18.
-//
-
-#ifndef CRYPTOMAIC_PUBLICKEY_H
-#define CRYPTOMAIC_PUBLICKEY_H
+#ifndef _PROXYLIB_PUBLIC_KEY_H__
+#define _PROXYLIB_PUBLIC_KEY_H__
 
 #include <memory>
-#include "BigNumber.h"
-#include "Point.h"
-#include "Context.h"
-
-using std::shared_ptr;
-using std::make_shared;
 
 namespace SkyCryptor {
-  class BigNumber;
-  class Point;
+
+/**
+ * \brief PublicKey class is a base implementation for keeping EC Public Key as an object
+ */
+template<class POINT_TYPE, class NUMBER_TYPE>
+class PublicKey {
+
+public:
+  /**
+   * Main constructor for making PublicKey object
+   * @param ec_point Elliptic curve point for this public Key
+   */
+  PublicKey(const POINT_TYPE& ec_point);
 
   /**
-   * \brief PublicKey class is a base implementation for keeping EC Public Key as an object
+   * \brief Making PublicKey with NULL point to fill it later on
    */
-  class PublicKey {
-    /// EC Point for this public key
-    shared_ptr<Point> point;
-    /// Keeping crypto context for making decision based on specific context parameters
-    /// NOTE: this class is not taking responsibility for deleting Context pointer
-    Context *context;
-   public:
-    /**
-     * Main constructor for making PublicKey object
-     * @param ec_point Elliptic curve point for this public Key
-     * @param ctx Cryptographic context pointer
-     */
-    PublicKey(const Point &ec_point, Context *ctx);
-    /**
-     * \brief Making PublicKey with NULL point to fill it later on
-     * @param ctx
-     */
-    explicit PublicKey(Context *ctx);
-    /**
-     * \brief Making public key object from existing one
-     * @param pk
-     */
-    PublicKey(const PublicKey& pk);
-    ~PublicKey() = default;
+  PublicKey();
 
-    /**
-     * Getting point from this public key
-     * @return
-     */
-    Point getPoint() const;
+  /**
+   * \brief Making public key object from existing one
+   * @param pk
+   */
+  PublicKey(const PublicKey<POINT_TYPE, NUMBER_TYPE>& pk) = default;
+  ~PublicKey() = default;
 
-    /**
-     * \brief Checking if we have an equal PublicKeys or not
-     * @param publicKey
-     * @return true if Points are equal
-     */
-    bool operator==(const PublicKey& publicKey) const;
+  /**
+   * Getting point from this public key
+   * @return
+   */
+  const POINT_TYPE& get_point() const;
 
-    /**
-     * \brief Checking if our PublicKey point is equal to given one
-     * @param point
-     * @return true if Points are equal
-     */
-    bool operator==(const Point& point) const;
+  /**
+   * \brief Checking if we have an equal PublicKeys or not
+   * @param publicKey
+   * @return true if POINT_TYPEs are equal
+   */
+  bool operator==(const PublicKey& publicKey) const;
 
-    /**
-     * MUL for PublicKey with given BigNumber which returns a Point for later usage
-     * @param point
-     * @return
-     */
-    Point operator*(const BigNumber& other) const;
-  };
-}
+private:
+  /// EC POINT_TYPE for this public key
+  POINT_TYPE point_;
 
-#endif //CRYPTOMAIC_PUBLICKEY_H
+};
+
+} // namespace SkyCryptor
+
+// Include template function implementations.
+#include "PublicKey.hpp"
+
+#endif // _PROXYLIB_PUBLIC_KEY_H__

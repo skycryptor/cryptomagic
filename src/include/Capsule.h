@@ -1,106 +1,112 @@
-//
-// Created by Tigran on 7/4/18.
-//
-
-#ifndef CRYPTOMAIC_CAPSULE_H
-#define CRYPTOMAIC_CAPSULE_H
-
-#include "Point.h"
+#ifndef _PROXYLIB_CAPSULE_H__
+#define _PROXYLIB_CAPSULE_H__
 
 namespace SkyCryptor {
 
+/**
+ * \brief Combination of parameters as a definition for cryptographic capsule
+ * Each capsule contains E(POINT_TYPE), V(POINT_TYPE), s(NUMBER_TYPE)
+ */
+template<class POINT_TYPE, class NUMBER_TYPE>
+class Capsule {
+public:
+
   /**
-   * \brief Combination of parameters as a definition for cryptographic capsule
-   * Each capsule contains E(Point), V(Point), s(BigNumber)
+   * \brief Making capsule with given particles
+   * @param E
+   * @param V
+   * @param S
    */
-  class Capsule {
-    /// Defining Capsule particles
-    Point particleE;
-    Point particleV;
-    BigNumber particleS;
-    Point particleXG;
+  Capsule(const POINT_TYPE& E, 
+          const POINT_TYPE& V, 
+          const NUMBER_TYPE& S, 
+          bool is_re_encripted = false);
 
-    /// Keeping crypto context available for capsule
-    /// NOTE: this class is not taking responsibility for cleaning up this pointer
-    Context *context;
+  /**
+   * \brief Making capsule with particles and public key to be encoded with it
+   * @param E
+   * @param V
+   * @param S
+   * @param XG
+   */
+  Capsule(const POINT_TYPE& E, 
+          const POINT_TYPE& V, 
+          const NUMBER_TYPE& S, 
+          const POINT_TYPE& XG, 
+          bool is_re_encripted = false);
 
-    bool reEncrypted = false;
-   public:
-    /**
-     * \brief Making capsule with given particles
-     * @param E
-     * @param V
-     * @param S
-     * @param ctx
-     */
-    Capsule(Point& E, Point& V, BigNumber& S, Context *ctx);
-    /**
-     * \brief Making capsule with particles and public key to be encoded with it
-     * @param E
-     * @param V
-     * @param S
-     * @param XG
-     * @param ctx
-     */
-    Capsule(Point& E, Point& V, BigNumber& S, Point& XG, Context *ctx, bool isReEncription = false);
-    /**
-     * \brief Copy constructor from another capsule
-     * @param other
-     */
-    Capsule(const Capsule& other);
-    ~Capsule() = default;
+  /**
+   * \brief Copy constructor from another capsule
+   * @param other
+   */
+  Capsule(const Capsule& other);
+  ~Capsule() = default;
 
-    /**
-     * Getting particle E as a Point
-     * @return
-     */
-    Point get_particleE() const;
+  /**
+   * Getting particle E as a POINT_TYPE
+   * @return
+   */
+  const POINT_TYPE& get_E() const;
 
-    /**
-     * Getting particle V as a Point
-     * @return
-     */
-    Point get_particleV() const;
+  /**
+   * Getting particle V as a POINT_TYPE
+   * @return
+   */
+  const POINT_TYPE& get_V() const;
 
-    /**
-     * Getting particle S as a BigNumber
-     * @return
-     */
-    BigNumber get_particleS() const;
+  /**
+   * Getting particle S as a NUMBER_TYPE
+   * @return
+   */
+  const NUMBER_TYPE& get_S() const;
 
-    /**
-     * Getting particle XG
-     * @return
-     */
-    Point get_particleXG() const;
+  /**
+   * Getting particle XG
+   * @return
+   */
+  const POINT_TYPE& get_XG() const;
 
-    /**
-     * \brief Setting capsule as re-encryption capsule
-     */
-    void setReEncrypted();
+  /**
+   * \brief Setting capsule as re-encryption capsule
+   */
+  void set_re_encrypted();
 
-    /**
-     * \brief Checking if we have re-encryption capsule or not
-     * @return
-     */
-    bool isreEncrypted();
+  /**
+   * \brief Checking if we have re-encryption capsule or not
+   * @return
+   */
+  bool is_re_encrypted() const;
 
-    /**
-     * \brief Serializing capsule to bytes
-     * @return
-     */
-    vector<char> toBytes();
+  /**
+   * \brief Serializing capsule to bytes
+   * \param[out] bytes_out - Serialized byte array of current capsule. 
+   * @return
+   */
+  void to_bytes(std::vector<char>& bytes_out) const;
 
-    /**
-     * \brief Getting Capsule from encoded bytes
-     * @param buffer
-     * @param length
-     * @param ctx
-     * @return
-     */
-    static Capsule from_bytes(const char *buffer, int length, Context *ctx);
-    static Capsule from_bytes(vector<char> buffer, Context *ctx);
-  };
-}
+  /**
+   * \brief Getting Capsule from encoded bytes
+   * @param buffer
+   * @param length
+   * @return
+   */
+  static Capsule<POINT_TYPE, NUMBER_TYPE> from_bytes(const char *buffer, int length);
+  static Capsule<POINT_TYPE, NUMBER_TYPE> from_bytes(const std::vector<char>& buffer);
 
-#endif //CRYPTOMAIC_CAPSULE_H
+private:
+
+  /// Defining Capsule particles
+  POINT_TYPE E_;
+  POINT_TYPE V_;
+  NUMBER_TYPE S_;
+  POINT_TYPE XG_;
+
+  bool re_encrypted_;
+};
+
+} // namespace SkyCryptor
+
+// Include template function implementations.
+#include "Capsule.hpp"
+
+#endif //_PROXYLIB_CAPSULE_H__

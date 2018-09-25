@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(cryptomagic)
+project(ProxyLib)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 set(MBED_TLS_VERSION 2.7.5)
@@ -13,11 +13,18 @@ ExternalProject_Get_Property(mbed_tls install_dir)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-include_directories(src src/include ${install_dir}/build/include include)
+include_directories(src src/include ${install_dir}/build/include include  ${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-set(CRYPTOMAGIC_SOURCES src/CryptoMagic.cpp src/include/CryptoMagic.h src/Context.cpp src/include/Context.h src/BigNumber.cpp src/include/BigNumber.h src/ErrorWrapper.cpp src/include/ErrorWrapper.h src/include/defines.h src/Point.cpp src/include/Point.h src/include/BigNumberRaw.h src/BigNumberRaw.cpp src/include/PointRaw.h src/PointRaw.cpp src/include/PublicKey.h src/PublicKey.cpp src/PrivateKey.cpp src/include/PrivateKey.h src/include/Capsule.h src/Capsule.cpp src/include/helpers.h src/helpers.cpp src/include/ReEncryptionKey.h src/ReEncryptionKey.cpp include/CryptoMagic_C.h src/CryptoMagic_C.cpp src/KeyPair.cpp src/include/KeyPair.h)
+set(PROXYLIB_SOURCES
+    src/Context.cpp
+    src/BigNumber.cpp
+    src/ErrorWrapper.cpp
+    src/Point.cpp
+    src/helpers.cpp
+    src/Proxy_C.cpp)
+
 set(PROJECT_TESTS ${PROJECT_NAME}_tests)
-add_library(${PROJECT_NAME} ${CRYPTOMAGIC_SOURCES})
+add_library(${PROJECT_NAME} ${PROXYLIB_SOURCES})
 target_link_libraries(${PROJECT_NAME})
 add_dependencies(${PROJECT_NAME} mbed_tls)
 
@@ -32,7 +39,34 @@ add_custom_target(lib ALL
 
 enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -j4)
-add_executable(${PROJECT_TESTS} src/tests/tests.cpp src/tests/bignumber.cpp src/tests/re_encryption.cpp src/tests/c_interface.cpp)
-target_link_libraries(${PROJECT_TESTS} ${PROJECT_NAME})
-add_test(NAME ${PROJECT_TESTS} COMMAND ${PROJECT_TESTS} --use-colour=yes)
-add_dependencies(${PROJECT_TESTS} lib)
+
+add_executable(big_number_test
+               src/tests/big_number_test.cpp
+               src/tests/test_main.cpp
+              )
+
+# Standard linking to gtest stuff.
+target_link_libraries(big_number_test gtest gtest_main ${PROJECT_NAME} pthread)
+
+add_test(big_number_test big_number_test)
+
+add_executable(re_encryption_test
+               src/tests/re_encryption_test.cpp
+               src/tests/test_main.cpp
+              )
+
+# Standard linking to gtest stuff.
+target_link_libraries(re_encryption_test gtest gtest_main ${PROJECT_NAME} pthread)
+
+add_test(c_interface_test c_interface_test)
+
+add_executable(c_interface_test
+               src/tests/c_interface_test.cpp
+               src/tests/test_main.cpp
+              )
+
+# Standard linking to gtest stuff.
+target_link_libraries(c_interface_test gtest gtest_main ${PROJECT_NAME} pthread)
+
+add_test(c_interface_test c_interface_test)
+
