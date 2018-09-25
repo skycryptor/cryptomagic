@@ -9,11 +9,11 @@
 namespace SkyCryptor {
 
 Point::Point(EC_POINT *point) {
-  if (point == nullptr) {
-    ec_point_ = (EC_POINT*)malloc(sizeof(EC_POINT));
-    mbedtls_ecp_point_init(ec_point_);
-  } else {
-    ec_point_ = point;
+  ec_point_ = (EC_POINT*)malloc(sizeof(EC_POINT));
+  mbedtls_ecp_point_init(ec_point_);
+
+  if (point != nullptr) {
+    mbedtls_ecp_copy(ec_point_, point);
   }
 }
 
@@ -29,9 +29,8 @@ Point::~Point() {
 }
 
 Point::Point(const Point &p) {
-  if (ec_point_ != nullptr) {
-    mbedtls_ecp_point_free(ec_point_);
-  }
+  ec_point_ = (EC_POINT*)malloc(sizeof(EC_POINT));
+  mbedtls_ecp_point_init(ec_point_);
   mbedtls_ecp_copy(ec_point_, p.ec_point_);
 }
 
@@ -114,7 +113,7 @@ Point Point::operator*(const BigNumber &other) const {
   int res = mbedtls_ecp_mul(
       Context::get_default().get_ec_group(), 
       ec_point_, 
-      &other.bn_raw_, 
+      other.bn_raw_, 
       ec_point_,
       nullptr, 
       nullptr);
@@ -131,9 +130,9 @@ Point Point::operator+(const Point &other) const {
   int res = mbedtls_ecp_muladd(
       Context::get_default().get_ec_group(), 
       ec_point_, 
-      &one.bn_raw_,
+      one.bn_raw_,
       ec_point_, 
-      &one.bn_raw_, 
+      one.bn_raw_, 
       other.ec_point_);
   if (res != 0) {
     // TODO: make error handling here!!

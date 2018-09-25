@@ -13,7 +13,7 @@ ExternalProject_Get_Property(mbed_tls install_dir)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-include_directories(src src/include ${install_dir}/build/include include)
+include_directories(src src/include ${install_dir}/build/include include  ${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 set(PROXYLIB_SOURCES
     src/Context.cpp
@@ -39,13 +39,34 @@ add_custom_target(lib ALL
 
 enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -j4)
-add_executable(${PROJECT_TESTS}
+
+add_executable(big_number_test
                src/tests/big_number_test.cpp
-               src/tests/re_encryption_test.cpp
-               src/tests/c_interface_test.cpp
-               src/tests/tests.cpp
+               src/tests/test_main.cpp
               )
 
-target_link_libraries(${PROJECT_TESTS} ${PROJECT_NAME})
-add_test(NAME ${PROJECT_TESTS} COMMAND ${PROJECT_TESTS} --use-colour=yes)
-add_dependencies(${PROJECT_TESTS} lib)
+# Standard linking to gtest stuff.
+target_link_libraries(big_number_test gtest gtest_main ${PROJECT_NAME} pthread)
+
+add_test(big_number_test big_number_test)
+
+add_executable(re_encryption_test
+               src/tests/re_encryption_test.cpp
+               src/tests/test_main.cpp
+              )
+
+# Standard linking to gtest stuff.
+target_link_libraries(re_encryption_test gtest gtest_main ${PROJECT_NAME} pthread)
+
+add_test(c_interface_test c_interface_test)
+
+add_executable(c_interface_test
+               src/tests/c_interface_test.cpp
+               src/tests/test_main.cpp
+              )
+
+# Standard linking to gtest stuff.
+target_link_libraries(c_interface_test gtest gtest_main ${PROJECT_NAME} pthread)
+
+add_test(c_interface_test c_interface_test)
+

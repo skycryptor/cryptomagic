@@ -22,7 +22,10 @@ public:
    * @param bn
    */
   BigNumber(const BIGNUM& bn);
-  BigNumber() = default;
+  BigNumber();
+  /// \brief Creating a bignumber from an integer value.
+  BigNumber(uint32_t value);
+  ~BigNumber();
 
   // Returns a reference to a static object which contains number 0.
   static const BigNumber& get_zero();
@@ -31,8 +34,7 @@ public:
    * \brief Copying BigNumber object from existing one
    * @param bn
    */
-  BigNumber(const BigNumber& bn) = default;
-  virtual ~BigNumber() = default;
+  BigNumber(const BigNumber& bn);
 
   /**
    * \brief Generate random BigNumber.
@@ -117,13 +119,6 @@ public:
   BigNumber operator%(const BigNumber& other) const;
 
   /**
-   * \brief MOD operator implementation: BigNumber % BIGNUM = BigNumber
-   * @param other
-   * @return
-   */
-  //  BigNumber operator%(BIGNUM * other);
-
-  /**
    * \brief Checking if number is in current EC group
   *  /TODO(martun): check what this means.
    * @return
@@ -134,7 +129,7 @@ public:
 
 private:
 
-  BIGNUM bn_raw_;
+  BIGNUM* bn_raw_;
 
 };
 

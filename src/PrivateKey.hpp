@@ -17,7 +17,7 @@ PublicKey<POINT_TYPE, NUMBER_TYPE> PrivateKey<POINT_TYPE, NUMBER_TYPE>::get_publ
   // Making public key out of given/initialized bigNumber. 
   auto g = POINT_TYPE::get_generator();
   auto point = private_key_ * g;
-  return std::move(PublicKey<POINT_TYPE, NUMBER_TYPE>(point));
+  return PublicKey<POINT_TYPE, NUMBER_TYPE>(point);
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>

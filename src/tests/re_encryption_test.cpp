@@ -1,3 +1,4 @@
+#include "gtest/gtest.h"
 #include <include/helpers.h>
 
 #include <iostream>
@@ -11,7 +12,7 @@
 using namespace std;
 using namespace SkyCryptor;
 
-TEST_CASE( "Re-encryption key generation" ) {
+TEST(KeyGeneration, key_generation ) {
   Proxy<Point, BigNumber> cm;
   PrivateKey<Point, BigNumber> privateKeyA = PrivateKey<Point, BigNumber>::generate();
   PublicKey<Point, BigNumber> publicKeyA = privateKeyA.get_public_key();
@@ -31,8 +32,8 @@ TEST_CASE( "Re-encryption key generation" ) {
   // Decapsulating from original
   vector<char> symmetric_key_decapsulate = cm.decapsulate_original(capsule, privateKeyA);
 
-  REQUIRE( symmetric_key_decapsulate.size() == Context::get_default().get_key_length() );
-  REQUIRE( symmetric_key == symmetric_key_decapsulate );
+  ASSERT_EQ( symmetric_key_decapsulate.size(), Context::get_default().get_key_length() );
+  ASSERT_EQ( symmetric_key, symmetric_key_decapsulate );
 
   // Getting re-encryption Key!
   auto rkAB = cm.get_re_encryption_key(privateKeyA, publicKeyB);
@@ -41,6 +42,6 @@ TEST_CASE( "Re-encryption key generation" ) {
   auto reCapsule = cm.get_re_encryption_capsule(capsule, rkAB);
   auto symmetricKeyRE = cm.decapsulate_re_encrypted(reCapsule, privateKeyB);
 
-  REQUIRE( symmetricKeyRE == symmetric_key );
+  ASSERT_EQ(symmetricKeyRE, symmetric_key);
 }
 
