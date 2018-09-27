@@ -8,6 +8,7 @@ ExternalProject_Add(mbed_tls
   URL https://github.com/ARMmbed/mbedtls/archive/mbedtls-${MBED_TLS_VERSION}.tar.gz
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/mbed_tls
   CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/mbed_tls/build
+  CMAKE_CACHE_ARGS -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true
 )
 ExternalProject_Get_Property(mbed_tls install_dir)
 
