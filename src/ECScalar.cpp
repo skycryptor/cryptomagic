@@ -3,19 +3,20 @@
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/entropy.h>
 
-#include "Point.h"
-#include "BigNumber.h"
+#include "ECPoint.h"
+#include "ECScalar.h"
 #include "defines.h"
-#include "Context.h"
+#include "VersionInfo.h"
+#include "VersionInfoMap.h"
 
 namespace SkyCryptor {
 
-BigNumber::BigNumber() {
+ECScalar::ECScalar() {
   bn_raw_ = (BIGNUM *)malloc(sizeof(BIGNUM));
   mbedtls_mpi_init(bn_raw_);
 }
 
-BigNumber::BigNumber(uint32_t value) {
+ECScalar::ECScalar(uint32_t value) {
   bn_raw_ = (BIGNUM *)malloc(sizeof(BIGNUM));
   mbedtls_mpi_init(bn_raw_);
   int res = mbedtls_mpi_lset(bn_raw_, value);
@@ -24,18 +25,18 @@ BigNumber::BigNumber(uint32_t value) {
   }
 }
 
-BigNumber::BigNumber(const BigNumber& bn) {
+ECScalar::ECScalar(const ECScalar& bn) {
   bn_raw_ = (BIGNUM *)malloc(sizeof(BIGNUM));
   mbedtls_mpi_init(bn_raw_);
 
   mbedtls_mpi_copy(bn_raw_, bn.bn_raw_);
 }
 
-BigNumber::~BigNumber() {
+ECScalar::~ECScalar() {
   delete bn_raw_;
 }
 
-BigNumber::BigNumber(const BIGNUM& bn)
+ECScalar::ECScalar(const BIGNUM& bn)
 {
   if (bn_raw_ != nullptr) {
      mbedtls_mpi_free(bn_raw_);
@@ -46,13 +47,13 @@ BigNumber::BigNumber(const BIGNUM& bn)
 	mbedtls_mpi_copy(bn_raw_, &bn); 
 }
 
-const BigNumber& BigNumber::get_zero() {
-  static BigNumber BNZero(0);
+const ECScalar& ECScalar::get_zero() {
+  static ECScalar BNZero(0);
   return BNZero;
 }
 
-BigNumber BigNumber::generate_random() {
-  BigNumber bn;
+ECScalar ECScalar::generate_random() {
+  ECScalar bn;
   mbedtls_ctr_drbg_context ctr_drbg_context_;
   mbedtls_entropy_context entropy_context_;
   mbedtls_ctr_drbg_init(&ctr_drbg_context_);
@@ -70,14 +71,14 @@ BigNumber BigNumber::generate_random() {
 
   // if we got big number not inside EC group range let's try again
   if (!bn.is_from_EC_group()) {
-    return BigNumber::generate_random();
+    return ECScalar::generate_random();
   }
 
   return bn;
 }
 
-BigNumber BigNumber::from_bytes(unsigned char *buffer, int len) {
-  BigNumber bn;
+ECScalar ECScalar::from_bytes(unsigned char *buffer, int len) {
+  ECScalar bn;
   int res = mbedtls_mpi_read_binary(bn.bn_raw_, (const unsigned char*)buffer, len);
   if (res != 0) {
     // TODO: define error case!!
@@ -86,8 +87,8 @@ BigNumber BigNumber::from_bytes(unsigned char *buffer, int len) {
   return bn;
 }
 
-BigNumber BigNumber::from_integer(uint32_t num) {
-  BigNumber bn;
+ECScalar ECScalar::from_integer(uint32_t num) {
+  ECScalar bn;
   int res = mbedtls_mpi_lset(bn.bn_raw_, num);
   if (res != 0) {
     // TODO: define error case!!
@@ -95,12 +96,12 @@ BigNumber BigNumber::from_integer(uint32_t num) {
   return bn;
 }
 
-bool BigNumber::is_from_EC_group() const {
+bool ECScalar::is_from_EC_group() const {
   return mbedtls_mpi_cmp_abs(bn_raw_, get_zero().bn_raw_) == 1 && 
          mbedtls_mpi_cmp_abs(bn_raw_, get_ec_order().bn_raw_) == -1;
 }
 
-std::vector<char> BigNumber::to_bytes() const {
+std::vector<char> ECScalar::to_bytes() const {
   std::vector<char> ret(mbedtls_mpi_size(bn_raw_));
   int res = mbedtls_mpi_write_binary(
       bn_raw_, (unsigned char*)&ret[0], ret.size());
@@ -110,17 +111,17 @@ std::vector<char> BigNumber::to_bytes() const {
   return ret;
 }
 
-bool BigNumber::operator==(const BigNumber &other) const {
+bool ECScalar::operator==(const ECScalar &other) const {
   return mbedtls_mpi_cmp_mpi(bn_raw_, other.bn_raw_) == 0;
 }
 
-const BigNumber& BigNumber::get_ec_order() {
-  static BigNumber ec_order(Context::get_default().get_ec_order());
+const ECScalar& ECScalar::get_ec_order() {
+  static ECScalar ec_order(VersionInfoMap::get_current_version()->get_ec_order());
   return ec_order;
 }
 
-BigNumber BigNumber::operator*(const BigNumber &other) const {
-  BigNumber bn;
+ECScalar ECScalar::operator*(const ECScalar &other) const {
+  ECScalar bn;
   int res = mbedtls_mpi_mul_mpi(
       bn.bn_raw_, bn_raw_, other.bn_raw_);
   if (res != 0) {
@@ -129,13 +130,13 @@ BigNumber BigNumber::operator*(const BigNumber &other) const {
   return bn % get_ec_order();
 }
 
-Point BigNumber::operator*(const Point &other) const {
+ECPoint ECScalar::operator*(const ECPoint &other) const {
   return other * (*this);
 }
 
 // TODO(martun): maybe create a function named "inverse".
-BigNumber BigNumber::operator~() const {
-  BigNumber bn;
+ECScalar ECScalar::operator~() const {
+  ECScalar bn;
   int res = mbedtls_mpi_inv_mod(
       bn.bn_raw_, bn_raw_, get_ec_order().bn_raw_);
   if (res != 0) {
@@ -144,12 +145,12 @@ BigNumber BigNumber::operator~() const {
   return bn;
 }
 
-BigNumber BigNumber::operator/(const BigNumber& other) const {
+ECScalar ECScalar::operator/(const ECScalar& other) const {
   return ((*this) * (~other)) % get_ec_order();
 }
 
-BigNumber BigNumber::operator+(const BigNumber& other) const {
-  BigNumber bn;
+ECScalar ECScalar::operator+(const ECScalar& other) const {
+  ECScalar bn;
   int res = mbedtls_mpi_add_mpi(
       bn.bn_raw_, bn_raw_, other.bn_raw_);
   if (res != 1) {
@@ -158,8 +159,8 @@ BigNumber BigNumber::operator+(const BigNumber& other) const {
   return bn % get_ec_order();
 }
 
-BigNumber BigNumber::operator-(const BigNumber& other) const {
-  BigNumber bn;
+ECScalar ECScalar::operator-(const ECScalar& other) const {
+  ECScalar bn;
   int res = mbedtls_mpi_sub_mpi(
       bn.bn_raw_, bn_raw_, other.bn_raw_);
   if (res != 1) {
@@ -168,8 +169,8 @@ BigNumber BigNumber::operator-(const BigNumber& other) const {
   return bn % get_ec_order();
 }
 
-BigNumber BigNumber::operator%(const BigNumber& other) const {
-  BigNumber bn;
+ECScalar ECScalar::operator%(const ECScalar& other) const {
+  ECScalar bn;
   int res = mbedtls_mpi_mod_mpi(bn.bn_raw_, bn_raw_, other.bn_raw_);
   if (res != 1) {
     // TODO: handle error case!!

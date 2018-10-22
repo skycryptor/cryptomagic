@@ -12,16 +12,19 @@ ExternalProject_Add(mbed_tls
 )
 ExternalProject_Get_Property(mbed_tls install_dir)
 
+link_directories(${CMAKE_CURRENT_BINARY_DIR}/mbed_tls/build/lib)
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 include_directories(src src/include ${install_dir}/build/include include  ${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 set(PROXYLIB_SOURCES
-    src/Context.cpp
-    src/BigNumber.cpp
-    src/ErrorWrapper.cpp
-    src/Point.cpp
-    src/helpers.cpp
+    src/MBED_TLS_VersionInfo.cpp
+    src/VersionInfoMap.cpp
+    src/ECScalar.cpp
+    src/ProxyLibException.cpp
+    src/ECPoint.cpp
+    src/Hasher.cpp
     src/Proxy_C.cpp)
 
 set(PROJECT_TESTS ${PROJECT_NAME}_tests)
@@ -48,6 +51,7 @@ add_executable(big_number_test
 
 # Standard linking to gtest stuff.
 target_link_libraries(big_number_test gtest gtest_main ${PROJECT_NAME} pthread)
+add_dependencies(big_number_test mbed_tls)
 
 add_test(big_number_test big_number_test)
 
@@ -58,8 +62,9 @@ add_executable(re_encryption_test
 
 # Standard linking to gtest stuff.
 target_link_libraries(re_encryption_test gtest gtest_main ${PROJECT_NAME} pthread)
+add_dependencies(re_encryption_test mbed_tls)
 
-add_test(c_interface_test c_interface_test)
+add_test(re_encryption_test re_encryption_test)
 
 add_executable(c_interface_test
                src/tests/c_interface_test.cpp
@@ -67,7 +72,8 @@ add_executable(c_interface_test
               )
 
 # Standard linking to gtest stuff.
-target_link_libraries(c_interface_test gtest gtest_main ${PROJECT_NAME} pthread)
+target_link_libraries(c_interface_test gtest gtest_main ${PROJECT_NAME} pthread mbedtls mbedcrypto mbedx509)
+add_dependencies(c_interface_test mbed_tls)
 
 add_test(c_interface_test c_interface_test)
 

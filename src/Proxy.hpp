@@ -1,5 +1,7 @@
-#include "helpers.h"
+#include "Hasher.h"
 #include "KeyPair.h"
+#include "VersionInfo.h"
+#include "VersionInfoMap.h"
 
 namespace SkyCryptor {
 
@@ -28,7 +30,7 @@ Capsule<POINT_TYPE, NUMBER_TYPE> Proxy<POINT_TYPE, NUMBER_TYPE>::encapsulate(
 
   // Making symmetric key
   POINT_TYPE point_symmetric = (skU + skR) * pk.get_point();
-  std::vector<char> symmetric_key = KDF(Context::get_default(), point_symmetric);
+  std::vector<char> symmetric_key = Hasher::get_default().KDF(*VersionInfoMap::get_current_version(), point_symmetric);
 
   // setting output byte buffer
   symmetric_key_out.assign(symmetric_key.begin(), symmetric_key.end());
@@ -42,7 +44,7 @@ std::vector<char> Proxy<POINT_TYPE, NUMBER_TYPE>::decapsulate_original(
     const PrivateKey<POINT_TYPE, NUMBER_TYPE>& private_key) {
   auto symmetric_key = private_key.get_key_value() * 
       (capsule.get_E() + capsule.get_V());
-  return KDF(Context::get_default(), symmetric_key);
+  return Hasher::get_default().KDF(*VersionInfoMap::get_current_version(), symmetric_key);
 }
 
 template<class POINT_TYPE, class NUMBER_TYPE>
@@ -96,7 +98,7 @@ std::vector<char> Proxy<POINT_TYPE, NUMBER_TYPE>::decapsulate_re_encrypted(
   auto hash_bn = NUMBER_TYPE::from_bytes(
     (unsigned char*)&tmp_hash_bytes[0], tmp_hash_bytes.size());
   auto tmp_kdf_point = hash_bn * (prime_E + prime_V);
-  return KDF(Context::get_default(), tmp_kdf_point);
+  return Hasher::get_default().KDF(*VersionInfoMap::get_current_version(), tmp_kdf_point);
 }
 
 } // namespace SkyCryptor

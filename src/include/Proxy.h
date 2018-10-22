@@ -1,7 +1,6 @@
 #ifndef _CRYPTOMAGIC_PROXY_H__
 #define _CRYPTOMAGIC_PROXY_H__
 
-#include "Context.h"
 #include "Capsule.h"
 #include "PublicKey.h"
 #include "PrivateKey.h"
@@ -11,7 +10,7 @@ namespace SkyCryptor {
 
 /**
  * \brief Proxy base class for handling library crypto operations and main functionality
- * Each initialized Proxy object should contain Context which will define
+ * Each initialized Proxy object should know it's VersionInfo which will define
  * base parameters for crypto operations and configurations
  */
 template<class POINT_TYPE, class NUMBER_TYPE>

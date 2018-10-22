@@ -27,14 +27,14 @@ void * proxylib_new();
  * NOTE: this will crash if badly if we will pass wrong pointer from other languages, BUT that's on owr own risk!
  * @param cm
  */
-void proxylib_clear(void *cm_ptr);
+void proxylib_clear(void *proxylib_ptr);
 
 /**
  * \brief Generating private key from given Proxy<Point, BigNumber> pointer
- * @param cm_ptr
+ * @param proxylib_ptr
  * @return raw pointer to private key
  */
-void * proxylib_generate_private_key(void *cm_ptr);
+void * proxylib_generate_private_key(void *proxylib_ptr);
 
 /**
  * \brief Clearing private key from memory
@@ -67,21 +67,21 @@ void proxylib_public_key_to_bytes(void *public_key_ptr, char **buffer, int *leng
 
 /**
  * \brief Allocating and getting private key from given bytes array
- * @param cm_ptr
+ * @param proxylib_ptr
  * @param buffer
  * @param length
  * @return Allocated private key pointer
  */
-void * proxylib_private_key_from_bytes(void * cm_ptr, const char *buffer, int length);
+void * proxylib_private_key_from_bytes(void * proxylib_ptr, const char *buffer, int length);
 
 /**
  * \brief Allocating and getting public key from given bytes array
- * @param cm_ptr
+ * @param proxylib_ptr
  * @param buffer
  * @param length
  * @return Allocated private key pointer
  */
-void* proxylib_public_key_from_bytes(void * cm_ptr, char *buffer, int length);
+void* proxylib_public_key_from_bytes(void * proxylib_ptr, char *buffer, int length);
 
 /**
  * \brief Cleaning up public key object from memory
@@ -92,14 +92,14 @@ void proxylib_public_key_free(void *public_key_ptr);
 
 /**
  * \brief Handling encapsulation process and returning both Capsule<Point, BigNumber> raw pointer and symmetric key buffer
- * @param cm_ptr main proxylib object raw pointer to perform action
+ * @param proxylib_ptr main proxylib object raw pointer to perform action
  * @param public_key_ptr
  * @package[out] symmetric_key_out
  * @package[out] symmetric_key_len
  * @return raw pointer to capsule object
  */
 void* proxylib_encapsulate(
-    void* cm_ptr, 
+    void* proxylib_ptr, 
     void* public_key_ptr, 
     char** symmetric_key_out, 
     int* symmetric_key_len);
@@ -112,13 +112,13 @@ void proxylib_capsule_free(void *capsule_ptr);
 
 /**
  * \brief Decapsulating given capsule with given private key and returning symmetric byte buffer
- * @param cm_ptr main proxylib object raw pointer to perform action
+ * @param proxylib_ptr main proxylib object raw pointer to perform action
  * @param private_key_ptr
  * @param[out] symmetric_key_out
  * @param[out] symmetric_key_len
  */
 void proxylib_decapsulate(
-    void * cm_ptr, 
+    void * proxylib_ptr, 
     void *capsule_ptr, 
     void * private_key_ptr, 
     char **symmetric_key_out, 
@@ -134,30 +134,30 @@ void proxylib_capsule_to_bytes(void *capsule, char **buffer, int *length);
 
 /**
  * \brief Allocating and returning capsule from given byte array
- * @param cm_ptr
+ * @param proxylib_ptr
  * @param buffer
  * @param length
  * @return
  */
-void * proxylib_capsule_from_bytes(void * cm_ptr, char *buffer, int length);
+void * proxylib_capsule_from_bytes(void * proxylib_ptr, char *buffer, int length);
 
 /**
  * \brief Getting re-encryption key A->B using PrivateKey A and PublicKey B
- * @param cm_ptr main proxylib object raw pointer to perform action
+ * @param proxylib_ptr main proxylib object raw pointer to perform action
  * @param skA_ptr
  * @param pkB_ptr
  * @return
  */
-void * proxylib_get_re_encryption_key(void * cm_ptr, void *skA_ptr, void *pkB_ptr);
+void * proxylib_get_re_encryption_key(void * proxylib_ptr, void *skA_ptr, void *pkB_ptr);
 
 /**
  * \brief Getting re-encryption key form bytes
- * @param cm_ptr
+ * @param proxylib_ptr
  * @param buffer
  * @param length
  * @return
  */
-void* proxylib_get_re_encryption_from_bytes(void * cm_ptr, char *buffer, int length);
+void* proxylib_get_re_encryption_from_bytes(void * proxylib_ptr, char *buffer, int length);
 
 /**
  * \brief getting encoded bytes from reencryption key
@@ -176,12 +176,12 @@ void proxylib_re_encryption_key_free(void *rkk_ptr);
 
 /**
  * \brief Getting re-encryption capsule using Original capsule and PublicKey B
- * @param cm_ptr main proxylib object raw pointer to perform action
+ * @param proxylib_ptr main proxylib object raw pointer to perform action
  * @param capsule_ptr
  * @param rkAB_ptr
  * @return
  */
-void* proxylib_get_re_encryption_capsule(void * cm_ptr, void * capsule_ptr, void *rkAB_ptr);
+void* proxylib_get_re_encryption_capsule(void * proxylib_ptr, void * capsule_ptr, void *rkAB_ptr);
 
 #ifdef __cplusplus
 }
