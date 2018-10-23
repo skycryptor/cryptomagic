@@ -27,6 +27,7 @@ public:
    * @return
    */
   std::vector<char> SHA_256(const std::vector<std::vector<char>>& parts);
+  std::vector<char> SHA_256(const VersionInfo& version_info, const ECPoint& shared_key);
 
 private:
 

@@ -17,7 +17,6 @@ TEST(KeyGeneration, key_generation ) {
   PublicKey<ECPoint, ECScalar> publicKeyA = privateKeyA.get_public_key();
   PrivateKey<ECPoint, ECScalar> privateKeyB = PrivateKey<ECPoint, ECScalar>::generate();
   PublicKey<ECPoint, ECScalar> publicKeyB = privateKeyB.get_public_key();
-  ECPoint g = ECPoint::get_generator();
 
   // Encapsulate
   vector<char> symmetric_key;

@@ -40,6 +40,17 @@ std::vector<char> Hasher::KDF(const VersionInfo& version_info, const ECPoint& sh
   return digest;
 }
 
+std::vector<char> Hasher::SHA_256(const VersionInfo& version_info, const ECPoint& shared_key) {
+  auto key_bytes = shared_key.to_bytes();
+  std::vector<char> digest(SHA256_DIGEST_LENGTH);
+  mbedtls_sha256_context shaCtx;
+  mbedtls_sha256_init(&shaCtx);
+  mbedtls_sha256_starts_ret(&shaCtx, 0);
+  mbedtls_sha256_update_ret(&shaCtx, (unsigned char*)&key_bytes[0], key_bytes.size());
+  mbedtls_sha256_finish_ret(&shaCtx, (unsigned char*)&digest[0]);
+  return digest;
+}
+
 std::vector<char> Hasher::SHA_256(const std::vector<std::vector<char>>& parts) {
   std::vector<char> digest(SHA256_DIGEST_LENGTH);
   mbedtls_sha256_context shaCtx;

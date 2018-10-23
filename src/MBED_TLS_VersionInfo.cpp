@@ -35,8 +35,8 @@ EC_GROUP* MBED_TLS_VersionInfo::get_ec_group() const {
 }
 
 MBED_TLS_VersionInfo& MBED_TLS_VersionInfo::get_current() {
-  static MBED_TLS_VersionInfo ctx("MBEDTLS_ELIPTIC_CURVES", MBEDTLS_ECP_DP_SECP256K1, 128, 1000);
-  return ctx;
+  static MBED_TLS_VersionInfo version("MBEDTLS_ELIPTIC_CURVES", MBEDTLS_ECP_DP_SECP256K1, 32, 1000);
+  return version;
 }
 
 uint32_t MBED_TLS_VersionInfo::get_key_length() const {
