@@ -7,6 +7,7 @@
 
 using namespace std;
 
+
 TEST(CInterfaceTest1, C_interface_test_1) {
   proxylib_init();
   // making new CryptoMagic object
@@ -26,6 +27,27 @@ TEST(CInterfaceTest1, C_interface_test_1) {
   free(symmetricKey1);
   free(symmetricKey2);
   proxylib_capsule_free(capsule);
+  proxylib_public_key_free(pk);
+  proxylib_private_key_free(sk);
+  proxylib_clear(cm);
+}
+
+TEST(CInterfaceSerializationTest, c_interface_serialization_test) {
+  proxylib_init();
+  // making new CryptoMagic object
+  void *cm = proxylib_new();
+  void *sk = proxylib_generate_private_key(cm);
+  void *pk = proxylib_get_public_key(sk);
+
+  char* buffer = new char[10000];
+  int pk_length;
+
+  proxylib_private_key_to_bytes(sk, &buffer, &pk_length);
+  ASSERT_EQ(pk_length, 30);
+
+  proxylib_public_key_to_bytes(pk, &buffer, &pk_length);
+  ASSERT_EQ(pk_length, 65);
+
   proxylib_public_key_free(pk);
   proxylib_private_key_free(sk);
   proxylib_clear(cm);

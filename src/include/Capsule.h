@@ -93,6 +93,8 @@ public:
   static Capsule<POINT_TYPE, NUMBER_TYPE> from_bytes(const char *buffer, int length);
   static Capsule<POINT_TYPE, NUMBER_TYPE> from_bytes(const std::vector<char>& buffer);
 
+  bool operator==(const Capsule<POINT_TYPE, NUMBER_TYPE>& other) const;
+
 private:
 
   /// Defining Capsule particles

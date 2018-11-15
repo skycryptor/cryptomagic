@@ -161,4 +161,11 @@ Capsule<POINT_TYPE, NUMBER_TYPE> Capsule<POINT_TYPE, NUMBER_TYPE>::from_bytes(co
   return Capsule<POINT_TYPE, NUMBER_TYPE>::from_bytes(&buffer[0], buffer.size());
 }
 
+template<class POINT_TYPE, class NUMBER_TYPE>
+bool Capsule<POINT_TYPE, NUMBER_TYPE>::operator==(
+    const Capsule<POINT_TYPE, NUMBER_TYPE>& other) const {
+  return E_ == other.E_ && V_ == other.V_ && S_ == other.S_ && 
+      XG_ == other.XG_ && re_encrypted_ == other.re_encrypted_;
+}
+
 } // namespace SkyCryptor

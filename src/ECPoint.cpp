@@ -61,8 +61,9 @@ std::vector<char> ECPoint::to_bytes() const {
 
   char byte_buffer[500];
   size_t buffer_len;
+  auto ec_group = VersionInfoMap::get_current_version()->get_ec_group();
   int res = mbedtls_ecp_point_write_binary(
-      VersionInfoMap::get_current_version()->get_ec_group(), 
+      ec_group,
       ec_point_, 
       MBEDTLS_ECP_PF_UNCOMPRESSED, 
       &buffer_len, 
@@ -110,7 +111,7 @@ ECPoint ECPoint::operator*(const ECScalar &other) const {
   ECPoint p;
   int res = mbedtls_ecp_mul(
       VersionInfoMap::get_current_version()->get_ec_group(), 
-      ec_point_, 
+      p.ec_point_, 
       other.bn_raw_, 
       ec_point_,
       nullptr, 
@@ -127,7 +128,7 @@ ECPoint ECPoint::operator+(const ECPoint &other) const {
   // TODO(martun): change this to use mbedtls_ecp_add.
   int res = mbedtls_ecp_muladd(
       VersionInfoMap::get_current_version()->get_ec_group(), 
-      ec_point_, 
+      p.ec_point_, 
       one.bn_raw_,
       ec_point_, 
       one.bn_raw_, 

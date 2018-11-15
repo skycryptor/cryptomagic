@@ -23,9 +23,9 @@ TEST(KeyGeneration, key_generation ) {
   Capsule<ECPoint, ECScalar> capsule = cm.encapsulate(publicKeyA, symmetric_key);
 
   // Testing from bytes to bytes
-  std::vector<char> capsule_data;
-  capsule.to_bytes(capsule_data);
-  capsule = Capsule<ECPoint, ECScalar>::from_bytes(capsule_data);
+  //std::vector<char> capsule_data;
+  //capsule.to_bytes(capsule_data);
+  //capsule = Capsule<ECPoint, ECScalar>::from_bytes(capsule_data);
 
   // Decapsulating from original
   vector<char> symmetric_key_decapsulate = cm.decapsulate_original(capsule, privateKeyA);
@@ -41,5 +41,23 @@ TEST(KeyGeneration, key_generation ) {
   auto symmetricKeyRE = cm.decapsulate_re_encrypted(reCapsule, privateKeyB);
 
   ASSERT_EQ(symmetricKeyRE, symmetric_key);
+}
+
+TEST(CapsuleSerializationTest, capsule_serialization_test ) {
+  Proxy<ECPoint, ECScalar> cm;
+  PrivateKey<ECPoint, ECScalar> privateKeyA = PrivateKey<ECPoint, ECScalar>::generate();
+  PublicKey<ECPoint, ECScalar> publicKeyA = privateKeyA.get_public_key();
+
+  // Encapsulate
+  vector<char> symmetric_key;
+  Capsule<ECPoint, ECScalar> capsule = cm.encapsulate(publicKeyA, symmetric_key);
+
+  // Testing from bytes to bytes
+  std::vector<char> capsule_data;
+  capsule.to_bytes(capsule_data);
+
+  Capsule<ECPoint, ECScalar> capsule_new = Capsule<ECPoint, ECScalar>::from_bytes(capsule_data);
+
+  ASSERT_EQ(capsule, capsule_new);
 }
 
